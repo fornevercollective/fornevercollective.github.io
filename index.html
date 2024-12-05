@@ -41,6 +41,7 @@
       </section>
     </center>
 
+  
     <section id="content" class="theme-light">
       <h3 id="what">What is it?</h3>
 
@@ -50,11 +51,7 @@
         The main focus of the project has been to develop solid, production-quality code for the web.
         Skew looks like this:
       </p>
-
-              <!-- Nearby Connections -->
-          <div><a  id="network-info">:::</div>
-        <!-- Traffic Data -->
-          <div><a  id="traffic-data">:::</div>
+  
 
       <pre class="skew">
 # Execution starts at the entry point
@@ -84,6 +81,35 @@ namespace document {
         It currently contains production-quality JavaScript generation and working C# generation.
         C++ generation is next and is already in progress.
       </p>
+
+      
+
+                    <!-- Nearby Connections -->
+          <div><a  id="network-info">network info</a>
+        <!-- Traffic Data -->
+          <a  id="traffic-data">traffic data</a></div>
+      
+<dev>
+<title>Skew Compiler</title>
+<link rel="stylesheet" href="https://fornevercollective.github.io/skew/www/style.css">
+<div>
+  <h2>Input</h2>
+  <textarea id="input" rows="10" spellcheck="false" autofocus></textarea>
+</div>
+<div>
+  <h2>Log</h2>
+  <textarea id="outputLog" rows="10" spellcheck="false" readonly></textarea>
+  <p>
+    <span id="compileTime">Loading...</span>
+    Target: <span id="targetArea"></span>
+    <span id="optionArea"></span>
+  </p>
+  <h2>Code</h2>
+  <textarea id="outputCode" rows="20" spellcheck="false" readonly></textarea>
+</div>
+<script src="https://fornevercollective.github.io/skew/www/out/skew-api.js" id="skew-api"></script>
+<script src="https://fornevercollective.github.io/skew/www/index.js"></script>
+  </dev>
 
       <h3 id="why">Why use it?</h3>
 
