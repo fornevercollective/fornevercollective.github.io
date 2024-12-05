@@ -1,0 +1,227 @@
+namespace Skew {
+  enum PassKind {
+    EMITTING
+  }
+
+  class EmittingPass : Pass {
+    over kind PassKind {
+      return .EMITTING
+    }
+
+    over run(context PassContext) {
+      var emitter = context.options.target.createEmitter(context)
+      if emitter != null {
+        emitter.visit(context.global)
+        context.outputs = emitter.sources
+      }
+    }
+  }
+
+  enum EmitMode {
+    ALWAYS_EMIT
+    SKIP_IF_EMPTY
+  }
+
+  class Emitter {
+    var _sources List<Source> = []
+    var _prefix = StringBuilder.new
+    var _code = StringBuilder.new
+    var _indentAmount = "  "
+    var _indent = ""
+
+    def sources List<Source> {
+      return _sources
+    }
+
+    def visit(global ObjectSymbol)
+
+    def _increaseIndent {
+      _indent += _indentAmount
+    }
+
+    def _decreaseIndent {
+      _indent = _indent.slice(_indentAmount.count)
+    }
+
+    def _emit(text string) {
+      _code.append(text)
+    }
+
+    def _emitPrefix(text string) {
+      _prefix.append(text)
+    }
+
+    def _createSource(name string, mode EmitMode) {
+      var code = _code.toString
+
+      if mode == .ALWAYS_EMIT || code != "" {
+        _prefix.append(code)
+        _sources.append(Source.new(name, _prefix.toString))
+      }
+
+      _prefix = StringBuilder.new
+      _code = StringBuilder.new
+    }
+
+    def _collectObjects(global ObjectSymbol) List<ObjectSymbol> {
+      var objects List<ObjectSymbol> = []
+      _findObjects(objects, global)
+      return objects
+    }
+
+    def _sortedObjects(global ObjectSymbol) List<ObjectSymbol> {
+      var objects = _collectObjects(global)
+
+      # Sort by inheritance and containment
+      for i in 0..objects.count {
+        var j = i
+
+        # Select an object that comes before all other types
+        while j < objects.count {
+          var object = objects[j]
+          var k = i
+
+          # Check to see if this comes before all other types
+          while k < objects.count {
+            if j != k && _objectComesBefore(objects[k], object) {
+              break
+            }
+            k++
+          }
+          if k == objects.count {
+            break
+          }
+          j++
+        }
+
+        # Swap the object into the correct order
+        if j < objects.count {
+          objects.swap(i, j)
+        }
+      }
+
+      return objects
+    }
+
+    def _markVirtualFunctions(symbol ObjectSymbol) {
+      for object in symbol.objects {
+        _markVirtualFunctions(object)
+      }
+
+      for function in symbol.functions {
+        if function.overridden != null {
+          function.overridden.flags |= .IS_VIRTUAL
+          function.flags |= .IS_VIRTUAL
+        }
+        if function.implementations != null {
+          for other in function.implementations {
+            other.flags |= .IS_VIRTUAL
+            function.flags |= .IS_VIRTUAL
+          }
+        }
+      }
+    }
+
+    def _findObjects(objects List<ObjectSymbol>, object ObjectSymbol) {
+      objects.append(object)
+      for o in object.objects {
+        _findObjects(objects, o)
+      }
+    }
+  }
+
+  namespace Emitter {
+    def _isContainedBy(inner ObjectSymbol, outer ObjectSymbol) bool {
+      if inner.parent == null {
+        return false
+      }
+      if inner.parent == outer {
+        return true
+      }
+      return _isContainedBy(inner.parent.asObjectSymbol, outer)
+    }
+
+    def _objectComesBefore(before ObjectSymbol, after ObjectSymbol) bool {
+      return
+        after.hasBaseClass(before) ||
+        after.hasInterface(before) ||
+        _isContainedBy(after, before) ||
+        after.forwardTo == before
+    }
+  }
+
+  const HEX = "0123456789ABCDEF"
+
+  enum QuoteStyle {
+    DOUBLE
+    SINGLE
+    SHORTEST
+    TYPESCRIPT_TEMPLATE
+  }
+
+  enum QuoteOctal {
+    NORMAL
+    OCTAL_WORKAROUND
+  }
+
+  def quoteString(text string, style QuoteStyle, octal QuoteOctal) string {
+    var count = text.count
+
+    # Use whichever quote character is less frequent
+    if style == .SHORTEST {
+      var singleQuotes = 0
+      var doubleQuotes = 0
+      for i in 0..count {
+        var c = text[i]
+        if c == '"' { doubleQuotes++ }
+        else if c == '\'' { singleQuotes++ }
+      }
+      style = singleQuotes <= doubleQuotes ? .SINGLE : .DOUBLE
+    }
+
+    var builder = StringBuilder.new
+    var quoteString = style == .SINGLE ? "'" : "\""
+    var quote = style == .TYPESCRIPT_TEMPLATE ? '`' : style == .SINGLE ? '\'' : '"'
+    var escaped = ""
+    var start = 0 # Append long runs of unescaped characters using a single slice for speed
+    if style != .TYPESCRIPT_TEMPLATE { builder.append(quoteString) }
+    for i in 0..count {
+      var c = text[i]
+      if c == quote { escaped = "\\" + quoteString }
+      else if c == '\n' { escaped = "\\n" }
+      else if c == '\r' { escaped = "\\r" }
+      else if c == '\t' { escaped = "\\t" }
+      else if c == '\0' {
+        # Avoid issues around accidental octal encoding
+        var next = i + 1 < count ? text[i + 1] : '\0'
+        escaped = octal == .OCTAL_WORKAROUND && next >= '0' && next <= '9' ? "\\000" : "\\0"
+      }
+      else if c == '\\' { escaped = "\\\\" }
+      else if c == '$' && style == .TYPESCRIPT_TEMPLATE { escaped = "\\$" }
+      else if c < ' ' { escaped = "\\x" + HEX.get(c >> 4) + HEX.get(c & 15) }
+      else { continue }
+      builder.append(text.slice(start, i))
+      builder.append(escaped)
+      start = i + 1
+    }
+    builder.append(text.slice(start, count))
+    if style != .TYPESCRIPT_TEMPLATE { builder.append(quoteString) }
+    return builder.toString
+  }
+
+  enum Associativity {
+    NONE
+    LEFT
+    RIGHT
+  }
+
+  enum Precedence {
+    def incrementIfLeftAssociative(associativity Associativity) Precedence {
+      return (self + ((associativity == .LEFT) as int)) as Precedence
+    }
+
+    def incrementIfRightAssociative(associativity Associativity) Precedence {
+      return (self + ((associativity == .RIGHT) as int)) as Precedence
+    }
+  }
+}

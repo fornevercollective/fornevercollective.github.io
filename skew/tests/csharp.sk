@@ -1,0 +1,1054 @@
+namespace Skew.Tests {
+  def testCSharp {
+
+# Test entry point
+test("
+@entry
+def test {}
+", "
+public class Globals
+{
+    public static void Main()
+    {
+    }
+}
+").csharp
+
+# Test entry point
+test("
+@entry
+def test int {
+  return 0
+}
+", "
+public class Globals
+{
+    public static int Main()
+    {
+        return 0;
+    }
+}
+").csharp
+
+# Test entry point
+test("
+@entry
+def test(x List<string>) {
+}
+", "
+using System.Collections.Generic;
+
+public class Globals
+{
+    public static void Main(string[] x1)
+    {
+        List<string> x = new List<string>(x1);
+    }
+}
+").csharp.inlineAllFunctions
+
+# Test entry point
+test("
+@entry
+def test(x List<string>) int {
+  return x.count
+}
+", "
+using System.Collections.Generic;
+
+public class Globals
+{
+    public static int Main(string[] x1)
+    {
+        List<string> x = new List<string>(x1);
+        return x.Count;
+    }
+}
+").csharp.inlineAllFunctions
+
+# Test entry point inside a namespace
+test("
+namespace ns {
+  @entry
+  def test(x List<string>) int {
+    test([])
+    return x.count
+  }
+}
+", "
+using System.Collections.Generic;
+
+public class ns
+{
+    public static int Main(string[] x1)
+    {
+        List<string> x = new List<string>(x1);
+        ns.Main(new List<string>());
+        return x.Count;
+    }
+}
+").csharp.inlineAllFunctions
+
+# Basic class hierarchy
+test("
+@export
+class Foo {
+  const instanceVariable1 int
+  const instanceVariable2 = 0
+  def instanceMethod {}
+  def instanceMethod2 {}
+}
+
+namespace Foo {
+  const staticVariable = 0
+}
+
+@export
+class Bar : Foo {
+  const instanceVariable3 int
+  const instanceVariable4 = 0
+  over instanceMethod { super }
+  def instanceMethod3 {}
+}
+
+namespace Bar {
+  const staticVariable2 = 0
+}
+", "
+public class Foo
+{
+    public int instanceVariable1;
+    public int instanceVariable2 = 0;
+    public static int staticVariable = 0;
+
+    public virtual void instanceMethod()
+    {
+    }
+
+    public void instanceMethod2()
+    {
+    }
+
+    public Foo(int instanceVariable1)
+    {
+        this.instanceVariable1 = instanceVariable1;
+        this.instanceVariable2 = 0;
+    }
+}
+
+public class Bar : Foo
+{
+    public int instanceVariable3;
+    public int instanceVariable4 = 0;
+    public static int staticVariable2 = 0;
+
+    public override void instanceMethod()
+    {
+        base.instanceMethod();
+    }
+
+    public void instanceMethod3()
+    {
+    }
+
+    public Bar(int instanceVariable1, int instanceVariable3) : base(instanceVariable1)
+    {
+        this.instanceVariable3 = instanceVariable3;
+        this.instanceVariable4 = 0;
+    }
+}
+").csharp
+
+# Basic interface usage
+test("
+@export
+class Foo :: Bar, Baz {
+  def instanceMethod {}
+  def instanceMethod(x int) {}
+  def instanceMethod2 {}
+}
+
+interface Bar {
+  def instanceMethod
+  def instanceMethod(x int)
+}
+
+interface Baz {
+  def instanceMethod
+  def instanceMethod2
+}
+", "
+public class Foo : Bar, Baz
+{
+    public virtual void instanceMethod()
+    {
+    }
+
+    public virtual void instanceMethod(int x)
+    {
+    }
+
+    public virtual void instanceMethod2()
+    {
+    }
+
+    public Foo()
+    {
+    }
+}
+
+public interface Bar
+{
+    void instanceMethod();
+
+    void instanceMethod(int x);
+}
+
+public interface Baz
+{
+    void instanceMethod();
+
+    void instanceMethod2();
+}
+").csharp
+
+# Interface usage with tree shaking
+test("
+class Foo :: Bar, Baz {
+  def instanceMethod {}
+  def instanceMethod(x int) {}
+  def instanceMethod2 {}
+}
+
+interface Bar {
+  def instanceMethod
+  def instanceMethod(x int)
+}
+
+interface Baz {
+  def instanceMethod
+  def instanceMethod2
+}
+
+@export
+def test {
+  var foo = Foo.new
+  foo.instanceMethod
+}
+", "
+public class Foo : Bar, Baz
+{
+    public virtual void instanceMethod1()
+    {
+    }
+
+    public Foo()
+    {
+    }
+}
+
+public interface Bar
+{
+    void instanceMethod1();
+}
+
+public interface Baz
+{
+    void instanceMethod1();
+}
+
+public class Globals
+{
+    public static void test()
+    {
+        Foo foo = new Foo();
+        foo.instanceMethod1();
+    }
+}
+").csharp
+
+# Type wrapping
+test("
+type Foo : double {
+  def scaleBy(scale Foo) Foo {
+    return ((self as double) * (scale as double)) as Foo
+  }
+}
+
+namespace Foo {
+  const FOO = 0.5 as Foo
+}
+
+@export
+def test(x double) Foo {
+  return (x as Foo).scaleBy(Foo.FOO)
+}
+", "
+public static class Foo
+{
+    public static double FOO = 0.5;
+
+    public static double scaleBy(double self, double scale)
+    {
+        return self * scale;
+    }
+}
+
+public class Globals
+{
+    public static double test(double x)
+    {
+        return Foo.scaleBy(x, Foo.FOO);
+    }
+}
+").csharp
+
+# Casting between enums and integers must be explicit
+test("
+enum Foo {
+  FOO
+}
+
+@export
+def test Foo {
+  var x = Foo.FOO
+  return ((x as int) * 1) as Foo
+}
+", "
+public enum Foo
+{
+    FOO = 0,
+}
+
+public class Globals
+{
+    public static Foo test()
+    {
+        Foo x = Foo.FOO;
+        return (Foo)((int)x * 1);
+    }
+}
+").csharp
+
+# Lists and maps
+test("
+@export
+def foo {
+  var x = [1, 2, 3]
+  var y = {1: 2, 3: 4}
+  var z = {\"1\": 2, \"3\": 4}
+}
+", "
+using System.Collections.Generic;
+
+public class in_StringMap
+{
+    public static Dictionary<string, T> insert<T>(Dictionary<string, T> self, string key, T value)
+    {
+        self.Add(key, value);
+        return self;
+    }
+}
+
+public class in_IntMap
+{
+    public static Dictionary<int, T> insert<T>(Dictionary<int, T> self, int key, T value)
+    {
+        self.Add(key, value);
+        return self;
+    }
+}
+
+public class Globals
+{
+    public static void foo()
+    {
+        List<int> x = new List<int> { 1, 2, 3 };
+        Dictionary<int, int> y = in_IntMap.insert(in_IntMap.insert(new Dictionary<int, int>(), 1, 2), 3, 4);
+        Dictionary<string, int> z = in_StringMap.insert(in_StringMap.insert(new Dictionary<string, int>(), \"1\", 2), \"3\", 4);
+    }
+}
+").csharp
+
+# Inheriting from a dynamically-specified type
+test("
+@export
+class Error : dynamic.System.Exception {
+}
+", "
+public class Error : System.Exception
+{
+    public Error()
+    {
+    }
+}
+").csharp
+
+# Test math constants
+test("
+@export
+def main {
+  dynamic.foo(Math.NAN, Math.INFINITY, -Math.INFINITY)
+  dynamic.foo(Math.NAN.toString, Math.INFINITY.toString, (-Math.INFINITY).toString)
+}
+", "
+public class Globals
+{
+    public static void main()
+    {
+        foo(0.0 / 0.0, 1.0 / 0.0, -(1.0 / 0.0));
+        foo((0.0 / 0.0).ToString(), (1.0 / 0.0).ToString(), (-(1.0 / 0.0)).ToString());
+    }
+}
+").csharp.inlineAllFunctions
+
+# Test math constants
+test("
+@export
+def main {
+  dynamic.foo(Math.NAN, Math.INFINITY, -Math.INFINITY)
+  dynamic.foo(Math.NAN.toString, Math.INFINITY.toString, (-Math.INFINITY).toString)
+}
+", "
+using System;
+
+public class Globals
+{
+    public static void main()
+    {
+        foo(Double.NaN, Double.PositiveInfinity, Double.NegativeInfinity);
+        foo(Double.NaN.ToString(), Double.PositiveInfinity.ToString(), Double.NegativeInfinity.ToString());
+    }
+}
+").csharp.inlineAllFunctions.foldAllConstants
+
+# Test math toString
+test("
+@export
+def main {
+  dynamic.foo(0.toString, 1.0.toString, (-1.0).toString, 0.5.toString, (-0.5).toString)
+}
+", "
+public class Globals
+{
+    public static void main()
+    {
+        foo(0.ToString(), 1.0.ToString(), (-1.0).ToString(), 0.5.ToString(), (-0.5).ToString());
+    }
+}
+").csharp
+
+# Test math toString
+test("
+@export
+def main {
+  dynamic.foo(0.toString, 1.0.toString, (-1.0).toString, 0.5.toString, (-0.5).toString)
+}
+", "
+public class Globals
+{
+    public static void main()
+    {
+        foo(\"0\", 1.0.ToString(), (-1.0).ToString(), 0.5.ToString(), (-0.5).ToString());
+    }
+}
+").csharp.foldAllConstants
+
+# Double literals must be emitted with a decimal point
+test("
+@export
+def main(x double) {
+  x = 1.0 / 2.0
+  x = 1e100 / 2e100
+  x = 1e-100 / 2e-100
+  x = 1.5 / 2.5
+  x = 1.5e100 / 2.5e100
+  x = 1.5e-100 / 2.5e-100
+}
+", "
+public class Globals
+{
+    public static void main(double x)
+    {
+        x = 1.0 / 2.0;
+        x = 1.0e+100 / 2.0e+100;
+        x = 1.0e-100 / 2.0e-100;
+        x = 1.5 / 2.5;
+        x = 1.5e+100 / 2.5e+100;
+        x = 1.5e-100 / 2.5e-100;
+    }
+}
+").csharp
+
+# Check for a crash when converting switch statements to if chains
+test("
+@export
+def main {
+  switch \"a\" {
+    case \"b\" {}
+    case \"c\" {}
+    default {}
+  }
+}
+", "
+public class Globals
+{
+    public static void main()
+    {
+        string value = \"a\";
+
+        if (value == \"b\")
+        {
+        }
+        else if (value == \"c\")
+        {
+        }
+        else
+        {
+        }
+    }
+}
+").csharp
+
+# Check different integer types
+test("
+enum Foo {
+  A, B
+
+  def foo {}
+}
+
+flags Bar {
+  C, D
+
+  def foo {}
+}
+
+type Baz : int {
+  def foo {}
+}
+
+namespace Baz {
+  const X = 0 as Baz
+}
+
+@export
+def test int {
+  var a = Foo.A
+  var c = Bar.C
+  var x = 0 as Baz
+  a.foo
+  c.foo
+  x.foo
+  return a + c + x as int + Foo.B + Bar.D + Baz.X as int
+}
+", "
+public enum Foo
+{
+    A = 0,
+    B = 1,
+}
+
+public static class Bar
+{
+    public const int C = 1;
+    public const int D = 2;
+}
+
+public static class Baz
+{
+    public static int X = 0;
+
+    public static void foo(int self)
+    {
+    }
+}
+
+public class in_Foo
+{
+    public static void foo(Foo self)
+    {
+    }
+}
+
+public class in_Bar
+{
+    public static void foo(int self)
+    {
+    }
+}
+
+public class Globals
+{
+    public static int test()
+    {
+        Foo a = Foo.A;
+        int c = Bar.C;
+        int x = 0;
+        in_Foo.foo(a);
+        in_Bar.foo(c);
+        Baz.foo(x);
+        return (int)a + c + x + (int)Foo.B + Bar.D + Baz.X;
+    }
+}
+").csharp
+
+# Check code generation for flags types
+test("
+flags Foo {
+  X0
+  X1
+  X2
+  X3
+  X4
+  X5
+  X6
+  X7
+  X8
+  X9
+
+  X10
+  X11
+  X12
+  X13
+  X14
+  X15
+  X16
+  X17
+  X18
+  X19
+
+  X20
+  X21
+  X22
+  X23
+  X24
+  X25
+  X26
+  X27
+  X28
+  X29
+
+  X30
+  X31
+}
+
+@export
+def test {
+  if !((.X0 | .X1) in (Foo.X30 | .X31)) {
+    var x = Foo.X0
+    x = .X1 | .X2
+    x &= ~.X3
+  }
+}
+", "
+public static class Foo
+{
+    public const int X0 = 1;
+    public const int X1 = 2;
+    public const int X2 = 4;
+    public const int X3 = 8;
+    public const int X30 = 1073741824;
+    public const int X31 = -2147483648;
+}
+
+public class Globals
+{
+    public static void test()
+    {
+        if (!(((Foo.X0 | Foo.X1) & (Foo.X30 | Foo.X31)) != 0))
+        {
+            int x = Foo.X0;
+            x = Foo.X1 | Foo.X2;
+            x &= ~Foo.X3;
+        }
+    }
+}
+").csharp
+
+# Check dynamic types
+test("
+@export
+def test(foo dynamic.Foo) dynamic.Bar {
+  return foo as dynamic.Bar + 0 as dynamic.Int + 0 as dynamic
+}
+", "
+public class Globals
+{
+    public static Bar test(Foo foo)
+    {
+        return (Bar)foo + (Int)0 + 0;
+    }
+}
+").csharp
+
+# Check bit shifts
+test("
+@export
+def test(x int) {
+  x = x << x
+  x = x >> x
+  x = x >>> x
+  x <<= x
+  x >>= x
+  x >>>= x
+}
+", "
+public class in_int
+{
+    public static int unsignedRightShift(int self, int x)
+    {
+        return (int)unchecked((uint)self >> x);
+    }
+}
+
+public class Globals
+{
+    public static void test(int x)
+    {
+        x = x << x;
+        x = x >> x;
+        x = in_int.unsignedRightShift(x, x);
+        x <<= x;
+        x >>= x;
+        x = in_int.unsignedRightShift(x, x);
+    }
+}
+").csharp
+
+# Test lambda code generation
+test("
+@export
+def test {
+  var a = => {}
+  var b = (x int) => {}
+  var c = (x int, y int) => x == y
+  a()
+  b(1)
+  c(2, 3)
+}
+", "
+public class Globals
+{
+    public static void test()
+    {
+        System.Action a = () =>
+        {
+        };
+        System.Action<int> b = (int x) =>
+        {
+        };
+        System.Func<int, int, bool> c = (int x, int y) =>
+        {
+            return x == y;
+        };
+        a();
+        b(1);
+        c(2, 3);
+    }
+}
+").csharp
+
+# Test lambda conversion with scope capture and currying
+test("
+@export
+class Foo {
+  var value = 0
+
+  def test(x int) int {
+    var y = 0
+    var f = (a int) => => (b int) => => value + x + y + a + b
+    return f(1)()(2)()
+  }
+}
+", "
+public class Foo
+{
+    public int value = 0;
+
+    public int test(int x)
+    {
+        int y = 0;
+        System.Func<int, System.Func<System.Func<int, System.Func<int>>>> f = (int a) =>
+        {
+            return () =>
+            {
+                return (int b) =>
+                {
+                    return () =>
+                    {
+                        return this.value + x + y + a + b;
+                    };
+                };
+            };
+        };
+        return f(1)()(2)();
+    }
+
+    public Foo()
+    {
+        this.value = 0;
+    }
+}
+").csharp
+
+# Test break statements inside a switch
+test("
+@export
+def test(x int, y bool) {
+  while true {
+    switch x {
+      case 0 {
+        if y {
+          break
+        }
+      }
+    }
+  }
+}
+", "
+public class Globals
+{
+    public static void test(int x, bool y)
+    {
+        while (true)
+        {
+            switch (x)
+            {
+                case 0:
+                {
+                    if (y)
+                    {
+                        goto label;
+                    }
+                    break;
+                }
+            }
+        }
+        label:;
+    }
+}
+").csharp
+
+# Constructors on dynamic types shouldn't need parentheses
+test("
+@export
+def test {
+  dynamic.Foo.new
+  dynamic.Foo.new()
+  dynamic.Foo.new.test
+  dynamic.Foo.new().test
+  dynamic.Foo<dynamic.Bar>.new.test
+  dynamic.Foo<dynamic.Bar>.new().test
+
+  var a = dynamic.Foo.new
+  var b = dynamic.Foo.new()
+  var c = dynamic.Foo.new.test
+  var d = dynamic.Foo.new().test
+  var e = dynamic.Foo<dynamic.Bar>.new.test
+  var f = dynamic.Foo<dynamic.Bar>.new().test
+}
+", "
+public class Globals
+{
+    public static void test()
+    {
+        new Foo();
+        new Foo();
+        new Foo().test;
+        new Foo().test;
+        new Foo<Bar>().test;
+        new Foo<Bar>().test;
+        dynamic a = new Foo();
+        dynamic b = new Foo();
+        dynamic c = new Foo().test;
+        dynamic d = new Foo().test;
+        dynamic e = new Foo<Bar>().test;
+        dynamic f = new Foo<Bar>().test;
+    }
+}
+").csharp
+
+# Check preserving enum types for constant-folded enum values
+test("
+enum Foo {
+  FOO
+  BAR
+}
+
+def foo(x Foo) {
+  bar(x)
+}
+
+@import
+def bar(x int)
+
+@export
+def test(x bool) {
+  foo(x ? .BAR : .FOO)
+}
+", "
+public enum Foo
+{
+}
+
+public class Globals
+{
+    public static void test(bool x)
+    {
+        bar((int)(x ? (Foo)1 : (Foo)0));
+    }
+}
+").csharp.foldAllConstants.inlineAllFunctions
+
+# Check wrapped types with type parameters
+test("
+type Foo<T> : List<T> {
+  def size int {
+    return (self as List<T>).count
+  }
+}
+
+@entry
+def main {
+  (List<int>.new as Foo<int>).size
+}
+", "
+using System.Collections.Generic;
+
+public static class Foo<T>
+{
+}
+
+public class in_List
+{
+    public static int count<T>(List<T> self)
+    {
+        return self.Count;
+    }
+}
+
+public class in_Foo
+{
+    public static int size<T>(List<T> self)
+    {
+        return in_List.count(self);
+    }
+}
+
+public class Globals
+{
+    public static void Main()
+    {
+        in_Foo.size(new List<int>());
+    }
+}
+").csharp
+
+# Check the "is" operator
+test("
+class Foo {}
+class Bar : Foo {}
+
+@entry
+def main {
+  Foo.new is Bar == true || true == Foo.new is Bar
+}
+", "
+public class Foo
+{
+    public Foo()
+    {
+    }
+}
+
+public class Bar : Foo
+{
+    public Bar() : base()
+    {
+    }
+}
+
+public class Globals
+{
+    public static void Main()
+    {
+        new Foo() is Bar == true || true == new Foo() is Bar;
+    }
+}
+").csharp
+
+# Check block comments before a statement
+test("
+@entry
+def main {
+  # This is
+  # a block
+  # comment
+
+  return
+}
+", "
+public class Globals
+{
+    public static void Main()
+    {
+        // This is
+        // a block
+        // comment
+
+        return;
+    }
+}
+").csharp
+
+# Check trailing block comments
+test("
+@entry
+def main {
+  # This is
+  # a block
+  # comment
+}
+", "
+public class Globals
+{
+    public static void Main()
+    {
+        // This is
+        // a block
+        // comment
+    }
+}
+").csharp
+
+# CFG must-return check on a switch statement converted to an if-else chain
+test("
+@export
+def test(x string) int {
+  switch x {
+    case \"y\" { return 1 }
+    default { throw x }
+  }
+}
+", "
+public class Globals
+{
+    public static int test(string x)
+    {
+        string value = x;
+
+        if (value == \"y\")
+        {
+            return 1;
+        }
+        else
+        {
+            throw x;
+        }
+    }
+}
+").csharp
+
+  }
+}

@@ -1,0 +1,2084 @@
+namespace Skew.Tests {
+  def testCPlusPlus {
+
+# Test entry point
+test("
+@entry
+def test {}
+", "
+void main() {
+}
+").cpp
+
+# Test entry point
+test("
+@entry
+def test int {
+  return 0
+}
+", "
+int main() {
+  return 0;
+}
+").cpp
+
+# Test entry point
+test("
+@entry
+def test(x List<string>) {
+}
+", "
+void main(int argc, char** argv) {
+  Skew::List<Skew::string> *x = new Skew::List<Skew::string>();
+
+  if (*argv++) {
+    while (*argv) {
+      x->append(*argv++);
+    }
+  }
+}
+").cpp
+
+# Test entry point
+test("
+@entry
+def test(x List<string>) int {
+  return x.count
+}
+", "
+int main(int argc, char** argv) {
+  Skew::List<Skew::string> *x = new Skew::List<Skew::string>();
+
+  if (*argv++) {
+    while (*argv) {
+      x->append(*argv++);
+    }
+  }
+
+  return x->count();
+}
+").cpp
+
+# Test entry point inside a namespace
+test("
+namespace ns {
+  @entry
+  def test(x List<string>) int {
+    test([])
+    return x.count
+  }
+}
+", "
+int main(int argc, char** argv) {
+  Skew::List<Skew::string> *x = new Skew::List<Skew::string>();
+
+  if (*argv++) {
+    while (*argv) {
+      x->append(*argv++);
+    }
+  }
+
+  main(new Skew::List<Skew::string>());
+  return x->count();
+}
+").cpp
+
+# Test entry point name collisions
+test("
+@entry
+def main(x List<string>) int {
+  var argc = 0
+  var argv = 0
+  return argc + argv
+}
+", "
+int main(int argc1, char** argv1) {
+  Skew::List<Skew::string> *x = new Skew::List<Skew::string>();
+
+  if (*argv1++) {
+    while (*argv1) {
+      x->append(*argv1++);
+    }
+  }
+
+  int argc = 0;
+  int argv = 0;
+  return argc + argv;
+}
+").cpp
+
+# Basic class hierarchy
+test("
+@export
+class Foo {
+  const instanceVariable1 int
+  const instanceVariable2 = 0
+  def instanceMethod {}
+  def instanceMethod2 {}
+}
+
+namespace Foo {
+  const staticVariable = 0
+}
+
+@export
+class Bar : Foo {
+  const instanceVariable3 int
+  const instanceVariable4 = 0
+  over instanceMethod { super }
+  def instanceMethod3 {}
+}
+
+namespace Bar {
+  const staticVariable2 = 0
+}
+", "
+struct Foo;
+struct Bar;
+
+struct Foo : virtual Skew::Object {
+  virtual void instanceMethod();
+  void instanceMethod2();
+  Foo(int instanceVariable1);
+
+  int instanceVariable1;
+  int instanceVariable2;
+  static int staticVariable;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct Bar : Foo {
+  virtual void instanceMethod() override;
+  void instanceMethod3();
+  Bar(int instanceVariable1, int instanceVariable3);
+
+  int instanceVariable3;
+  int instanceVariable4;
+  static int staticVariable2;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+int Foo::staticVariable = 0;
+int Bar::staticVariable2 = 0;
+
+void Foo::instanceMethod() {
+}
+
+void Foo::instanceMethod2() {
+}
+
+Foo::Foo(int instanceVariable1) {
+  this->instanceVariable1 = instanceVariable1;
+  this->instanceVariable2 = 0;
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Foo::__gc_mark() {
+  }
+#endif
+
+void Bar::instanceMethod() {
+  Foo::instanceMethod();
+}
+
+void Bar::instanceMethod3() {
+}
+
+Bar::Bar(int instanceVariable1, int instanceVariable3) : Foo::Foo(instanceVariable1) {
+  this->instanceVariable3 = instanceVariable3;
+  this->instanceVariable4 = 0;
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Bar::__gc_mark() {
+    Foo::__gc_mark();
+  }
+#endif
+").cpp
+
+# Basic interface usage
+test("
+@export
+class Foo :: Bar, Baz {
+  def instanceMethod {}
+  def instanceMethod(x int) {}
+  def instanceMethod2 {}
+}
+
+interface Bar {
+  def instanceMethod
+  def instanceMethod(x int)
+}
+
+interface Baz {
+  def instanceMethod
+  def instanceMethod2
+}
+", "
+struct Bar;
+
+struct Baz;
+
+struct Foo;
+
+struct Bar : virtual Skew::Object {
+  virtual void instanceMethod() = 0;
+  virtual void instanceMethod(int x) = 0;
+};
+
+struct Baz : virtual Skew::Object {
+  virtual void instanceMethod() = 0;
+  virtual void instanceMethod2() = 0;
+};
+
+struct Foo : Bar, Baz {
+  virtual void instanceMethod();
+  virtual void instanceMethod(int x);
+  virtual void instanceMethod2();
+  Foo();
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+void Foo::instanceMethod() {
+}
+
+void Foo::instanceMethod(int x) {
+}
+
+void Foo::instanceMethod2() {
+}
+
+Foo::Foo() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Foo::__gc_mark() {
+  }
+#endif
+").cpp
+
+# Interface usage with tree shaking
+test("
+class Foo :: Bar, Baz {
+  def instanceMethod {}
+  def instanceMethod(x int) {}
+  def instanceMethod2 {}
+}
+
+interface Bar {
+  def instanceMethod
+  def instanceMethod(x int)
+}
+
+interface Baz {
+  def instanceMethod
+  def instanceMethod2
+}
+
+@export
+def test {
+  var foo = Foo.new
+  foo.instanceMethod
+}
+", "
+struct Bar;
+
+struct Baz;
+
+struct Foo;
+
+struct Bar : virtual Skew::Object {
+  virtual void instanceMethod1() = 0;
+};
+
+struct Baz : virtual Skew::Object {
+  virtual void instanceMethod1() = 0;
+};
+
+struct Foo : Bar, Baz {
+  virtual void instanceMethod1();
+  Foo();
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+void test() {
+  Foo *foo = new Foo();
+  foo->instanceMethod1();
+}
+
+void Foo::instanceMethod1() {
+}
+
+Foo::Foo() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Foo::__gc_mark() {
+  }
+#endif
+").cpp
+
+# Type wrapping
+test("
+type Foo : double {
+  def scaleBy(scale Foo) Foo {
+    return ((self as double) * (scale as double)) as Foo
+  }
+}
+
+namespace Foo {
+  const FOO = 0.5 as Foo
+}
+
+@export
+def test(x double) Foo {
+  return (x as Foo).scaleBy(Foo.FOO)
+}
+", "
+namespace Foo {
+  double scaleBy(double self, double scale);
+
+  extern double FOO;
+}
+
+namespace Foo {
+  double FOO = 0.5;
+}
+
+double test(double x) {
+  return Foo::scaleBy(x, Foo::FOO);
+}
+
+double Foo::scaleBy(double self, double scale) {
+  return self * scale;
+}
+").cpp
+
+# Casting between enums and integers must be explicit
+test("
+enum Foo {
+  FOO
+}
+
+@export
+def test Foo {
+  var x = Foo.FOO
+  return ((x as int) * 1) as Foo
+}
+", "
+enum struct Foo {
+  FOO = 0,
+};
+
+Foo test() {
+  Foo x = Foo::FOO;
+  return (Foo)((int)x * 1);
+}
+").cpp
+
+# Lists and maps
+test("
+@export
+def foo {
+  var x = [1, 2, 3]
+  var y = {1: 2, 3: 4}
+  var z = {\"1\": 2, \"3\": 4}
+}
+", "
+#include <utility>
+
+void foo() {
+  Skew::List<int> *x = new Skew::List<int>({1, 2, 3});
+  Skew::IntMap<int> *y = new Skew::IntMap<int>({std::make_pair(1, 2), std::make_pair(3, 4)});
+  Skew::StringMap<int> *z = new Skew::StringMap<int>({std::make_pair(\"1\"_s, 2), std::make_pair(\"3\"_s, 4)});
+}
+").cpp
+
+# Test math constants
+test("
+@export
+def main {
+  dynamic.foo(Math.NAN, Math.INFINITY, -Math.INFINITY)
+  dynamic.foo(Math.NAN.toString, Math.INFINITY.toString, (-Math.INFINITY).toString)
+}
+", "
+void main() {
+  foo(0.0 / 0.0, 1.0 / 0.0, -(1.0 / 0.0));
+  foo(__doubleToString(0.0 / 0.0), __doubleToString(1.0 / 0.0), __doubleToString(-(1.0 / 0.0)));
+}
+").cpp.inlineAllFunctions
+
+# Test math constants
+test("
+@export
+def main {
+  dynamic.foo(Math.NAN, Math.INFINITY, -Math.INFINITY)
+  dynamic.foo(Math.NAN.toString, Math.INFINITY.toString, (-Math.INFINITY).toString)
+}
+", "
+#include <math.h>
+
+void main() {
+  foo(NAN, INFINITY, -INFINITY);
+  foo(__doubleToString(NAN), __doubleToString(INFINITY), __doubleToString(-INFINITY));
+}
+").cpp.inlineAllFunctions.foldAllConstants
+
+# Test math toString
+test("
+@export
+def main {
+  dynamic.foo(0.toString, 1.0.toString, (-1.0).toString, 0.5.toString, (-0.5).toString)
+}
+", "
+void main() {
+  foo(__intToString(0), __doubleToString(1.0), __doubleToString(-1.0), __doubleToString(0.5), __doubleToString(-0.5));
+}
+").cpp.inlineAllFunctions
+
+# Double literals must be emitted with a decimal point
+test("
+@export
+def main(x double) {
+  x = 1.0 / 2.0
+  x = 1e100 / 2e100
+  x = 1e-100 / 2e-100
+  x = 1.5 / 2.5
+  x = 1.5e100 / 2.5e100
+  x = 1.5e-100 / 2.5e-100
+}
+", "
+void main(double x) {
+  x = 1.0 / 2.0;
+  x = 1.0e+100 / 2.0e+100;
+  x = 1.0e-100 / 2.0e-100;
+  x = 1.5 / 2.5;
+  x = 1.5e+100 / 2.5e+100;
+  x = 1.5e-100 / 2.5e-100;
+}
+").cpp
+
+# Check for a crash when converting switch statements to if chains
+test("
+@export
+def main {
+  switch \"a\" {
+    case \"b\" {}
+    case \"c\" {}
+    default {}
+  }
+}
+", "
+void main() {
+  Skew::string value = \"a\"_s;
+
+  if (value == \"b\"_s) {
+  }
+
+  else if (value == \"c\"_s) {
+  }
+
+  else {
+  }
+}
+").cpp
+
+# Check different integer types
+test("
+enum Foo {
+  A, B
+
+  def foo {}
+}
+
+flags Bar {
+  C, D
+
+  def foo {}
+}
+
+type Baz : int {
+  def foo {}
+}
+
+namespace Baz {
+  const X = 0 as Baz
+}
+
+@export
+def test int {
+  var a = Foo.A
+  var c = Bar.C
+  var x = 0 as Baz
+  a.foo
+  c.foo
+  x.foo
+  return a + c + x as int + Foo.B + Bar.D + Baz.X as int
+}
+", "
+enum struct Foo {
+  A = 0,
+  B = 1,
+};
+
+namespace Bar {
+  enum {
+    C = 1,
+    D = 2,
+  };
+}
+
+namespace Baz {
+  void foo(int self);
+
+  extern int X;
+}
+
+namespace in_Foo {
+  void foo(Foo self);
+}
+
+namespace in_Bar {
+  void foo(int self);
+}
+
+namespace Baz {
+  int X = 0;
+}
+
+int test() {
+  Foo a = Foo::A;
+  int c = Bar::C;
+  int x = 0;
+  in_Foo::foo(a);
+  in_Bar::foo(c);
+  Baz::foo(x);
+  return (int)a + c + x + (int)Foo::B + Bar::D + Baz::X;
+}
+
+void Baz::foo(int self) {
+}
+
+void in_Foo::foo(Foo self) {
+}
+
+void in_Bar::foo(int self) {
+}
+").cpp
+
+# Check code generation for flags types
+test("
+flags Foo {
+  X0
+  X1
+  X2
+  X3
+  X4
+  X5
+  X6
+  X7
+  X8
+  X9
+
+  X10
+  X11
+  X12
+  X13
+  X14
+  X15
+  X16
+  X17
+  X18
+  X19
+
+  X20
+  X21
+  X22
+  X23
+  X24
+  X25
+  X26
+  X27
+  X28
+  X29
+
+  X30
+  X31
+}
+
+@export
+def test {
+  if !((.X0 | .X1) in (Foo.X30 | .X31)) {
+    var x = Foo.X0
+    x = .X1 | .X2
+    x &= ~.X3
+  }
+}
+", "
+namespace Foo {
+  enum {
+    X0 = 1,
+    X1 = 2,
+    X2 = 4,
+    X3 = 8,
+    X30 = 1073741824,
+    X31 = -2147483648,
+  };
+}
+
+void test() {
+  if (!(((Foo::X0 | Foo::X1) & (Foo::X30 | Foo::X31)) != 0)) {
+    int x = Foo::X0;
+    x = Foo::X1 | Foo::X2;
+    x &= ~Foo::X3;
+  }
+}
+").cpp
+
+# Check dynamic types
+test("
+@export
+def test(foo dynamic.Foo) dynamic.Bar {
+  return foo as dynamic.Bar + 0 as dynamic.Int + 0 as dynamic
+}
+", "
+Bar test(Foo foo) {
+  return (Bar)foo + (Int)0 + 0;
+}
+").cpp
+
+# Check bit shifts
+test("
+@export
+def test(x int) {
+  x = x << x
+  x = x >> x
+  x = x >>> x
+  x <<= x
+  x >>= x
+  x >>>= x
+}
+", "
+namespace in_int {
+  int unsignedRightShift(int self, int x);
+}
+
+void test(int x) {
+  x = x << x;
+  x = x >> x;
+  x = in_int::unsignedRightShift(x, x);
+  x <<= x;
+  x >>= x;
+  x = in_int::unsignedRightShift(x, x);
+}
+
+int in_int::unsignedRightShift(int self, int x) {
+  return (int)((unsigned)self >> x);
+}
+").cpp
+
+# Test lambda conversion with scope capture and currying
+test("
+@export
+class Foo {
+  var value = 0
+
+  def test(x int) int {
+    var y = 0
+    var f = (a int) => => (b int) => => value + x + y + a + b
+    return f(1)()(2)()
+  }
+}
+", "
+struct Foo;
+struct FooTestEnv;
+struct FooTestLambda;
+struct FooTestEnv1;
+struct FooTestLambda1;
+struct FooTestLambda2;
+struct FooTestEnv2;
+struct FooTestLambda3;
+
+struct Foo : virtual Skew::Object {
+  int test(int x);
+  Foo();
+
+  int value;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct FooTestEnv : virtual Skew::Object {
+  FooTestEnv();
+
+  Foo *self;
+  int x;
+  int y;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct FooTestLambda : Skew::Fn1<Skew::Fn0<Skew::Fn1<Skew::Fn0<int> *, int> *> *, int> {
+  FooTestLambda(FooTestEnv *env);
+  virtual Skew::Fn0<Skew::Fn1<Skew::Fn0<int> *, int> *> *run(int a);
+
+  FooTestEnv *env;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct FooTestEnv1 : virtual Skew::Object {
+  FooTestEnv1(FooTestEnv *env);
+
+  int a;
+  FooTestEnv *env;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct FooTestLambda1 : Skew::Fn0<Skew::Fn1<Skew::Fn0<int> *, int> *> {
+  FooTestLambda1(FooTestEnv *env, FooTestEnv1 *env1);
+  virtual Skew::Fn1<Skew::Fn0<int> *, int> *run();
+
+  FooTestEnv *env;
+  FooTestEnv1 *env1;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct FooTestLambda2 : Skew::Fn1<Skew::Fn0<int> *, int> {
+  FooTestLambda2(FooTestEnv *env, FooTestEnv1 *env1);
+  virtual Skew::Fn0<int> *run(int b);
+
+  FooTestEnv *env;
+  FooTestEnv1 *env1;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct FooTestEnv2 : virtual Skew::Object {
+  FooTestEnv2(FooTestEnv *env, FooTestEnv1 *env1);
+
+  int b;
+  FooTestEnv *env;
+  FooTestEnv1 *env1;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct FooTestLambda3 : Skew::Fn0<int> {
+  FooTestLambda3(FooTestEnv *env, FooTestEnv1 *env1, FooTestEnv2 *env2);
+  virtual int run();
+
+  FooTestEnv *env;
+  FooTestEnv1 *env1;
+  FooTestEnv2 *env2;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+int Foo::test(int x) {
+  FooTestEnv *env = new FooTestEnv();
+  env->self = this;
+  env->x = x;
+  env->y = 0;
+  Skew::Fn1<Skew::Fn0<Skew::Fn1<Skew::Fn0<int> *, int> *> *, int> *f = new FooTestLambda(env);
+  return f->run(1)->run()->run(2)->run();
+}
+
+Foo::Foo() {
+  this->value = 0;
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Foo::__gc_mark() {
+  }
+#endif
+
+FooTestEnv::FooTestEnv() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void FooTestEnv::__gc_mark() {
+    Skew::GC::mark(self);
+  }
+#endif
+
+FooTestLambda::FooTestLambda(FooTestEnv *env) {
+  this->env = env;
+}
+
+Skew::Fn0<Skew::Fn1<Skew::Fn0<int> *, int> *> *FooTestLambda::run(int a) {
+  FooTestEnv1 *env1 = new FooTestEnv1(this->env);
+  env1->a = a;
+  return new FooTestLambda1(env1->env, env1);
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void FooTestLambda::__gc_mark() {
+    Skew::GC::mark(env);
+  }
+#endif
+
+FooTestEnv1::FooTestEnv1(FooTestEnv *env) {
+  this->env = env;
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void FooTestEnv1::__gc_mark() {
+    Skew::GC::mark(env);
+  }
+#endif
+
+FooTestLambda1::FooTestLambda1(FooTestEnv *env, FooTestEnv1 *env1) {
+  this->env = env;
+  this->env1 = env1;
+}
+
+Skew::Fn1<Skew::Fn0<int> *, int> *FooTestLambda1::run() {
+  return new FooTestLambda2(this->env, this->env1);
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void FooTestLambda1::__gc_mark() {
+    Skew::GC::mark(env);
+    Skew::GC::mark(env1);
+  }
+#endif
+
+FooTestLambda2::FooTestLambda2(FooTestEnv *env, FooTestEnv1 *env1) {
+  this->env = env;
+  this->env1 = env1;
+}
+
+Skew::Fn0<int> *FooTestLambda2::run(int b) {
+  FooTestEnv2 *env2 = new FooTestEnv2(this->env, this->env1);
+  env2->b = b;
+  return new FooTestLambda3(env2->env, env2->env1, env2);
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void FooTestLambda2::__gc_mark() {
+    Skew::GC::mark(env);
+    Skew::GC::mark(env1);
+  }
+#endif
+
+FooTestEnv2::FooTestEnv2(FooTestEnv *env, FooTestEnv1 *env1) {
+  this->env = env;
+  this->env1 = env1;
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void FooTestEnv2::__gc_mark() {
+    Skew::GC::mark(env);
+    Skew::GC::mark(env1);
+  }
+#endif
+
+FooTestLambda3::FooTestLambda3(FooTestEnv *env, FooTestEnv1 *env1, FooTestEnv2 *env2) {
+  this->env = env;
+  this->env1 = env1;
+  this->env2 = env2;
+}
+
+int FooTestLambda3::run() {
+  return this->env->self->value + this->env->x + this->env->y + this->env1->a + this->env2->b;
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void FooTestLambda3::__gc_mark() {
+    Skew::GC::mark(env);
+    Skew::GC::mark(env1);
+    Skew::GC::mark(env2);
+  }
+#endif
+").cpp
+
+# Test lambda conversion at global scope
+test("
+var f = (x int) => (y int) => x + y
+
+@entry
+def test int {
+  return f(1)(2)
+}
+", "
+struct Lambda;
+struct LambdaRunEnv;
+struct LambdaRunLambda;
+
+struct Lambda : Skew::Fn1<Skew::Fn1<int, int> *, int> {
+  Lambda();
+  virtual Skew::Fn1<int, int> *run(int x);
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct LambdaRunEnv : virtual Skew::Object {
+  LambdaRunEnv();
+
+  int x;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct LambdaRunLambda : Skew::Fn1<int, int> {
+  LambdaRunLambda(LambdaRunEnv *env);
+  virtual int run(int y);
+
+  LambdaRunEnv *env;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+Skew::Root<Skew::Fn1<Skew::Fn1<int, int> *, int>> f = new Lambda();
+
+int main() {
+  return f->run(1)->run(2);
+}
+
+Lambda::Lambda() {
+}
+
+Skew::Fn1<int, int> *Lambda::run(int x) {
+  LambdaRunEnv *env = new LambdaRunEnv();
+  env->x = x;
+  return new LambdaRunLambda(env);
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Lambda::__gc_mark() {
+  }
+#endif
+
+LambdaRunEnv::LambdaRunEnv() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void LambdaRunEnv::__gc_mark() {
+  }
+#endif
+
+LambdaRunLambda::LambdaRunLambda(LambdaRunEnv *env) {
+  this->env = env;
+}
+
+int LambdaRunLambda::run(int y) {
+  return this->env->x + y;
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void LambdaRunLambda::__gc_mark() {
+    Skew::GC::mark(env);
+  }
+#endif
+").cpp
+
+# Check for a crash with nested loop handling
+test("
+@export
+def test {
+  var foo = 0
+  var bar = () int => {
+    while true {
+      for baz in [1] {
+        return foo + baz
+      }
+    }
+  }
+  bar()
+}
+", "
+struct TestEnv;
+struct TestLambda;
+
+struct TestEnv : virtual Skew::Object {
+  TestEnv();
+
+  int foo;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct TestLambda : Skew::Fn0<int> {
+  TestLambda(TestEnv *env);
+  virtual int run();
+
+  TestEnv *env;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+void test() {
+  TestEnv *env = new TestEnv();
+  env->foo = 0;
+  Skew::Fn0<int> *bar = new TestLambda(env);
+  bar->run();
+}
+
+TestEnv::TestEnv() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void TestEnv::__gc_mark() {
+  }
+#endif
+
+TestLambda::TestLambda(TestEnv *env) {
+  this->env = env;
+}
+
+int TestLambda::run() {
+  while (true) {
+    for (int baz : *new Skew::List<int>({1})) {
+      return this->env->foo + baz;
+    }
+  }
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void TestLambda::__gc_mark() {
+    Skew::GC::mark(env);
+  }
+#endif
+").cpp
+
+# Check that recursive lambdas work
+test("
+@export
+def main {
+  var f fn()
+  f = => f()
+  f()
+}
+", "
+struct MainEnv;
+struct MainLambda;
+
+struct MainEnv : virtual Skew::Object {
+  MainEnv();
+
+  Skew::FnVoid0 *f;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct MainLambda : Skew::FnVoid0 {
+  MainLambda(MainEnv *env);
+  virtual void run();
+
+  MainEnv *env;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+void main() {
+  MainEnv *env = new MainEnv();
+  env->f = nullptr;
+  env->f = new MainLambda(env);
+  env->f->run();
+}
+
+MainEnv::MainEnv() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void MainEnv::__gc_mark() {
+    Skew::GC::mark(f);
+  }
+#endif
+
+MainLambda::MainLambda(MainEnv *env) {
+  this->env = env;
+}
+
+void MainLambda::run() {
+  this->env->f->run();
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void MainLambda::__gc_mark() {
+    Skew::GC::mark(env);
+  }
+#endif
+").cpp
+
+# Check for a crash in captured variable substitution
+test("
+@export
+def main {
+  var x = [1]
+  var f = => x
+  for y in x {}
+  f()
+}
+", "
+struct MainEnv;
+struct MainLambda;
+
+struct MainEnv : virtual Skew::Object {
+  MainEnv();
+
+  Skew::List<int> *x;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct MainLambda : Skew::Fn0<Skew::List<int> *> {
+  MainLambda(MainEnv *env);
+  virtual Skew::List<int> *run();
+
+  MainEnv *env;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+void main() {
+  MainEnv *env = new MainEnv();
+  env->x = new Skew::List<int>({1});
+  Skew::Fn0<Skew::List<int> *> *f = new MainLambda(env);
+
+  for (int y : *env->x) {
+  }
+
+  f->run();
+}
+
+MainEnv::MainEnv() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void MainEnv::__gc_mark() {
+    Skew::GC::mark(x);
+  }
+#endif
+
+MainLambda::MainLambda(MainEnv *env) {
+  this->env = env;
+}
+
+Skew::List<int> *MainLambda::run() {
+  return this->env->x;
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void MainLambda::__gc_mark() {
+    Skew::GC::mark(env);
+  }
+#endif
+").cpp
+
+# Test break statements inside a switch
+test("
+@export
+def test(x int, y bool) {
+  while true {
+    switch x {
+      case 0 {
+        if y {
+          break
+        }
+      }
+    }
+  }
+}
+", "
+void test(int x, bool y) {
+  while (true) {
+    switch (x) {
+      case 0: {
+        if (y) {
+          goto label;
+        }
+        break;
+      }
+    }
+  }
+  label:;
+}
+").cpp
+
+# Avoid emitting an empty anonymous enum to avoid a clang warning
+test("
+@export {
+  flags Foo {
+    FOO # Comment 1
+
+    # Comment 2
+    BAR
+    BAZ
+  }
+  flags Bar {}
+}
+", "
+namespace Foo {
+  enum {
+    // Comment 1
+    FOO = 1,
+
+    // Comment 2
+    BAR = 2,
+    BAZ = 4,
+  };
+}
+
+namespace Bar {
+}
+").cpp
+
+# Check for accidental mutation of argument types during globalization
+test("
+class Foo {
+  def test(foo Foo) {}
+}
+
+def foo {
+  var visit fn(Foo)
+  visit = foo => visit(foo)
+}
+
+@export
+def test {
+  Foo.new.test(null)
+  foo
+}
+", "
+struct Foo;
+struct FooEnv;
+struct FooLambda;
+
+struct Foo : virtual Skew::Object {
+  static void test(Foo *self, Foo *foo);
+  Foo();
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct FooEnv : virtual Skew::Object {
+  FooEnv();
+
+  Skew::FnVoid1<Foo *> *visit;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct FooLambda : Skew::FnVoid1<Foo *> {
+  FooLambda(FooEnv *env);
+  virtual void run(Foo *foo);
+
+  FooEnv *env;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+void foo() {
+  FooEnv *env = new FooEnv();
+  env->visit = nullptr;
+  env->visit = new FooLambda(env);
+}
+
+void test() {
+  Foo::test(new Foo(), (Foo *)nullptr);
+  foo();
+}
+
+void Foo::test(Foo *self, Foo *foo) {
+}
+
+Foo::Foo() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Foo::__gc_mark() {
+  }
+#endif
+
+FooEnv::FooEnv() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void FooEnv::__gc_mark() {
+    Skew::GC::mark(visit);
+  }
+#endif
+
+FooLambda::FooLambda(FooEnv *env) {
+  this->env = env;
+}
+
+void FooLambda::run(Foo *foo) {
+  this->env->visit->run(foo);
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void FooLambda::__gc_mark() {
+    Skew::GC::mark(env);
+  }
+#endif
+").cpp.globalizeAllFunctions
+
+# Test dead code elimination and imports
+test("
+@import {
+  var a fn()
+  def b(x fn(int))
+}
+
+var c fn(int, int)
+def d(x fn(int, int, int)) {}
+
+@export
+def test {
+  a = => {}
+  b(x => {})
+  c = (x, y) => {}
+  d((x, y, z) => {})
+}
+", "
+struct TestLambda;
+struct TestLambda1;
+struct TestLambda2;
+struct TestLambda3;
+
+struct TestLambda : Skew::FnVoid0 {
+  TestLambda();
+  virtual void run();
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct TestLambda1 : Skew::FnVoid1<int> {
+  TestLambda1();
+  virtual void run(int x);
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct TestLambda2 : Skew::FnVoid2<int, int> {
+  TestLambda2();
+  virtual void run(int x, int y);
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct TestLambda3 : Skew::FnVoid3<int, int, int> {
+  TestLambda3();
+  virtual void run(int x, int y, int z);
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+Skew::Root<Skew::FnVoid2<int, int>> c = nullptr;
+
+void d(Skew::FnVoid3<int, int, int> *x) {
+}
+
+void test() {
+  a = new TestLambda();
+  b(new TestLambda1());
+  c = new TestLambda2();
+  d(new TestLambda3());
+}
+
+TestLambda::TestLambda() {
+}
+
+void TestLambda::run() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void TestLambda::__gc_mark() {
+  }
+#endif
+
+TestLambda1::TestLambda1() {
+}
+
+void TestLambda1::run(int x) {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void TestLambda1::__gc_mark() {
+  }
+#endif
+
+TestLambda2::TestLambda2() {
+}
+
+void TestLambda2::run(int x, int y) {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void TestLambda2::__gc_mark() {
+  }
+#endif
+
+TestLambda3::TestLambda3() {
+}
+
+void TestLambda3::run(int x, int y, int z) {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void TestLambda3::__gc_mark() {
+  }
+#endif
+").cpp
+
+# Test lambda conversion in loops
+test("
+@export
+def test(list List<int>) {
+  (=> list)()
+  for i in list {
+    (=> list.append(i))()
+  }
+}
+", "
+struct TestEnv;
+struct TestLambda;
+struct TestEnv1;
+struct TestLambda1;
+
+struct TestEnv : virtual Skew::Object {
+  TestEnv();
+
+  Skew::List<int> *list;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct TestLambda : Skew::Fn0<Skew::List<int> *> {
+  TestLambda(TestEnv *env);
+  virtual Skew::List<int> *run();
+
+  TestEnv *env;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct TestEnv1 : virtual Skew::Object {
+  TestEnv1(TestEnv *env);
+
+  int i;
+  TestEnv *env;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct TestLambda1 : Skew::FnVoid0 {
+  TestLambda1(TestEnv *env, TestEnv1 *env1);
+  virtual void run();
+
+  TestEnv *env;
+  TestEnv1 *env1;
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+void test(Skew::List<int> *list) {
+  TestEnv *env = new TestEnv();
+  env->list = list;
+  (new TestLambda(env))->run();
+
+  for (int i : *env->list) {
+    TestEnv1 *env1 = new TestEnv1(env);
+    env1->i = i;
+    (new TestLambda1(env1->env, env1))->run();
+  }
+}
+
+TestEnv::TestEnv() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void TestEnv::__gc_mark() {
+    Skew::GC::mark(list);
+  }
+#endif
+
+TestLambda::TestLambda(TestEnv *env) {
+  this->env = env;
+}
+
+Skew::List<int> *TestLambda::run() {
+  return this->env->list;
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void TestLambda::__gc_mark() {
+    Skew::GC::mark(env);
+  }
+#endif
+
+TestEnv1::TestEnv1(TestEnv *env) {
+  this->env = env;
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void TestEnv1::__gc_mark() {
+    Skew::GC::mark(env);
+  }
+#endif
+
+TestLambda1::TestLambda1(TestEnv *env, TestEnv1 *env1) {
+  this->env = env;
+  this->env1 = env1;
+}
+
+void TestLambda1::run() {
+  this->env->list->append(this->env1->i);
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void TestLambda1::__gc_mark() {
+    Skew::GC::mark(env);
+    Skew::GC::mark(env1);
+  }
+#endif
+").cpp
+
+# Constructors on dynamic types shouldn't need parentheses
+test("
+@export
+def test {
+  dynamic.Foo.new
+  dynamic.Foo.new()
+  dynamic.Foo.new.test
+  dynamic.Foo.new().test
+  dynamic.Foo<dynamic.Bar>.new.test
+  dynamic.Foo<dynamic.Bar>.new().test
+
+  var a = dynamic.Foo.new
+  var b = dynamic.Foo.new()
+  var c = dynamic.Foo.new.test
+  var d = dynamic.Foo.new().test
+  var e = dynamic.Foo<dynamic.Bar>.new.test
+  var f = dynamic.Foo<dynamic.Bar>.new().test
+}
+", "
+void test() {
+  new Foo();
+  new Foo();
+  (new Foo())->test;
+  (new Foo())->test;
+  (new Foo<Bar>())->test;
+  (new Foo<Bar>())->test;
+  void *a = new Foo();
+  void *b = new Foo();
+  void *c = (new Foo())->test;
+  void *d = (new Foo())->test;
+  void *e = (new Foo<Bar>())->test;
+  void *f = (new Foo<Bar>())->test;
+}
+").cpp
+
+# Check preserving enum types for constant-folded enum values
+test("
+enum Foo {
+  FOO
+  BAR
+}
+
+def foo(x Foo) {
+  bar(x)
+}
+
+@import
+def bar(x int)
+
+@export
+def test(x bool) {
+  foo(x ? .BAR : .FOO)
+}
+", "
+enum struct Foo {
+};
+
+void test(bool x) {
+  bar((int)(x ? (Foo)1 : (Foo)0));
+}
+").cpp.foldAllConstants.inlineAllFunctions
+
+# Test parentheses generation to avoid C++ compiler warnings
+test("
+@export
+def test(x int, y int) {
+  x = x == 0 && y == 1 || x == 2 ? 1 : 0
+  x = x & y | x
+
+  # ^
+  x = x + y ^ x
+  x = x - y ^ x
+  x = x * y ^ x
+  x = x / y ^ x
+
+  # |
+  x = x + y | x
+  x = x - y | x
+  x = x * y | x
+  x = x / y | x
+
+  # &
+  x = x + y & x
+  x = x - y & x
+  x = x * y & x
+  x = x / y & x
+
+  # <<
+  x = x + y << x
+  x = x - y << x
+  x = x * y << x
+  x = x / y << x
+
+  # >>
+  x = x + y >> x
+  x = x - y >> x
+  x = x * y >> x
+  x = x / y >> x
+}
+", "
+void test(int x, int y) {
+  x = (x == 0 && y == 1) || x == 2 ? 1 : 0;
+  x = (x & y) | x;
+
+  // ^
+  x = (x + y) ^ x;
+  x = (x - y) ^ x;
+  x = x * y ^ x;
+  x = x / y ^ x;
+
+  // |
+  x = (x + y) | x;
+  x = (x - y) | x;
+  x = x * y | x;
+  x = x / y | x;
+
+  // &
+  x = (x + y) & x;
+  x = (x - y) & x;
+  x = x * y & x;
+  x = x / y & x;
+
+  // <<
+  x = (x + y) << x;
+  x = (x - y) << x;
+  x = x * y << x;
+  x = x / y << x;
+
+  // >>
+  x = (x + y) >> x;
+  x = (x - y) >> x;
+  x = x * y >> x;
+  x = x / y >> x;
+}
+").cpp
+
+# Check forward-declaration of global variables
+test("
+namespace Foo {
+  const FOO = 0
+}
+
+const foo = Foo.FOO
+
+@export
+def test {
+  foo
+}
+", "
+namespace Foo {
+  extern int FOO;
+}
+
+int foo = Foo::FOO;
+
+namespace Foo {
+  int FOO = 0;
+}
+
+void test() {
+  foo;
+}
+").cpp
+
+# Check that exporting wrapped types with constructors is feasible
+test("
+@export
+type Foo : int {
+  def foo int {
+    return self as int * 2
+  }
+}
+
+namespace Foo {
+  def new(x int) Foo {
+    return (x / 2) as Foo
+  }
+}
+
+@export
+def test {
+  Foo.new(0).foo
+}
+", "
+namespace Foo {
+  int foo(int self);
+  int _new(int x);
+}
+
+void test() {
+  Foo::foo(Foo::_new(0));
+}
+
+int Foo::foo(int self) {
+  return self * 2;
+}
+
+int Foo::_new(int x) {
+  return x / 2;
+}
+").cpp
+
+# Check for a validation error with types inside exported classes
+test("
+@export
+class Foo {
+  enum Bar {
+    BAZ
+  }
+}
+
+@export
+def test {
+  Foo.Bar.BAZ
+}
+", "
+struct Foo;
+
+namespace in_Foo {
+  enum struct Bar {
+    BAZ = 0,
+  };
+}
+
+struct Foo : virtual Skew::Object {
+  Foo();
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+namespace in_Bar {
+  Skew::string toString(in_Foo::Bar self);
+
+  extern Skew::Root<Skew::List<Skew::string>> _strings;
+}
+
+namespace in_Foo {
+}
+
+namespace in_Bar {
+  Skew::Root<Skew::List<Skew::string>> _strings = new Skew::List<Skew::string>({\"BAZ\"_s});
+}
+
+void test() {
+  in_Foo::Bar::BAZ;
+}
+
+Foo::Foo() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Foo::__gc_mark() {
+  }
+#endif
+
+Skew::string in_Bar::toString(in_Foo::Bar self) {
+  return (*in_Bar::_strings.get())[(int)self];
+}
+").cpp
+
+# Check wrapped types with type parameters
+test("
+type Foo<T> : List<T> {
+  def size int {
+    return (self as List<T>).count
+  }
+}
+
+@entry
+def main {
+  (List<int>.new as Foo<int>).size
+}
+", "
+namespace Foo {
+}
+
+namespace in_Foo {
+  template <typename T>
+  int size(Skew::List<T> *self);
+}
+
+void main() {
+  in_Foo::size(new Skew::List<int>());
+}
+
+template <typename T>
+int in_Foo::size(Skew::List<T> *self) {
+  return self->count();
+}
+").cpp
+
+# Check the "is" operator
+test("
+class Foo {}
+class Bar : Foo {}
+
+@entry
+def main {
+  Foo.new is Bar == true || true == Foo.new is Bar
+}
+", "
+struct Foo;
+struct Bar;
+
+struct Foo : virtual Skew::Object {
+  Foo();
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+struct Bar : Foo {
+  Bar();
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+void main() {
+  dynamic_cast<Bar *>(new Foo()) != nullptr == true || true == (dynamic_cast<Bar *>(new Foo()) != nullptr);
+}
+
+Foo::Foo() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Foo::__gc_mark() {
+  }
+#endif
+
+Bar::Bar() : Foo::Foo() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Bar::__gc_mark() {
+    Foo::__gc_mark();
+  }
+#endif
+").cpp
+
+# Need to emit ".get()" for global variables inside roots
+test("
+class Foo {}
+
+var foo = Foo.new
+
+@entry
+def main {
+  var x = Foo.new
+  x = foo ?? x
+  foo = x ?? foo
+}
+", "
+struct Foo;
+
+struct Foo : virtual Skew::Object {
+  Foo();
+
+  #ifdef SKEW_GC_MARK_AND_SWEEP
+    virtual void __gc_mark() override;
+  #endif
+};
+
+Skew::Root<Foo> foo = new Foo();
+
+void main() {
+  Foo *x = new Foo();
+  x = foo.get() != (Foo *)nullptr ? foo.get() : x;
+  foo = x != (Foo *)nullptr ? x : foo.get();
+}
+
+Foo::Foo() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void Foo::__gc_mark() {
+  }
+#endif
+").cpp
+
+# Make sure to fully specify the base class in __gc_mark() for derived classes to avoid infinite recursion
+test("
+class A.Foo {}
+
+@export
+class B.Foo : A.Foo {}
+", "
+namespace A {
+  struct Foo;
+}
+
+namespace B {
+  struct Foo;
+}
+
+namespace A {
+  struct Foo : virtual Skew::Object {
+    Foo();
+
+    #ifdef SKEW_GC_MARK_AND_SWEEP
+      virtual void __gc_mark() override;
+    #endif
+  };
+}
+
+namespace B {
+  struct Foo : A::Foo {
+    Foo();
+
+    #ifdef SKEW_GC_MARK_AND_SWEEP
+      virtual void __gc_mark() override;
+    #endif
+  };
+}
+
+A::Foo::Foo() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void A::Foo::__gc_mark() {
+  }
+#endif
+
+B::Foo::Foo() : A::Foo::Foo() {
+}
+
+#ifdef SKEW_GC_MARK_AND_SWEEP
+  void B::Foo::__gc_mark() {
+    A::Foo::__gc_mark();
+  }
+#endif
+").cpp
+
+# Check block comments before a statement
+test("
+@entry
+def main {
+  # This is
+  # a block
+  # comment
+
+  return
+}
+", "
+void main() {
+  // This is
+  // a block
+  // comment
+
+  return;
+}
+").cpp
+
+# Check trailing block comments
+test("
+@entry
+def main {
+  # This is
+  # a block
+  # comment
+}
+", "
+void main() {
+  // This is
+  // a block
+  // comment
+}
+").cpp
+
+  }
+}

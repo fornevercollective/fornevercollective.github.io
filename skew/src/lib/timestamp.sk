@@ -1,0 +1,19 @@
+namespace Timestamp {
+  if TARGET == .JAVASCRIPT {
+    def seconds double {
+      return (dynamic.typeof(dynamic.performance) != "undefined" && dynamic.performance.now ? dynamic.performance.now() : dynamic.Date.now()) / 1000
+    }
+  }
+
+  else if TARGET == .CSHARP {
+    @using("System")
+    def seconds double {
+      return dynamic.DateTime.Now.Ticks / (dynamic.TimeSpan.TicksPerSecond as double)
+    }
+  }
+
+  else {
+    @import
+    def seconds double
+  }
+}

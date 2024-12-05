@@ -1,0 +1,76 @@
+namespace Skew {
+  enum ContentKind {
+    BOOL
+    INT
+    DOUBLE
+    STRING
+  }
+
+  interface Content {
+    def kind ContentKind
+
+    def asBool bool {
+      assert(kind == .BOOL)
+      return (self as BoolContent).value
+    }
+
+    def asInt int {
+      assert(kind == .INT)
+      return (self as IntContent).value
+    }
+
+    def asDouble double {
+      assert(kind == .DOUBLE)
+      return (self as DoubleContent).value
+    }
+
+    def asString string {
+      assert(kind == .STRING)
+      return (self as StringContent).value
+    }
+
+    def equals(other Content) bool {
+      if kind == other.kind {
+        switch kind {
+          case .BOOL { return asBool == other.asBool }
+          case .INT { return asInt == other.asInt }
+          case .DOUBLE { return asDouble == other.asDouble }
+          case .STRING { return asString == other.asString }
+        }
+      }
+      return false
+    }
+  }
+
+  class BoolContent :: Content {
+    const value bool
+
+    def kind ContentKind {
+      return .BOOL
+    }
+  }
+
+  class IntContent :: Content {
+    const value int
+
+    def kind ContentKind {
+      return .INT
+    }
+  }
+
+  class DoubleContent :: Content {
+    const value double
+
+    def kind ContentKind {
+      return .DOUBLE
+    }
+  }
+
+  class StringContent :: Content {
+    const value string
+
+    def kind ContentKind {
+      return .STRING
+    }
+  }
+}

@@ -1,0 +1,301 @@
+namespace Skew.Tests {
+  def testJavaScriptMinify {
+
+# Strings should be emitted using the shortest representation
+test("
+@entry
+def main {
+  dynamic.a(\"'\" + \"\\\"\")
+}
+", "
+(function(){function main(){a(\"'\"+'\"')}main()})();
+").jsMinify
+
+# Check for various whitespace issues
+test("
+def foo dynamic {
+  dynamic.a(dynamic.b + +dynamic.c)
+  dynamic.a(dynamic.b + -dynamic.c)
+  dynamic.a(dynamic.b - +dynamic.c)
+  dynamic.a(dynamic.b - -dynamic.c)
+  return \"\"
+  return dynamic.a
+  return dynamic.a + dynamic.b
+  return -dynamic.a
+  return ~dynamic.a
+  return !dynamic.a
+  return []
+  return {}
+}
+
+@entry
+def main {
+  foo
+}
+", "
+(function(){function foo(){a(b+ +c);a(b+-c);a(b-+c);a(b- -c);return'';return a;return a+b;return-a;return~a;return!a;return[];return{}}function main(){foo()}main()})();
+").jsMinify
+
+# Check for whitespace with numeric literals
+test("
+def foo dynamic {
+  return -1
+}
+
+def bar dynamic {
+  return -1.5
+}
+
+def baz dynamic {
+  return 0
+}
+
+@entry
+def main {
+  foo
+  bar
+  baz
+}
+", "
+(function(){function foo(){return-1}function bar(){return-1.5}function baz(){return 0}function main(){foo();bar();baz()}main()})();
+").jsMinify.foldAllConstants
+
+# Check for omitting the leading zero
+test("
+@entry
+def foo {
+  var x = [-1.5, -1.0, -0.5, -0.0, 0.0, 0.5, 1.0, 1.5]
+}
+", "
+(function(){function foo(){var x=[-1.5,-1,-.5,0,0,.5,1,1.5]}foo()})();
+").jsMinify.foldAllConstants
+
+# There is no "dangling if" ambiguity here
+test("
+@entry
+def main {
+  if dynamic.a() {
+    if dynamic.b() {
+      var c = dynamic.d()
+      dynamic.e(c, c)
+    } else {
+      var f = dynamic.g()
+      dynamic.h(f, f)
+    }
+  } else {
+    dynamic.i()
+  }
+}
+", "
+(function(){function main(){if(a()){if(b()){var c=d();e(c,c)}else{var f=g();h(f,f)}}else i()}main()})();
+").jsMinify
+
+# This must be careful about the "dangling if" ambiguity
+test("
+@entry
+def main {
+  if dynamic.a() {
+    if dynamic.b() {
+      if dynamic.c() {
+        var d = dynamic.e()
+        dynamic.f(d, d)
+      } else {
+        var g = dynamic.h()
+        dynamic.i(g, g)
+      }
+    }
+  } else {
+    dynamic.j()
+  }
+}
+", "
+(function(){function main(){if(a()){if(b())if(c()){var d=e();f(d,d)}else{var g=h();i(g,g)}}else j()}main()})();
+").jsMinify
+
+# Another "dangling if" variant
+test("
+@entry
+def main {
+  if dynamic.a() {
+    if dynamic.b() {
+      var c = dynamic.d()
+      dynamic.e(c, c)
+    } else if dynamic.f() {
+      var g = dynamic.h()
+      dynamic.i(g, g)
+    }
+  } else {
+    var j = dynamic.k()
+    dynamic.l(j, j)
+  }
+}
+", "
+(function(){function main(){if(a()){if(b()){var c=d();e(c,c)}else if(f()){var g=h();i(g,g)}}else{var j=k();l(j,j)}}main()})();
+").jsMinify
+
+# A tricky "dangling if" issue
+test("
+@entry
+def main {
+  if dynamic.a() {
+    while true {
+      if dynamic.b() { break }
+    }
+  } else {
+    dynamic.c()
+  }
+}
+", "
+(function(){function main(){if(a()){while(true)if(b())break}else c()}main()})();
+").jsMinify
+
+# Check that minification doesn't remove constants in switch statements unless necessary
+test("
+@export
+const C = 2
+
+@export
+def main(x int, y Foo) {
+  switch x {
+    case C { dynamic.a() }
+    case C + 3 { dynamic.a() }
+  }
+  switch y { case .FOO { dynamic.b() } }
+}
+
+enum Foo { FOO }
+", "
+(function(exports){var Foo={FOO:0};exports.main=function(x,y){switch(x){case exports.C:a();break;case 5:a();break}switch(y){case Foo.FOO:b();break}};exports.C=2})(this);
+").jsMinify
+
+test("
+def foo string {
+  return 0.toString
+}
+
+@entry
+def main {
+  foo
+}
+", "
+(function(){function foo(){return (0).toString()}function main(){foo()}main()})();
+").jsMinify
+
+# Make sure null is allowed to convert to string
+test("
+def foo string {
+  return null
+}
+
+@entry
+def main {
+  foo
+}
+", "
+(function(){function foo(){return null}function main(){foo()}main()})();
+").jsMinify
+
+# Avoid a space after "case" if possible
+test("
+@entry
+def main {
+  var x = \"\"
+  switch x {
+    case \"x\" {}
+    case x {}
+  }
+}
+", "
+(function(){function main(){var x='';switch(x){case'x':break;case x:break}}main()})();
+").jsMinify
+
+# Check complex post-keyword space removal
+test("
+@entry
+def main int {
+  var x = 0
+  if x == -1 { dynamic.foo() }
+  else { dynamic.bar() }
+  return 0
+}
+", "
+(function(){function b(){var a=0;return~a?bar():foo(),0}process.exit(b())})();
+").jsMinify.jsMangle
+
+# Check nested negation minification
+test("
+@entry
+def main {
+  var x = 0.0
+  var y = x - (-x) * 2 + x + (-x) * 2
+}
+", "
+(function(){function main(){var x=0;var y=x- -x*2+x+-x*2}main()})();
+").jsMinify
+
+# Check nested negation minification
+test("
+@entry
+def main {
+  var x = dynamic.z as double
+  var y = x - (-2) * 2 + x + (-2) * 2
+}
+", "
+(function(){function main(){var x=+z;var y=x- -4+x+-4}main()})();
+").jsMinify.foldAllConstants
+
+# Remove the space before the "in" operator
+test("
+@entry
+def test {
+  dynamic.foo(dynamic.x in dynamic.y)
+  dynamic.foo(\"x\" in dynamic.y)
+}
+", "
+(function(){function test(){foo(x in y);foo('x'in y)}test()})();
+").jsMinify
+
+# Check block comments before a statement
+test("
+@entry
+def main {
+  # This is
+  # a block
+  # comment
+
+  return
+}
+", "
+(function(){function main(){return}main()})();
+").jsMinify
+
+# Check trailing block comments
+test("
+@entry
+def main {
+  # This is
+  # a block
+  # comment
+}
+", "
+(function(){function main(){}main()})();
+").jsMinify
+
+# Check block comments in else statements
+test("
+@export
+def main(x bool) {
+  if x {
+    x = false
+  } else {
+    # This is
+    # a block
+    # comment
+  }
+}
+", "
+(function(exports){exports.main=function(x){if(x)x=false;else{}}})(this);
+").jsMinify
+
+  }
+}

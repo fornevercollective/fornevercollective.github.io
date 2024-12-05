@@ -1,0 +1,79 @@
+namespace Skew {
+  enum PassKind {
+    CALL_GRAPH
+  }
+
+  class CallGraphPass : Pass {
+    over kind PassKind {
+      return .CALL_GRAPH
+    }
+
+    over run(context PassContext) {
+      context.callGraph = CallGraph.new(context.global)
+    }
+  }
+
+  class CallSite {
+    const callNode Node
+    const enclosingSymbol Symbol
+  }
+
+  class CallInfo {
+    const symbol FunctionSymbol
+    const callSites List<CallSite> = []
+  }
+
+  class CallGraph {
+    const callInfo List<CallInfo> = []
+    const symbolToInfoIndex IntMap<int> = {}
+
+    def new(global ObjectSymbol) {
+      _visitObject(global)
+    }
+
+    def callInfoForSymbol(symbol FunctionSymbol) CallInfo {
+      assert(symbol.id in symbolToInfoIndex)
+      return callInfo[symbolToInfoIndex[symbol.id]]
+    }
+
+    def _visitObject(symbol ObjectSymbol) {
+      for object in symbol.objects {
+        _visitObject(object)
+      }
+
+      for function in symbol.functions {
+        _recordCallSite(function, null, null)
+        _visitNode(function.block, function)
+      }
+
+      for variable in symbol.variables {
+        _visitNode(variable.value, variable)
+      }
+    }
+
+    def _visitNode(node Node, context Symbol) {
+      if node != null {
+        for child = node.firstChild; child != null; child = child.nextSibling {
+          _visitNode(child, context)
+        }
+
+        if node.kind == .CALL && node.symbol != null {
+          assert(node.symbol.kind.isFunction)
+          _recordCallSite(node.symbol.forwarded.asFunctionSymbol, node, context)
+        }
+      }
+    }
+
+    def _recordCallSite(symbol FunctionSymbol, node Node, context Symbol) {
+      var index = symbolToInfoIndex.get(symbol.id, -1)
+      var info = index < 0 ? CallInfo.new(symbol) : callInfo[index]
+      if index < 0 {
+        symbolToInfoIndex[symbol.id] = callInfo.count
+        callInfo.append(info)
+      }
+      if node != null {
+        info.callSites.append(CallSite.new(node, context))
+      }
+    }
+  }
+}

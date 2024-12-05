@@ -1,0 +1,291 @@
+namespace Skew {
+  const SORT_STRINGS = (a string, b string) => a <=> b
+
+  def hashCombine(left int, right int) int {
+    return left ^ right - 0x61c88647 + (left << 6) + (left >> 2)
+  }
+
+  class UnionFind {
+    var parents List<int> = []
+
+    def allocate int {
+      var index = parents.count
+      parents.append(index)
+      return index
+    }
+
+    def allocate(count int) UnionFind {
+      for i in 0..count {
+        parents.append(parents.count)
+      }
+      return self
+    }
+
+    def union(left int, right int) {
+      parents[find(left)] = find(right)
+    }
+
+    def find(index int) int {
+      assert(index >= 0 && index < parents.count)
+      var parent = parents[index]
+      if parent != index {
+        parent = find(parent)
+        parents[index] = parent
+      }
+      return parent
+    }
+  }
+
+  class SplitPath {
+    const directory string
+    const entry string
+  }
+
+  def splitPath(path string) SplitPath {
+    var slashIndex = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"))
+    return slashIndex == -1
+      ? SplitPath.new(".", path)
+      : SplitPath.new(path.slice(0, slashIndex), path.slice(slashIndex + 1))
+  }
+
+  def withUppercaseFirstLetter(text string) string {
+    return text == "" ? text : text.get(0).toUpperCase + text.slice(1)
+  }
+
+  def indentIndex(text string) int {
+    var i = 0
+    while i < text.count && (text[i] == ' ' || text[i] == '\t') {
+      i++
+    }
+    return i
+  }
+
+  def indentOfLine(line string) string {
+    return line.slice(0, indentIndex(line))
+  }
+
+  def lineWithoutIndent(line string) string {
+    return line.slice(indentIndex(line))
+  }
+
+  def formatNumber(number double) string {
+    return (Math.round(number * 10) / 10).toString
+  }
+
+  def bytesToString(bytes int) string {
+    const KB = 1 << 10
+    const MB = 1 << 20
+    const GB = 1 << 30
+    if bytes == 1 { return "1 byte" }
+    if bytes < KB { return "\(bytes) bytes" }
+    if bytes < MB { return "\(formatNumber(bytes / (KB as double)))kb" }
+    if bytes < GB { return "\(formatNumber(bytes / (MB as double)))mb" }
+    return "\(formatNumber(bytes / (GB as double)))gb"
+  }
+
+  def doubleToStringWithDot(value double) string {
+    assert(value.isFinite) # These cases are different for each language target and must be handled before this
+    var text = value.toString
+
+    # The C# implementation of double.ToString() uses an uppercase "E"
+    if TARGET == .CSHARP {
+      text = text.toLowerCase
+    }
+
+    # "1" => "1.0"
+    # "1.5" => "1.5"
+    # "1e+100" => "1.0e+100"
+    # "1.5e+100" => "1.5e+100"
+    if !("." in text) {
+      var e = text.indexOf("e")
+      if e != -1 {
+        text = text.slice(0, e) + ".0" + text.slice(e)
+      } else {
+        text += ".0"
+      }
+    }
+
+    return text
+  }
+
+  # The cost of changing the case of a letter is 0.5 instead of 1
+  def caseAwareLevenshteinEditDistance(a string, b string) double {
+    var an = a.count
+    var bn = b.count
+
+    var v0 List<double> = []
+    var v1 List<double> = []
+
+    for i in 0..bn + 1 {
+      v0.append(i)
+      v1.append(i)
+    }
+
+    for i in 0..an {
+      var ca = a[i]
+      v1[0] = i + 1
+
+      for j in 0..bn {
+        var cb = b[j]
+        v1[j + 1] = Math.min(
+          v0[j] + (ca == cb ? 0 : toLowerCase(ca) == toLowerCase(cb) ? 0.5 : 1),
+          Math.min(v1[j], v0[j + 1]) + 1)
+      }
+
+      for j in 0..bn + 1 {
+        v0[j] = v1[j]
+      }
+    }
+
+    return v1[bn]
+  }
+
+  def toLowerCase(c int) int {
+    return c >= 'A' && c <= 'Z' ? 'a' - 'A' + c : c
+  }
+
+  def replaceSingleQuotesWithDoubleQuotes(text string) string {
+    assert(text.startsWith("'"))
+    assert(text.endsWith("'"))
+
+    var builder = StringBuilder.new
+    var start = 1
+    var limit = text.count - 1
+
+    builder.append("\"")
+
+    for i = start; i < limit; i++ {
+      var c = text[i]
+
+      if c == '\"' {
+        builder.append(text.slice(start, i))
+        builder.append("\\\"")
+        start = i + 1
+      }
+
+      else if c == '\\' {
+        if text[i + 1] == '\'' {
+          builder.append(text.slice(start, i))
+          builder.append("'")
+          start = i + 2
+        }
+        i++
+      }
+    }
+
+    builder.append(text.slice(start, limit))
+    builder.append("\"")
+
+    return builder.toString
+  }
+}
+
+namespace Skew.PrettyPrint {
+  def plural(value int, word string) string {
+    return "\(value) \(word)\(plural(value))"
+  }
+
+  def plural(value int) string {
+    return value == 1 ? "" : "s"
+  }
+
+  def joinQuoted(parts List<string>, trailing string) string {
+    return join(parts.map<string>(part => "\"\(part)\""), trailing)
+  }
+
+  def join(parts List<string>, trailing string) string {
+    if parts.count < 3 {
+      return " \(trailing) ".join(parts)
+    }
+    var text = ""
+    for i in 0..parts.count {
+      if i != 0 {
+        text += ", "
+        if i + 1 == parts.count {
+          text += trailing + " "
+        }
+      }
+      text += parts[i]
+    }
+    return text
+  }
+
+  def wrapWords(text string, width int) List<string> {
+    # An invalid length means wrapping is disabled
+    if width < 1 {
+      return [text]
+    }
+
+    var words = text.split(" ")
+    var lines List<string> = []
+    var line = ""
+
+    # Run the word wrapping algorithm
+    var i = 0
+    while i < words.count {
+      var word = words[i]
+      var lineLength = line.count
+      var wordLength = word.count
+      var estimatedLength = lineLength + 1 + wordLength
+      i++
+
+      # Collapse adjacent spaces
+      if word == "" {
+        continue
+      }
+
+      # Start the line
+      if line == "" {
+        while word.count > width {
+          lines.append(word.slice(0, width))
+          word = word.slice(width, word.count)
+        }
+        line = word
+      }
+
+      # Continue line
+      else if estimatedLength < width {
+        line += " " + word
+      }
+
+      # Continue and wrap
+      else if estimatedLength == width {
+        lines.append(line + " " + word)
+        line = ""
+      }
+
+      # Wrap and try again
+      else {
+        lines.append(line)
+        line = ""
+        i--
+      }
+    }
+
+    # Don't add an empty trailing line unless there are no other lines
+    if line != "" || lines.isEmpty {
+      lines.append(line)
+    }
+
+    return lines
+  }
+}
+
+# Language-specific stuff
+
+if TARGET == .JAVASCRIPT {
+  def parseDoubleLiteral(text string) double {
+    return +(text as dynamic)
+  }
+}
+
+else if TARGET == .CSHARP {
+  def parseDoubleLiteral(text string) double {
+    return dynamic.double.Parse(text)
+  }
+}
+
+else {
+  @import
+  def parseDoubleLiteral(text string) double
+}
