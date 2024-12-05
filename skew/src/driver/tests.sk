@@ -1,0 +1,402 @@
+namespace Skew.Tests {
+  class CompilerTest : Unit.Test {
+    var _input string
+    var _expected string
+    var _options = CompilerOptions.new
+
+    over run {
+      rename(compactWhitespace(_input))
+      var log = Log.new
+      var result = compile(log, _options, [Source.new("<stdin>", _input)])
+      var output string
+
+      if result.outputs.isEmpty {
+        output = log.toString + log.fixesToString
+      } else {
+        output = "\n".join(result.outputs.map<string>(source => (source.name == null ? "" : "[\(source.name)]\n") + source.contents))
+      }
+
+      expectString(trimNewlines(_expected), trimNewlines(output))
+    }
+
+    def cpp CompilerTest {
+      _options.target = CPlusPlusTarget.new
+      return self
+    }
+
+    def csharp CompilerTest {
+      _options.target = CSharpTarget.new
+      return self
+    }
+
+    def ts CompilerTest {
+      _options.target = TypeScriptTarget.new
+      return self
+    }
+
+    def js CompilerTest {
+      _options.target = JavaScriptTarget.new
+      return self
+    }
+
+    def jsMangle CompilerTest {
+      _options.target = JavaScriptTarget.new
+      _options.jsMangle = true
+      _options.define("RELEASE", "true")
+      return self
+    }
+
+    def jsMinify CompilerTest {
+      _options.target = JavaScriptTarget.new
+      _options.jsMinify = true
+      return self
+    }
+
+    def foldAllConstants CompilerTest {
+      _options.foldAllConstants = true
+      return self
+    }
+
+    def globalizeAllFunctions CompilerTest {
+      _options.globalizeAllFunctions = true
+      return self
+    }
+
+    def inlineAllFunctions CompilerTest {
+      _options.inlineAllFunctions = true
+      return self
+    }
+  }
+
+  class IDETest : Unit.Test {
+    var _input string
+    var _callback fn(IDETest, fn(string, string))
+    var _source Source = null
+    var _result CompilerResult = null
+
+    over run {
+      rename(compactWhitespace(_input))
+      var log = Log.new
+      var options = CompilerOptions.new
+      options.stopAfterResolve = true
+      _source = Source.new("<stdin>", _input)
+      _result = compile(log, options, [_source])
+      expectString("", log.toString)
+      _callback(self, (a, b) => expectString(a, b))
+    }
+
+    def tooltipQuery(line int, column int) string {
+      var index = _source.lineColumnToIndex(line, column)
+      if index == -1 {
+        return "error: The location \"\(line):\(column)\" could not be found in the input"
+      }
+
+      var query = IDE.SymbolQuery.new(_source, index)
+      query.run(_result.global)
+      if query.symbol != null {
+        return query.generateTooltip
+      }
+
+      return ""
+    }
+
+    def definitionQuery(line int, column int) string {
+      var index = _source.lineColumnToIndex(line, column)
+      if index == -1 {
+        return "error: The location \"\(line):\(column)\" could not be found in the input"
+      }
+
+      var query = IDE.SymbolQuery.new(_source, index)
+      query.run(_result.global)
+      if query.symbol != null {
+        return query.symbol.range.locationString
+      }
+
+      return ""
+    }
+
+    def renameQuery(line int, column int) string {
+      var index = _source.lineColumnToIndex(line, column)
+      if index == -1 {
+        return "error: The location \"\(line):\(column)\" could not be found in the input"
+      }
+
+      var query = IDE.RenameQuery.new(_source, index)
+      query.run(_result.global)
+      if query.ranges != null {
+        return ", ".join(query.ranges.map<string>(range => range.locationString))
+      }
+
+      return ""
+    }
+
+    def signatureQuery(line int, column int) string {
+      var index = _source.lineColumnToIndex(line, column)
+      if index == -1 {
+        return "error: The location \"\(line):\(column)\" could not be found in the input"
+      }
+
+      var query = IDE.SignatureQuery.new(_source, index)
+      query.run(_result.global)
+      if query.signature != null {
+        var signature = query.signatureString
+        var argument = query.argumentStrings[query.argumentIndex]
+        var position = signature.indexOf(argument)
+        if position != -1 {
+          return "\(signature.slice(0, position))[\(argument)]\(signature.slice(position + argument.count))"
+        }
+      }
+
+      return ""
+    }
+  }
+
+  class CompletionTest : Unit.Test {
+    var _input string
+    var _line int
+    var _column int
+    var _expected string
+
+    over run {
+      rename(compactWhitespace(_input))
+      var log = Log.new
+      var source = Source.new("<stdin>", _input)
+      var index = source.lineColumnToIndex(_line, _column)
+
+      if index == -1 {
+        expectString(trimNewlines(_expected), "error: The location \"\(_line):\(_column)\" could not be found in the input")
+      }
+
+      else {
+        var options = CompilerOptions.new
+        options.stopAfterResolve = true
+        options.completionContext = CompletionContext.new(source, index)
+        compile(log, options, [source])
+
+        var builder = StringBuilder.new
+        var range = options.completionContext.range
+        builder.append(trimNewlines(log.toString))
+
+        if range != null {
+          var formatted = range.format(0)
+          var lastSpace = formatted.range.lastIndexOf(" ")
+          var indent = lastSpace != -1 ? formatted.range.slice(0, lastSpace + 1) : ""
+          builder.append("\n\(range.locationString): completions:\n\(formatted.line)\n\(formatted.range)")
+
+          for symbol in options.completionContext.completions {
+            builder.append("\n\(indent)[\(symbol.name)]")
+
+            var type = IDE.completionType(symbol)
+            if type != null {
+              builder.append(" # \"\(IDE.completionType(symbol))\"")
+            }
+
+            if symbol.comments != null {
+              var nested = "\n" + indent + " ".repeat(symbol.name.count + 2) + " #"
+              for comment in symbol.comments {
+                if !comment.hasGapBelow {
+                  for line in comment.lines {
+                    builder.append(nested + (line.endsWith("\n") ? line.slice(0, line.count - 1) : line))
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        expectString(trimNewlines(_expected), builder.toString)
+      }
+    }
+  }
+
+  class FormatTest : Unit.Test {
+    over run {
+      rename(compactWhitespace(_input))
+      var formatted = Range.new(Source.new("<stdin>", _input), _start, _end).format(_maxLength)
+      expectString(trimNewlines(_expected), trimNewlines(formatted.line + "\n" + formatted.range))
+    }
+
+    const _input string
+    const _expected string
+    const _start int
+    const _end int
+    const _maxLength int
+  }
+
+  class SimpleTest : Unit.Test {
+    over run {
+      _callback((a, b) => expectString(a, b))
+    }
+
+    const _callback fn(fn(string, string))
+  }
+
+  def trimNewlines(text string) string {
+    var length = text.count
+    var start = 0
+    var end = length
+    while start < length && text[start] == '\n' {
+      start++
+    }
+    while start < end && text[end - 1] == '\n' {
+      end--
+    }
+    return text.slice(start, end)
+  }
+
+  def compactWhitespace(text string) string {
+    var wasSpace = false
+    var result = ""
+    for i in 0..text.count {
+      var c = text[i]
+      if c != '\n' && c != ' ' && c != '\t' {
+        result += text.get(i)
+        wasSpace = false
+      } else if !wasSpace {
+        result += " "
+        wasSpace = true
+      }
+    }
+    return result
+  }
+
+  def test(input string, expected string) CompilerTest {
+    return CompilerTest.new(trimNewlines(input), expected)
+  }
+
+  def testFormat(input string, expected string, start int, end int, maxLength int) FormatTest {
+    return FormatTest.new(trimNewlines(input), expected, start, end, maxLength)
+  }
+
+  def testIDE(input string, callback fn(IDETest, fn(string, string))) IDETest {
+    return IDETest.new(trimNewlines(input), callback)
+  }
+
+  def testCompletion(input string, line int, column int, expected string) CompletionTest {
+    return CompletionTest.new(trimNewlines(input), line, column, expected)
+  }
+
+  def test(name string, callback fn(fn(string, string))) SimpleTest {
+    var test = SimpleTest.new(callback)
+    test.rename(name)
+    return test
+  }
+
+  def testExpect(text string, answer fn() bool, expected bool) Unit.Test {
+    return test(text, expectString => expectString(answer().toString, expected.toString))
+  }
+
+  def testExpect(text string, answer fn() int, expected int) Unit.Test {
+    return test(text, expectString => expectString(answer().toString, expected.toString))
+  }
+
+  def testExpect(text string, answer fn() double, expected double) Unit.Test {
+    return test(text, expectString => expectString(answer().toString, expected.toString))
+  }
+
+  def testExpect(text string, answer fn() string, expected string) Unit.Test {
+    return test(text, expectString => expectString(answer(), expected))
+  }
+
+  def testExpect(text string, answer fn() List<int>, expected List<int>) Unit.Test {
+    return test(text, expectString => expectString(toString(answer()), toString(expected)))
+  }
+
+  def testExpect(text string, answer fn() List<double>, expected List<double>) Unit.Test {
+    return test(text, expectString => expectString(toString(answer()), toString(expected)))
+  }
+
+  def testExpect(text string, answer fn() List<string>, expected List<string>) Unit.Test {
+    return test(text, expectString => expectString(toString(answer()), toString(expected)))
+  }
+
+  def testExpect(text string, answer fn() IntMap<double>, expected IntMap<double>) Unit.Test {
+    return test(text, expectString => expectString(toString(answer()), toString(expected)))
+  }
+
+  def testExpect(text string, answer fn() StringMap<double>, expected StringMap<double>) Unit.Test {
+    return test(text, expectString => expectString(toString(answer()), toString(expected)))
+  }
+
+  def toString(values List<int>) string {
+    return toString(values.map<string>(x => x.toString))
+  }
+
+  def toString(values List<double>) string {
+    return toString(values.map<string>(x => x.toString))
+  }
+
+  def toString(values List<string>) string {
+    return "[" + ", ".join(values) + "]"
+  }
+
+  def toString(node Node) string {
+    if node == null {
+      return "null"
+    }
+    var parts = [node.kind.toString]
+    for child = node.firstChild; child != null; child = child.nextSibling {
+      parts.append(toString(child))
+    }
+    return toString(parts)
+  }
+
+  def toString(value IntMap<double>) string {
+    var keys = value.keys
+    keys.sort((a, b) => a <=> b) # Sort so the order is deterministic
+    return toString(keys.map<string>(k => k.toString), keys.map<string>(k => value[k].toString))
+  }
+
+  def toString(value StringMap<double>) string {
+    var keys = value.keys
+    keys.sort((a, b) => a <=> b) # Sort so the order is deterministic
+    return toString(keys, keys.map<string>(k => value[k].toString))
+  }
+
+  def toString(keys List<string>, values List<string>) string {
+    assert(keys.count == values.count)
+    var parts List<string> = []
+    for i in 0..keys.count {
+      parts.append(keys[i] + ": " + values[i])
+    }
+    return "{" + ", ".join(parts) + "}"
+  }
+
+  if TARGET == .JAVASCRIPT {
+    def fixRuntime {
+      dynamic.Error.stackTraceLimit = Math.INFINITY
+    }
+  } else {
+    def fixRuntime {
+    }
+  }
+
+  @entry if BUILD == .TEST
+  def testMain int {
+    fixRuntime
+
+    # End-to-end tests
+    testCPlusPlus
+    testCSharp
+    testIDE
+    testJavaScript
+    testJavaScriptMangle
+    testJavaScriptMinify
+    testParsing
+    testSimple
+
+    # Unit tests
+    testFormatting
+    testLevenshteinEditDistance
+    testLibrary
+    testNode
+    testQuoteReplacement
+    testRanges
+    testRuntime
+    testUnicode
+
+    var report = Unit.TerminalReport.new
+    Unit.Test.runAll(report)
+    return report.failedCount
+  }
+}

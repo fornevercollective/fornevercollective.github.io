@@ -1,0 +1,102 @@
+namespace Skew.Tests {
+  def testLevenshteinEditDistance {
+    var check = (a string, b string, expected double) => {
+      testExpect("caseAwareLevenshteinEditDistance(\(a), \(b))", => caseAwareLevenshteinEditDistance(a, b), expected)
+      testExpect("caseAwareLevenshteinEditDistance(\(b), \(a))", => caseAwareLevenshteinEditDistance(b, a), expected)
+    }
+
+    check("", "", 0)
+
+    check("x", "", 1)
+    check("xy", "", 2)
+    check("xyz", "", 3)
+
+    check("x", "x", 0)
+    check("xy", "x", 1)
+    check("xyz", "x", 2)
+
+    check("x", "z", 1)
+    check("xy", "z", 2)
+    check("xyz", "z", 2)
+
+    check("xyz", "yz", 1)
+    check("xyz", "xz", 1)
+    check("xyz", "xy", 1)
+
+    check("xyz", "Xyz", 0.5)
+    check("xyz", "xYz", 0.5)
+    check("xyz", "xyZ", 0.5)
+
+    check("xyz", "Xyz", 0.5)
+    check("xyz", "XYz", 1)
+    check("xyz", "XYZ", 1.5)
+
+    check("xyz", "1xyz", 1)
+    check("xyz", "x1yz", 1)
+    check("xyz", "xy1z", 1)
+    check("xyz", "xyz1", 1)
+
+    check("xxx", "x", 2)
+    check("xxx", "xx", 1)
+    check("xxx", "xxx", 0)
+    check("xxx", "xxxx", 1)
+    check("xxx", "xxxxx", 2)
+
+    check("1xy2xy3xy4", "xyxyxy", 4)
+    check("1xy2xy3xy4", "4xy3xy2xy1", 4)
+    check("programming", "language", 9)
+    check("testing", "(TeStInG)", 4)
+  }
+
+  def testQuoteReplacement {
+    var check = (input string, expected string) => {
+      testExpect("replaceSingleQuotesWithDoubleQuotes(\(quoteString(input, .DOUBLE, .NORMAL))) == \(quoteString(expected, .DOUBLE, .NORMAL))",
+        => replaceSingleQuotesWithDoubleQuotes(input), expected)
+    }
+
+    check("''", "\"\"")
+    check("'abc'", "\"abc\"")
+
+    # Translate quotes
+    check("'abc\\'xyz'", "\"abc'xyz\"")
+    check("'abc\"xyz'", "\"abc\\\"xyz\"")
+    check("'abc\\\"xyz'", "\"abc\\\"xyz\"")
+
+    # Don't translate other escape sequences
+    check("'abc\nxyz'", "\"abc\nxyz\"")
+    check("'abc\\nxyz'", "\"abc\\nxyz\"")
+    check("'abc\\x20xyz'", "\"abc\\x20xyz\"")
+  }
+
+  def testRanges {
+    testExpect("Range('abc', 0, 3).toString", => Range.new(Source.new("", "abc"), 0, 3).toString, "abc")
+    testExpect("Range('abc', 1, 2).toString", => Range.new(Source.new("", "abc"), 1, 2).toString, "b")
+
+    testExpect("Range('abc', 0, 3).rangeIncludingLeftWhitespace.toString", => Range.new(Source.new("", "abc"), 0, 3).rangeIncludingLeftWhitespace.toString, "abc")
+    testExpect("Range('abc', 0, 3).rangeIncludingRightWhitespace.toString", => Range.new(Source.new("", "abc"), 0, 3).rangeIncludingRightWhitespace.toString, "abc")
+
+    testExpect("Range('abc', 0, 3).rangeIncludingLeftWhitespace.toString", => Range.new(Source.new("", "abc"), 0, 3).rangeIncludingLeftWhitespace.toString, "abc")
+    testExpect("Range('abc', 1, 2).rangeIncludingRightWhitespace.toString", => Range.new(Source.new("", "abc"), 1, 2).rangeIncludingRightWhitespace.toString, "b")
+
+    testExpect("Range(' abc ', 1, 4).rangeIncludingLeftWhitespace.toString", => Range.new(Source.new("", " abc "), 1, 4).rangeIncludingLeftWhitespace.toString, " abc")
+    testExpect("Range(' abc ', 1, 4).rangeIncludingRightWhitespace.toString", => Range.new(Source.new("", " abc "), 1, 4).rangeIncludingRightWhitespace.toString, "abc ")
+
+    testExpect("Range('[ abc ]', 2, 5).rangeIncludingLeftWhitespace.toString", => Range.new(Source.new("", "[ abc ]"), 2, 5).rangeIncludingLeftWhitespace.toString, " abc")
+    testExpect("Range('[ abc ]', 2, 5).rangeIncludingRightWhitespace.toString", => Range.new(Source.new("", "[ abc ]"), 2, 5).rangeIncludingRightWhitespace.toString, "abc ")
+
+    testExpect("Range('[  abc  ]', 3, 6).rangeIncludingLeftWhitespace.toString", => Range.new(Source.new("", "[  abc  ]"), 3, 6).rangeIncludingLeftWhitespace.toString, "  abc")
+    testExpect("Range('[  abc  ]', 3, 6).rangeIncludingRightWhitespace.toString", => Range.new(Source.new("", "[  abc  ]"), 3, 6).rangeIncludingRightWhitespace.toString, "abc  ")
+  }
+
+  class Foo {}
+  class Bar : Foo {}
+  class Baz : Bar {}
+
+  def testRuntime {
+    testExpect("Foo.new is Foo", => Foo.new is Foo, true)
+    testExpect("Bar.new is Bar", => Bar.new is Bar, true)
+    testExpect("Foo.new is Bar", => Foo.new is Bar, false)
+    testExpect("Bar.new is Foo", => Bar.new is Foo, true)
+    testExpect("Bar.new is Baz", => Bar.new is Baz, false)
+  }
+}

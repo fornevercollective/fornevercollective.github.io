@@ -1,0 +1,485 @@
+namespace Skew {
+  const NATIVE_LIBRARY = "
+const RELEASE = false
+const ASSERTS = !RELEASE
+
+enum Target {
+  NONE
+  CPLUSPLUS
+  CSHARP
+  JAVASCRIPT
+}
+
+const TARGET Target = .NONE
+
+def @alwaysinline
+def @deprecated
+def @deprecated(message string)
+def @entry
+def @export
+def @import
+def @neverinline
+def @prefer
+def @rename(name string)
+def @skip
+def @spreads
+
+@spreads {
+  def @using(name string) # For use with C#
+  def @include(name string) # For use with C++
+}
+
+@import if TARGET == .NONE
+@skip if !ASSERTS
+def assert(truth bool)
+
+@import if TARGET == .NONE
+namespace Math {
+  @prefer
+  def abs(x double) double
+  def abs(x int) int
+
+  def acos(x double) double
+  def asin(x double) double
+  def atan(x double) double
+  def atan2(x double, y double) double
+
+  def sin(x double) double
+  def cos(x double) double
+  def tan(x double) double
+
+  def floor(x double) double
+  def ceil(x double) double
+  def round(x double) double
+
+  def exp(x double) double
+  def log(x double) double
+  def pow(x double, y double) double
+  def random double
+  def randomInRange(min double, max double) double
+  def randomInRange(minInclusive int, maxExclusive int) int
+  def sqrt(x double) double
+
+  @prefer {
+    def max(x double, y double) double
+    def min(x double, y double) double
+    def max(x double, y double, z double) double
+    def min(x double, y double, z double) double
+    def max(x double, y double, z double, w double) double
+    def min(x double, y double, z double, w double) double
+    def clamp(x double, min double, max double) double
+  }
+
+  def max(x int, y int) int
+  def min(x int, y int) int
+  def max(x int, y int, z int) int
+  def min(x int, y int, z int) int
+  def max(x int, y int, z int, w int) int
+  def min(x int, y int, z int, w int) int
+  def clamp(x int, min int, max int) int
+
+  def E double        { return 2.718281828459045 }
+  def INFINITY double { return 1 / 0.0 }
+  def NAN double      { return 0 / 0.0 }
+  def PI double       { return 3.141592653589793 }
+  def SQRT_2 double   { return 2 ** 0.5 }
+}
+
+@import
+class bool {
+  def ! bool
+  def toString string
+}
+
+@import
+class int {
+  def + int
+  def - int
+  def ~ int
+
+  def +(x int) int
+  def -(x int) int
+  def *(x int) int
+  def /(x int) int
+  def %(x int) int
+  def **(x int) int
+  def <=>(x int) int
+  def <<(x int) int
+  def >>(x int) int
+  def >>>(x int) int
+  def &(x int) int
+  def |(x int) int
+  def ^(x int) int
+
+  def %%(x int) int {
+    return ((self % x) + x) % x
+  }
+
+  def <<=(x int) int
+  def >>=(x int) int
+  def &=(x int) int
+  def |=(x int) int
+  def ^=(x int) int
+
+  if TARGET != .CSHARP && TARGET != .CPLUSPLUS {
+    def >>>=(x int)
+  }
+
+  if TARGET != .JAVASCRIPT {
+    def ++ int
+    def -- int
+
+    def %=(x int) int
+    def +=(x int) int
+    def -=(x int) int
+    def *=(x int) int
+    def /=(x int) int
+  }
+
+  def toString string
+}
+
+namespace int {
+  def MIN int { return -0x7FFFFFFF - 1 }
+  def MAX int { return 0x7FFFFFFF }
+}
+
+@import
+class double {
+  def + double
+  def ++ double
+  def - double
+  def -- double
+
+  def *(x double) double
+  def +(x double) double
+  def -(x double) double
+  def /(x double) double
+  def **(x double) double
+  def <=>(x double) int
+
+  def %%(x double) double {
+    return self - Math.floor(self / x) * x
+  }
+
+  def *=(x double) double
+  def +=(x double) double
+  def -=(x double) double
+  def /=(x double) double
+
+  def isFinite bool
+  def isNaN bool
+
+  def toString string
+}
+
+@import
+class string {
+  def +(x string) string
+  def +=(x string) string
+  def <=>(x string) int
+
+  def count int
+  def in(x string) bool
+  def indexOf(x string) int
+  def lastIndexOf(x string) int
+  def startsWith(x string) bool
+  def endsWith(x string) bool
+
+  def [](x int) int
+  def get(x int) string
+  def slice(start int) string
+  def slice(start int, end int) string
+  def codePoints List<int>
+  def codeUnits List<int>
+
+  def split(x string) List<string>
+  def join(x List<string>) string
+  def repeat(x int) string
+  def replaceAll(before string, after string) string
+
+  def toLowerCase string
+  def toUpperCase string
+  def toString string { return self }
+}
+
+namespace string {
+  def fromCodePoint(x int) string
+  def fromCodePoints(x List<int>) string
+  def fromCodeUnit(x int) string
+  def fromCodeUnits(x List<int>) string
+}
+
+@import if TARGET == .NONE
+class StringBuilder {
+  def new
+  def append(x string)
+  def toString string
+}
+
+@import
+class List<T> {
+  def new
+  def [...](x T) List<T>
+
+  def [](x int) T
+  def []=(x int, y T) T
+
+  def count int
+  def isEmpty bool
+  def resize(count int, defaultValue T)
+
+  @prefer
+  def append(x T)
+  def append(x List<T>)
+  def appendOne(x T)
+
+  @prefer
+  def prepend(x T)
+  def prepend(x List<T>)
+
+  @prefer
+  def insert(x int, value T)
+  def insert(x int, values List<T>)
+
+  def removeAll(x T)
+  def removeAt(x int)
+  def removeDuplicates
+  def removeFirst
+  def removeIf(x fn(T) bool)
+  def removeLast
+  def removeOne(x T)
+  def removeRange(start int, end int)
+
+  def takeFirst T
+  def takeLast T
+  def takeAt(x int) T
+  def takeRange(start int, end int) List<T>
+
+  def first T
+  def first=(x T) T { return self[0] = x }
+  def last T
+  def last=(x T) T { return self[count - 1] = x }
+
+  def in(x T) bool
+  def indexOf(x T) int
+  def lastIndexOf(x T) int
+
+  def all(x fn(T) bool) bool
+  def any(x fn(T) bool) bool
+  def clone List<T>
+  def each(x fn(T))
+  def equals(x List<T>) bool
+  def filter(x fn(T) bool) List<T>
+  def map<R>(x fn(T) R) List<R>
+  def reverse
+  def shuffle
+  def slice(start int) List<T>
+  def slice(start int, end int) List<T>
+  def sort(x fn(T, T) int)
+  def swap(x int, y int)
+}
+
+@import
+class StringMap<T> {
+  def new
+  def {...}(key string, value T) StringMap<T>
+
+  def [](key string) T
+  def []=(key string, value T) T
+
+  def count int
+  def isEmpty bool
+  def keys List<string>
+  def values List<T>
+
+  def clone StringMap<T>
+  def each(x fn(string, T))
+  def get(key string, defaultValue T) T
+  def in(key string) bool
+  def remove(key string)
+}
+
+@import
+class IntMap<T> {
+  def new
+  def {...}(key int, value T) IntMap<T>
+
+  def [](key int) T
+  def []=(key int, value T) T
+
+  def count int
+  def isEmpty bool
+  def keys List<int>
+  def values List<T>
+
+  def clone IntMap<T>
+  def each(x fn(int, T))
+  def get(key int, defaultValue T) T
+  def in(key int) bool
+  def remove(key int)
+}
+
+class Box<T> {
+  var value T
+}
+
+################################################################################
+# Implementations
+
+class int {
+  def **(x int) int {
+    var y = self
+    var z = x < 0 ? 0 : 1
+    while x > 0 {
+      if (x & 1) != 0 { z *= y }
+      x >>= 1
+      y *= y
+    }
+    return z
+  }
+
+  def <=>(x int) int {
+    return ((x < self) as int) - ((x > self) as int)
+  }
+}
+
+class double {
+  @alwaysinline
+  def **(x double) double {
+    return Math.pow(self, x)
+  }
+
+  def <=>(x double) int {
+    return ((x < self) as int) - ((x > self) as int)
+  }
+}
+
+class List {
+  def resize(count int, defaultValue T) {
+    assert(count >= 0)
+    while self.count < count { append(defaultValue) }
+    while self.count > count { removeLast }
+  }
+
+  def removeAll(value T) {
+    var index = 0
+
+    # Remove elements in place
+    for i in 0..count {
+      if self[i] != value {
+        if index < i {
+          self[index] = self[i]
+        }
+        index++
+      }
+    }
+
+    # Shrink the array to the correct size
+    while index < count {
+      removeLast
+    }
+  }
+
+  def removeDuplicates {
+    var index = 0
+
+    # Remove elements in place
+    for i in 0..count {
+      var found = false
+      var value = self[i]
+      for j in 0..i {
+        if value == self[j] {
+          found = true
+          break
+        }
+      }
+      if !found {
+        if index < i {
+          self[index] = self[i]
+        }
+        index++
+      }
+    }
+
+    # Shrink the array to the correct size
+    while index < count {
+      removeLast
+    }
+  }
+
+  def shuffle {
+    var n = count
+    for i in 0..n - 1 {
+      swap(i, i + ((Math.random * (n - i)) as int))
+    }
+  }
+
+  def swap(i int, j int) {
+    assert(0 <= i && i < count)
+    assert(0 <= j && j < count)
+    var temp = self[i]
+    self[i] = self[j]
+    self[j] = temp
+  }
+}
+
+namespace Math {
+  def randomInRange(min double, max double) double {
+    assert(min <= max)
+    var value = min + (max - min) * random
+    assert(min <= value && value <= max)
+    return value
+  }
+
+  def randomInRange(minInclusive int, maxExclusive int) int {
+    assert(minInclusive <= maxExclusive)
+    var value = minInclusive + ((maxExclusive - minInclusive) * random) as int
+    assert(minInclusive <= value && (minInclusive != maxExclusive ? value < maxExclusive : value == maxExclusive))
+    return value
+  }
+
+  if TARGET != .JAVASCRIPT {
+    def max(x double, y double, z double) double {
+      return max(max(x, y), z)
+    }
+
+    def min(x double, y double, z double) double {
+      return min(min(x, y), z)
+    }
+
+    def max(x int, y int, z int) int {
+      return max(max(x, y), z)
+    }
+
+    def min(x int, y int, z int) int {
+      return min(min(x, y), z)
+    }
+
+    def max(x double, y double, z double, w double) double {
+      return max(max(x, y), max(z, w))
+    }
+
+    def min(x double, y double, z double, w double) double {
+      return min(min(x, y), min(z, w))
+    }
+
+    def max(x int, y int, z int, w int) int {
+      return max(max(x, y), max(z, w))
+    }
+
+    def min(x int, y int, z int, w int) int {
+      return min(min(x, y), min(z, w))
+    }
+  }
+
+  def clamp(x double, min double, max double) double {
+    return x < min ? min : x > max ? max : x
+  }
+
+  def clamp(x int, min int, max int) int {
+    return x < min ? min : x > max ? max : x
+  }
+}
+"
+}

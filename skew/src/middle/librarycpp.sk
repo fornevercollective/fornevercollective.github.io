@@ -1,0 +1,83 @@
+namespace Skew {
+  const NATIVE_LIBRARY_CPP = "
+@import {
+  def __doubleToString(x double) string
+  def __intToString(x int) string
+
+  @rename(\"std::isnan\")
+  def __doubleIsNaN(x double) bool
+
+  @rename(\"std::isfinite\")
+  def __doubleIsFinite(x double) bool
+}
+
+class bool {
+  def toString string {
+    return self ? \"true\" : \"false\"
+  }
+}
+
+class int {
+  def toString string {
+    return __intToString(self)
+  }
+
+  def >>>(x int) int {
+    return (self as dynamic.unsigned >> x) as int
+  }
+}
+
+class double {
+  def toString string {
+    return __doubleToString(self)
+  }
+
+  def isNaN bool {
+    return __doubleIsNaN(self)
+  }
+
+  def isFinite bool {
+    return __doubleIsFinite(self)
+  }
+}
+
+class string {
+  @rename(\"compare\")
+  def <=>(x string) int
+
+  @rename(\"contains\")
+  def in(x string) bool
+}
+
+@rename(\"Skew::List\")
+class List {
+  @rename(\"contains\")
+  def in(x T) bool
+}
+
+@rename(\"Skew::StringMap\")
+class StringMap {
+  @rename(\"contains\")
+  def in(x string) bool
+}
+
+@rename(\"Skew::IntMap\")
+class IntMap {
+  @rename(\"contains\")
+  def in(x int) bool
+}
+
+@import
+@rename(\"Skew::StringBuilder\")
+class StringBuilder {
+}
+
+@import
+@rename(\"Skew::Math\")
+namespace Math {
+}
+
+@import
+def assert(truth bool)
+"
+}

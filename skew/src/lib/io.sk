@@ -1,0 +1,94 @@
+if TARGET == .JAVASCRIPT {
+  namespace IO {
+    def isDirectory(path string) bool {
+      try {
+        return dynamic.require("fs").statSync(path).isDirectory()
+      }
+      return false
+    }
+
+    def readDirectory(path string) List<string> {
+      try {
+        var entries List<string> = dynamic.require("fs").readdirSync(path)
+        entries.sort((a, b) => a <=> b)
+        return entries
+      }
+      return null
+    }
+
+    def readFile(path string) string {
+      try {
+        var contents string = dynamic.require("fs").readFileSync(path, "utf8")
+        return contents.replaceAll("\r\n", "\n")
+      }
+      return null
+    }
+
+    def writeFile(path string, contents string) bool {
+      const fs = dynamic.require("fs")
+      const p = dynamic.require("path")
+      var mkdir_p fn(string)
+      mkdir_p = dir => {
+        if dir != p.dirname(dir) {
+          mkdir_p(p.dirname(dir))
+          try { fs.mkdirSync(dir) }
+        }
+      }
+      mkdir_p(p.dirname(path))
+      try {
+        fs.writeFileSync(path, contents)
+        return true
+      }
+      return false
+    }
+  }
+}
+
+else if TARGET == .CSHARP {
+  namespace IO {
+    def isDirectory(path string) bool {
+      try {
+        return dynamic.System.IO.Directory.Exists(path)
+      }
+      return false
+    }
+
+    def readDirectory(path string) List<string> {
+      try {
+        var entries List<string> = dynamic.System.Linq.Enumerable.ToList(dynamic.System.IO.Directory.GetFileSystemEntries(path))
+        for i in 0..entries.count {
+          entries[i] = dynamic.System.IO.Path.GetFileName(entries[i])
+        }
+        entries.sort((a, b) => a <=> b)
+        return entries
+      }
+      return null
+    }
+
+    def readFile(path string) string {
+      try {
+        var contents string = dynamic.System.IO.File.ReadAllText(path)
+        return contents.replaceAll("\r\n", "\n")
+      }
+      return null
+    }
+
+    def writeFile(path string, contents string) bool {
+      try {
+        dynamic.System.IO.File.WriteAllText(path, contents)
+        return true
+      }
+      return false
+    }
+  }
+}
+
+else {
+  @import
+  namespace IO {
+    def isDirectory(path string) bool
+    def readDirectory(path string) List<string>
+    def readFile(path string) string
+    def writeFile(path string, contents string) bool
+  }
+}

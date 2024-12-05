@@ -1,0 +1,334 @@
+namespace Skew {
+  enum ShakingMode {
+    USE_TYPES
+    IGNORE_TYPES
+  }
+
+  # Remove all code that isn't reachable from the entry point or from an
+  # imported or exported symbol. This is called tree shaking here but is also
+  # known as dead code elimination. Tree shaking is perhaps a better name
+  # because this pass doesn't remove dead code inside functions.
+  def shakingPass(global ObjectSymbol, entryPoint FunctionSymbol, mode ShakingMode) {
+    var graph = UsageGraph.new(global, mode)
+    var symbols List<Symbol> = []
+    Shaking.collectExportedSymbols(global, symbols, entryPoint)
+    var usages = graph.usagesForSymbols(symbols)
+    if usages != null {
+      Shaking.removeUnusedSymbols(global, usages)
+    }
+  }
+
+  # This stores a mapping from every symbol to its immediate dependencies and
+  # uses that to provide a mapping from a subset of symbols to their complete
+  # dependencies. This is useful for dead code elimination.
+  class UsageGraph {
+    var _mode ShakingMode
+    var context Symbol = null
+    var _currentUsages IntMap<Symbol> = null
+    var _overridesForSymbol IntMap<List<Symbol>> = {}
+    var _usages IntMap<List<Symbol>> = {}
+
+    def new(global ObjectSymbol, mode ShakingMode) {
+      _mode = mode
+      _visitObject(global)
+      _changeContext(null)
+    }
+
+    def usagesForSymbols(symbols List<Symbol>) IntMap<Symbol> {
+      var overridesToCheck IntMap<List<Symbol>> = {}
+      var combinedUsages IntMap<Symbol> = {}
+      var stack List<Symbol> = []
+      stack.append(symbols)
+
+      # Iterate until a fixed point is reached
+      while !stack.isEmpty {
+        var symbol = stack.takeLast
+
+        if !(symbol.id in combinedUsages) {
+          combinedUsages[symbol.id] = symbol
+          var symbolUsages = _usages.get(symbol.id, null)
+
+          if symbolUsages != null {
+            stack.append(symbolUsages)
+          }
+
+          # Handle function overrides
+          if symbol.kind.isFunction {
+            var overridden = symbol.asFunctionSymbol.overridden
+            var symbolOverrides = _overridesForSymbol.get(symbol.id, null)
+
+            # Automatically include all overridden functions in case the use
+            # of this type is polymorphic, which is a conservative estimate
+            if overridden != null {
+              stack.append(overridden)
+            }
+
+            # Check function overrides too
+            if symbolOverrides != null {
+              for override in symbolOverrides {
+                var key = override.parent.id
+
+                # Queue this override immediately if the parent type is used
+                if key in combinedUsages {
+                  stack.append(override)
+                }
+
+                # Otherwise, remember this override for later if the parent type ends up being used
+                else {
+                  var overrides = overridesToCheck.get(key, null)
+                  if overrides == null {
+                    overrides = []
+                    overridesToCheck[key] = overrides
+                  }
+                  overrides.append(override)
+                }
+              }
+            }
+          }
+
+          # Handle overrides dependent on this type
+          else if symbol.kind.isType {
+            var overrides = overridesToCheck.get(symbol.id, null)
+            if overrides != null {
+              stack.append(overrides)
+            }
+          }
+        }
+      }
+
+      return combinedUsages
+    }
+
+    def _changeContext(symbol Symbol) {
+      if context != null {
+        var values = _currentUsages.values
+        values.sort(Symbol.SORT_BY_ID) # Sort so the order is deterministic
+        _usages[context.id] = values
+      }
+      _currentUsages = {}
+      if symbol != null {
+        _includeSymbol(symbol)
+        _currentUsages[symbol.id] = symbol
+      }
+      context = symbol
+    }
+
+    def _recordOverride(base FunctionSymbol, derived FunctionSymbol) {
+      var overrides = _overridesForSymbol.get(base.id, null)
+      if overrides == null {
+        overrides = []
+        _overridesForSymbol[base.id] = overrides
+      }
+      overrides.append(derived)
+    }
+
+    def _recordUsage(symbol Symbol) {
+      _includeSymbol(symbol)
+      if !symbol.kind.isLocal {
+        _currentUsages[symbol.id] = symbol
+      }
+    }
+
+    def _visitObject(symbol ObjectSymbol) {
+      for object in symbol.objects {
+        _changeContext(object)
+        _recordUsage(symbol)
+
+        # Always pull the base class in
+        if object.baseClass != null {
+          _recordUsage(object.baseClass)
+        }
+
+        # Only pull interfaces in for typed targets (interfaces disappear entirely for untyped targets)
+        if _mode != .IGNORE_TYPES && object.interfaceTypes != null {
+          for type in object.interfaceTypes {
+            if type.symbol != null {
+              _recordUsage(type.symbol)
+            }
+          }
+        }
+
+        # If an imported type is used, automatically assume all functions and
+        # variables for that type are used too
+        if object.isImported {
+          for function in object.functions {
+            _recordUsage(function)
+          }
+          for variable in object.functions {
+            _recordUsage(variable)
+          }
+        }
+
+        _visitObject(object)
+      }
+
+      for function in symbol.functions {
+        _changeContext(function)
+
+        # Instance functions shouldn't cause their instance type to be emitted for dynamically-typed targets
+        if _mode != .IGNORE_TYPES || function.kind != .FUNCTION_INSTANCE {
+          _recordUsage(symbol)
+        }
+
+        _visitFunction(function)
+      }
+
+      for variable in symbol.variables {
+        _changeContext(variable)
+
+        # Instance variables shouldn't require the class to be present because
+        # accessing an instance variable already requires a constructed instance
+        if variable.kind != .VARIABLE_INSTANCE {
+          _recordUsage(symbol)
+        }
+
+        _visitVariable(variable)
+      }
+    }
+
+    def _visitFunction(symbol FunctionSymbol) {
+      for argument in symbol.arguments {
+        _visitVariable(argument)
+      }
+
+      _visitType(symbol.resolvedType.returnType)
+      _visitNode(symbol.block)
+
+      # Remember which functions are overridden for later
+      if symbol.overridden != null {
+        _recordOverride(symbol.overridden, symbol)
+      }
+
+      # Remember which functions are overridden for later
+      if symbol.implementations != null {
+        for function in symbol.implementations {
+          _recordOverride(symbol, function)
+          _recordOverride(function, symbol)
+        }
+      }
+    }
+
+    def _visitVariable(symbol VariableSymbol) {
+      _visitType(symbol.resolvedType)
+      _visitNode(symbol.value)
+    }
+
+    def _visitNode(node Node) {
+      if node == null {
+        return
+      }
+
+      if node.kind == .CAST {
+        _visitNode(node.castValue)
+        _visitType(node.castType.resolvedType)
+      }
+
+      # This is necessary to preserve the types of constant-folded enums in typed languages
+      else if node.kind == .CONSTANT && _mode == .USE_TYPES {
+        _visitType(node.resolvedType)
+      }
+
+      else {
+        for child = node.firstChild; child != null; child = child.nextSibling {
+          _visitNode(child)
+        }
+      }
+
+      if node.symbol != null {
+        _recordUsage(node.symbol)
+      }
+
+      switch node.kind {
+        # The function block is a child node and has already been visited
+        case .LAMBDA {
+          var function = node.symbol.asFunctionSymbol
+          for argument in function.arguments {
+            _visitVariable(argument)
+          }
+          _visitType(function.resolvedType.returnType)
+        }
+
+        # The variable value is a child node and has already been visited
+        case .VARIABLE {
+          _visitType(node.symbol.asVariableSymbol.resolvedType)
+        }
+      }
+    }
+
+    def _visitType(type Type) {
+      if _mode == .USE_TYPES && type != null && type.symbol != null {
+        _recordUsage(type.symbol)
+
+        # This should be a tree too, so infinite loops should not happen
+        if type.isParameterized {
+          for substitution in type.substitutions {
+            _visitType(substitution)
+          }
+        }
+      }
+    }
+  }
+}
+
+namespace Skew.Shaking {
+  def collectExportedSymbols(symbol ObjectSymbol, symbols List<Symbol>, entryPoint FunctionSymbol) {
+    for object in symbol.objects {
+      collectExportedSymbols(object, symbols, entryPoint)
+      if object.isExported {
+        symbols.append(object)
+      }
+    }
+
+    for function in symbol.functions {
+      if function.isExported || function == entryPoint {
+        symbols.append(function)
+      }
+    }
+
+    for variable in symbol.variables {
+      if variable.isExported {
+        symbols.append(variable)
+      }
+    }
+  }
+
+  def removeUnusedSymbols(symbol ObjectSymbol, usages IntMap<Symbol>) {
+    symbol.objects.removeIf(object => !(object.id in usages))
+    symbol.functions.removeIf(function => !(function.id in usages))
+    symbol.variables.removeIf(variable => !(variable.id in usages))
+
+    for object in symbol.objects {
+      removeUnusedSymbols(object, usages)
+    }
+  }
+}
+
+# Only enable toString in debug mode because of tracking overhead
+if !RELEASE {
+  class Skew.UsageGraph {
+    var _allSymbols IntMap<Symbol> = {}
+
+    def _includeSymbol(symbol Symbol) {
+      _allSymbols[symbol.id] = symbol
+    }
+
+    def toString string {
+      var symbols = _allSymbols.values
+      symbols.sort(Symbol.SORT_BY_ID) # Sort so the order is deterministic
+      var text = ""
+      for symbol in symbols {
+        var implies = _usages.get(symbol.id, null)
+        if text != "" { text += "\n" }
+        text += symbol.fullName + " => [" + (implies != null ? ", ".join(implies.map<string>(s => s.fullName)) : "") + "]"
+      }
+      return text
+    }
+  }
+}
+
+else {
+  class Skew.UsageGraph {
+    def _includeSymbol(symbol Symbol) {
+    }
+  }
+}

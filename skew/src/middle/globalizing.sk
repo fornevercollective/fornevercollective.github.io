@@ -1,0 +1,96 @@
+namespace Skew {
+  enum PassKind {
+    GLOBALIZING
+  }
+
+  class GlobalizingPass : Pass {
+    over kind PassKind {
+      return .GLOBALIZING
+    }
+
+    over run(context PassContext) {
+      var globalizeAllFunctions = context.options.globalizeAllFunctions
+      var virtualLookup = globalizeAllFunctions || context.options.isAlwaysInlinePresent ? VirtualLookup.new(context.global) : null
+      var motionContext = Motion.Context.new
+
+      for info in context.callGraph.callInfo {
+        var symbol = info.symbol
+
+        # Turn certain instance functions into global functions
+        if symbol.kind == .FUNCTION_INSTANCE && (
+            symbol.parent.kind.isEnumOrFlags ||
+            symbol.parent.kind == .OBJECT_WRAPPED ||
+            symbol.parent.kind == .OBJECT_INTERFACE && symbol.block != null ||
+            symbol.parent.isImported && !symbol.isImported ||
+            (globalizeAllFunctions || symbol.isInliningForced) && !symbol.isImportedOrExported && !virtualLookup.isVirtual(symbol)) {
+
+          var function = symbol.asFunctionSymbol
+          function.kind = .FUNCTION_GLOBAL
+          function.arguments.prepend(function.this)
+          function.resolvedType.argumentTypes.prepend(function.this.resolvedType)
+          function.this = null
+
+          # The globalized function needs instance type parameters
+          if function.parent.asObjectSymbol.parameters != null {
+            function.parent.asObjectSymbol.functions.removeOne(function)
+            motionContext.moveSymbolIntoNewNamespace(function)
+          }
+
+          # Update all call sites
+          for callSite in info.callSites {
+            var value = callSite.callNode.callValue
+
+            # Rewrite "super(foo)" to "bar(self, foo)"
+            if value.kind == .SUPER {
+              var this = callSite.enclosingSymbol.asFunctionSymbol.this
+              value.replaceWith(Node.createSymbolReference(this))
+            }
+
+            # Rewrite "self.foo(bar)" to "foo(self, bar)"
+            else {
+              value.replaceWith((value.kind == .PARAMETERIZE ? value.parameterizeValue : value).dotTarget.remove)
+            }
+
+            callSite.callNode.prependChild(Node.createSymbolReference(function))
+          }
+        }
+      }
+
+      motionContext.finish
+    }
+  }
+
+  class VirtualLookup {
+    const _map IntMap<int> = {}
+
+    def new(global ObjectSymbol) {
+      _visitObject(global)
+    }
+
+    def isVirtual(symbol FunctionSymbol) bool {
+      return symbol.id in _map
+    }
+
+    def _visitObject(symbol ObjectSymbol) {
+      for object in symbol.objects {
+        _visitObject(object)
+      }
+
+      for function in symbol.functions {
+        if function.overridden != null {
+          _map[function.overridden.id] = 0
+          _map[function.id] = 0
+        }
+
+        if symbol.kind == .OBJECT_INTERFACE && function.kind == .FUNCTION_INSTANCE && function.forwardTo == null {
+          if function.implementations != null {
+            for implementation in function.implementations {
+              _map[implementation.id] = 0
+            }
+          }
+          _map[function.id] = 0
+        }
+      }
+    }
+  }
+}

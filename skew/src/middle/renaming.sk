@@ -1,0 +1,247 @@
+namespace Skew {
+  enum PassKind {
+    RENAMING
+  }
+
+  class RenamingPass : Pass {
+    over kind PassKind {
+      return .RENAMING
+    }
+
+    over run(context PassContext) {
+      Renaming.renameGlobal(context.log, context.global)
+    }
+  }
+}
+
+namespace Skew.Renaming {
+  def renameGlobal(log Log, global ObjectSymbol) {
+    # Collect all functions
+    var functions List<FunctionSymbol> = []
+    collectFunctionAndRenameObjectsAndVariables(global, functions)
+
+    # Compute naming groups
+    var labels = UnionFind.new.allocate(functions.count)
+    var groups List<List<FunctionSymbol>> = []
+    var firstScopeForObject = IntMap<Scope>.new
+    for i in 0..functions.count {
+      functions[i].namingGroup = i
+      groups.append(null)
+    }
+    for function in functions {
+      if function.overridden != null {
+        labels.union(function.namingGroup, function.overridden.namingGroup)
+      }
+      if function.implementations != null {
+        for implementation in function.implementations {
+          labels.union(function.namingGroup, implementation.namingGroup)
+        }
+      }
+    }
+    for function in functions {
+      var label = labels.find(function.namingGroup)
+      var group = groups[label]
+      function.namingGroup = label
+      if group == null {
+        group = []
+        groups[label] = group
+      } else {
+        assert(function.name == group.first.name)
+      }
+      group.append(function)
+
+      # Certain parent objects such as namespaces may have multiple scopes.
+      # However, we want to resolve name collisions in the same scope to detect
+      # collisions across all scopes. Do this by using the first scope.
+      if !(function.parent.id in firstScopeForObject) {
+        firstScopeForObject[function.parent.id] = function.scope.parent
+      }
+    }
+
+    # Rename stuff
+    for group in groups {
+      if group == null {
+        continue
+      }
+
+      var isImportedOrExported = false
+      var shouldRename = false
+      var isInvalid = false
+      var rename string = null
+
+      for function in group {
+        if function.isImportedOrExported {
+          isImportedOrExported = true
+        }
+
+        # Make sure there isn't more than one renamed symbol
+        if function.rename != null {
+          if rename != null && rename != function.rename {
+            log.semanticErrorDuplicateRename(function.range, function.name, rename, function.rename)
+          }
+          rename = function.rename
+        }
+
+        # Rename functions with unusual names and make sure overloaded functions have unique names
+        if !shouldRename {
+          if isInvalidIdentifier(function.name) {
+            isInvalid = true
+            shouldRename = true
+          } else if function.overloaded != null && function.overloaded.symbols.count > 1 {
+            shouldRename = true
+          }
+        }
+      }
+
+      # Bake in the rename annotation now
+      if rename != null {
+        for function in group {
+          function.flags |= .IS_RENAMED
+          function.name = rename
+          function.rename = null
+        }
+        continue
+      }
+
+      # One function with a pinned name causes the whole group to avoid renaming
+      if !shouldRename || isImportedOrExported && !isInvalid {
+        continue
+      }
+
+      var first = group.first
+      var arguments = first.arguments.count
+      var count = 0
+      var start = first.name
+
+      if (arguments == 0 || arguments == 1 && first.kind == .FUNCTION_GLOBAL) && start in unaryPrefixes {
+        start = unaryPrefixes[start]
+      } else if start in prefixes {
+        start = prefixes[start]
+      } else {
+        if start.startsWith("@") {
+          start = start.slice(1)
+        }
+        if isInvalidIdentifier(start) {
+          start = generateValidIdentifier(start)
+        }
+      }
+
+      # Generate a new name
+      var name = start
+      while group.any(function => firstScopeForObject[function.parent.id].isNameUsed(name)) {
+        count++
+        name = start + count.toString
+      }
+      for function in group {
+        firstScopeForObject[function.parent.id].reserveName(name, null)
+        function.name = name
+      }
+    }
+  }
+
+  def collectFunctionAndRenameObjectsAndVariables(symbol ObjectSymbol, functions List<FunctionSymbol>) {
+    for object in symbol.objects {
+      if object.rename != null {
+        object.name = object.rename
+        object.rename = null
+      }
+      collectFunctionAndRenameObjectsAndVariables(object, functions)
+    }
+
+    for function in symbol.functions {
+      functions.append(function)
+    }
+
+    for variable in symbol.variables {
+      if variable.rename != null {
+        variable.name = variable.rename
+        variable.rename = null
+      }
+    }
+  }
+
+  def isAlpha(c int) bool {
+    return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_'
+  }
+
+  def isNumber(c int) bool {
+    return c >= '0' && c <= '9'
+  }
+
+  def isInvalidIdentifier(name string) bool {
+    for i in 0..name.count {
+      var c = name[i]
+      if !isAlpha(c) && (i == 0 || !isNumber(c)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  def generateValidIdentifier(name string) string {
+    var text = ""
+    for i in 0..name.count {
+      var c = name[i]
+      if isAlpha(c) || isNumber(c) {
+        text += name.get(i)
+      }
+    }
+    if text != "" && name.endsWith("=") {
+      return "set" + withUppercaseFirstLetter(text)
+    }
+    return text == "" || !isAlpha(text[0]) ? "_" + text : text
+  }
+
+  const unaryPrefixes = {
+    "!": "not",
+    "+": "positive",
+    "++": "increment",
+    "-": "negative",
+    "--": "decrement",
+    "~": "complement",
+  }
+
+  const prefixes = {
+    # Binary operators
+    "%": "remainder",
+    "%%": "modulus",
+    "&": "and",
+    "*": "multiply",
+    "**": "power",
+    "+": "add",
+    "-": "subtract",
+    "/": "divide",
+    "<<": "leftShift",
+    "<=>": "compare",
+    ">>": "rightShift",
+    ">>>": "unsignedRightShift",
+    "^": "xor",
+    "in": "contains",
+    "|": "or",
+
+    # Binary assignment operators
+    "%%=": "modulusUpdate",
+    "%=": "remainderUpdate",
+    "&=": "andUpdate",
+    "**=": "powerUpdate",
+    "*=": "multiplyUpdate",
+    "+=": "addUpdate",
+    "-=": "subtractUpdate",
+    "/=": "divideUpdate",
+    "<<=": "leftShiftUpdate",
+    ">>=": "rightShiftUpdate",
+    "^=": "xorUpdate",
+    "|=": "orUpdate",
+
+    # Index operators
+    "[]": "get",
+    "[]=": "set",
+
+    # Initializer operators
+    "<>...</>": "append",
+    "[...]": "append",
+    "[new]": "new",
+    "{...}": "insert",
+    "{new}": "new",
+  }
+}

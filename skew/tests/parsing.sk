@@ -1,0 +1,1853 @@
+namespace Skew.Tests {
+  def testParsing {
+
+test("
+var x = ''
+var y = '1'
+var z = '12'
+", "
+<stdin>:1:9: error: Use double quotes for strings (single quotes are for character literals)
+var x = ''
+        ~~
+<stdin>:3:9: error: Use double quotes for strings (single quotes are for character literals)
+var z = '12'
+        ~~~~
+<stdin>:1:9: fix: Replace single quotes with double quotes
+var x = ''
+        ~~
+        [\"\"]
+<stdin>:3:9: fix: Replace single quotes with double quotes
+var z = '12'
+        ~~~~
+        [\"12\"]
+")
+
+test("
+var foo = [
+  0x7FFFFFFF,
+  -0x7FFFFFFF,
+  0x80000000,
+  -0x80000000,
+  0xFFFFFFFF,
+  -0xFFFFFFFF,
+  0x100000000,
+  -0x100000000,
+  0xFFFFFFFFFFFFFFFF,
+  -0xFFFFFFFFFFFFFFFF,
+]
+var bar = [
+  2147483647,
+  -2147483647,
+  2147483648,
+  -2147483648,
+  2147483648,
+  -2147483648,
+  4294967295,
+  -4294967295,
+  4294967296,
+  -4294967296,
+  12345678901234567890,
+  -12345678901234567890,
+]
+", "
+<stdin>:8:3: error: Integer literal is too big to fit in 32 bits
+  0x100000000,
+  ~~~~~~~~~~~
+<stdin>:9:4: error: Integer literal is too big to fit in 32 bits
+  -0x100000000,
+   ~~~~~~~~~~~
+<stdin>:10:3: error: Integer literal is too big to fit in 32 bits
+  0xFFFFFFFFFFFFFFFF,
+  ~~~~~~~~~~~~~~~~~~
+<stdin>:11:4: error: Integer literal is too big to fit in 32 bits
+  -0xFFFFFFFFFFFFFFFF,
+   ~~~~~~~~~~~~~~~~~~
+<stdin>:22:3: error: Integer literal is too big to fit in 32 bits
+  4294967296,
+  ~~~~~~~~~~
+<stdin>:23:4: error: Integer literal is too big to fit in 32 bits
+  -4294967296,
+   ~~~~~~~~~~
+<stdin>:24:3: error: Integer literal is too big to fit in 32 bits
+  12345678901234567890,
+  ~~~~~~~~~~~~~~~~~~~~
+<stdin>:25:4: error: Integer literal is too big to fit in 32 bits
+  -12345678901234567890,
+   ~~~~~~~~~~~~~~~~~~~~
+")
+
+test("
+def foo {
+  0;
+  var x = 0;
+  ;
+  if true {};
+  return;
+}
+", "
+<stdin>:2:4: error: Expected newline but found \";\"
+  0;
+   ^
+<stdin>:3:12: error: Expected newline but found \";\"
+  var x = 0;
+           ^
+<stdin>:4:3: error: Unexpected \";\"
+  ;
+  ^
+<stdin>:5:13: error: Expected newline but found \";\"
+  if true {};
+            ^
+<stdin>:6:9: error: Expected newline but found \";\"
+  return;
+        ^
+<stdin>:2:3: warning: Unused expression
+  0;
+  ^
+<stdin>:3:7: warning: Local variable \"x\" is never read
+  var x = 0;
+      ^
+<stdin>:2:4: fix: Remove \";\"
+  0;
+   ^
+   []
+<stdin>:3:12: fix: Remove \";\"
+  var x = 0;
+           ^
+           []
+<stdin>:5:13: fix: Remove \";\"
+  if true {};
+            ^
+            []
+<stdin>:6:9: fix: Remove \";\"
+  return;
+        ^
+        []
+")
+
+test("
+var x = 0;
+var y = 0;
+", "
+<stdin>:1:10: error: Expected newline but found \";\"
+var x = 0;
+         ^
+<stdin>:2:10: error: Expected newline but found \";\"
+var y = 0;
+         ^
+<stdin>:1:10: fix: Remove \";\"
+var x = 0;
+         ^
+         []
+<stdin>:2:10: fix: Remove \";\"
+var y = 0;
+         ^
+         []
+")
+
+test("
+def main {
+  while true {} else {}
+}
+", "
+<stdin>:2:17: error: Unexpected \"else\"
+  while true {} else {}
+                ~~~~
+")
+
+test("
+var x = 0b2
+", "
+<stdin>:1:10: error: Expected newline but found identifier
+var x = 0b2
+         ~~
+")
+
+test("
+var x = 0b02
+", "
+<stdin>:1:12: error: Expected newline but found integer
+var x = 0b02
+           ^
+")
+
+test("
+var x = 0o8
+", "
+<stdin>:1:10: error: Expected newline but found identifier
+var x = 0o8
+         ~~
+")
+
+test("
+var x = 0o08
+", "
+<stdin>:1:12: error: Expected newline but found integer
+var x = 0o08
+           ^
+")
+
+test("
+var x = 0xG
+", "
+<stdin>:1:10: error: Expected newline but found identifier
+var x = 0xG
+         ~~
+")
+
+test("
+var x = 0x0G
+", "
+<stdin>:1:12: error: Expected newline but found identifier
+var x = 0x0G
+           ^
+")
+
+test("
+var ns.foo int
+", "
+<stdin>:1:7: error: Expected newline but found \".\"
+var ns.foo int
+      ^
+<stdin>:1:5: error: The implicitly typed variable \"ns\" must be initialized
+var ns.foo int
+    ~~
+")
+
+test("
+def ns.foo int
+", "
+<stdin>:1:7: error: Expected newline but found \".\"
+def ns.foo int
+      ^
+<stdin>:1:5: error: Non-imported function \"ns\" is missing an implementation (use the \"@import\" annotation if it's implemented externally)
+def ns.foo int
+    ~~
+")
+
+test("
+def main {
+  var foo = dynamic
+}
+", "
+<stdin>:2:20: error: Expected \".\" but found newline
+  var foo = dynamic
+                   ^
+<stdin>:2:7: warning: Local variable \"foo\" is never read
+  var foo = dynamic
+      ~~~
+")
+
+# Test splitting the ">>" token
+test("
+var x List<int>>
+", "
+<stdin>:1:16: error: Expected newline but found \">\"
+var x List<int>>
+               ^
+")
+
+# Test splitting the ">=" token
+test("
+var x List<int>==
+", "
+<stdin>:1:17: error: Unexpected \"=\"
+var x List<int>==
+                ^
+")
+
+# Test splitting the ">>>" token
+test("
+var x List<int>>>
+", "
+<stdin>:1:16: error: Expected newline but found \">>\"
+var x List<int>>>
+               ~~
+")
+
+# Test splitting the ">>=" token
+test("
+var x List<int>>=
+", "
+<stdin>:1:16: error: Expected newline but found \">=\"
+var x List<int>>=
+               ~~
+")
+
+# Test splitting the ">>>=" token
+test("
+var x List<int>>>=
+", "
+<stdin>:1:16: error: Expected newline but found \">>=\"
+var x List<int>>>=
+               ~~~
+")
+
+# Test a string interpolation error case
+test("
+var x = \"\\()\"
+", "
+<stdin>:1:12: error: Unexpected string interpolation
+var x = \"\\()\"
+           ~~
+")
+
+# Test a string interpolation error case
+test("
+var x = \"\\(1)\\()\"
+", "
+<stdin>:1:16: error: Unexpected string interpolation
+var x = \"\\(1)\\()\"
+               ~~
+")
+
+# Test a string interpolation error case
+test("
+var x = \"\\([)\\(])\"
+", "
+<stdin>:1:14: error: Syntax error \"\\\"
+var x = \"\\([)\\(])\"
+             ^
+<stdin>:1:13: error: Unexpected \")\"
+var x = \"\\([)\\(])\"
+            ^
+")
+
+# Test a string interpolation error case
+test("
+var x = \"\\({)\\(})\"
+", "
+<stdin>:1:14: error: Syntax error \"\\\"
+var x = \"\\({)\\(})\"
+             ^
+<stdin>:1:13: error: Unexpected \")\"
+var x = \"\\({)\\(})\"
+            ^
+")
+
+# Test a string interpolation error case
+test("
+var x = \"\\(()\\())\"
+", "
+<stdin>:1:14: error: Syntax error \"\\\"
+var x = \"\\(()\\())\"
+             ^
+<stdin>:1:15: error: Expected \"=>\" but found end of input
+var x = \"\\(()\\())\"
+              ^
+
+")
+
+# Test XML tag mismatch
+test("
+var foo = <Foo></Foo.Bar>
+", "
+<stdin>:1:18: error: Expected \"Foo\" but found \"Foo.Bar\" in XML literal
+var foo = <Foo></Foo.Bar>
+                 ~~~~~~~
+<stdin>:1:12: note: Attempted to match opening tag here
+var foo = <Foo></Foo.Bar>
+           ~~~
+<stdin>:1:12: error: \"Foo\" is not declared
+var foo = <Foo></Foo.Bar>
+           ~~~
+")
+
+# Test XML literals
+test("
+var foo = <dynamic.Foo/>
+", "
+<stdin>:1:12: error: Expected identifier but found \"dynamic\"
+var foo = <dynamic.Foo/>
+           ~~~~~~~
+")
+
+# Test XML attribute precedence
+test("
+var foo = <Foo
+  foo=bar
+  foo=++bar
+  foo=bar++
+  foo=(bar + bar)
+  foo=bar + bar
+/>
+", "
+<stdin>:6:11: error: Expected \">\" but found \"+\"
+  foo=bar + bar
+          ^
+")
+
+# Test parsing XML being typed
+test("
+class Foo {
+  var foo Foo = <Foo><</Foo>
+  def <>...</>(x Foo) {}
+}
+", "
+<stdin>:2:22: error: Unexpected \"<<\"
+  var foo Foo = <Foo><</Foo>
+                     ~~
+<stdin>:2:24: error: Expected newline but found \"/\"
+  var foo Foo = <Foo><</Foo>
+                       ^
+<stdin>:2:25: error: Expected newline but found identifier
+  var foo Foo = <Foo><</Foo>
+                        ~~~
+<stdin>:2:28: error: Expected newline but found \">\"
+  var foo Foo = <Foo><</Foo>
+                           ^
+<stdin>:3:7: error: Expected newline but found \"<>...</>\"
+  def <>...</>(x Foo) {}
+      ~~~~~~~~
+<stdin>:3:15: error: Expected newline but found \"(\"
+  def <>...</>(x Foo) {}
+              ^
+<stdin>:3:23: error: Expected \"=>\" but found \"{\"
+  def <>...</>(x Foo) {}
+                      ^
+<stdin>:4:1: error: Expected \"</\" but found \"}\"
+}
+^
+")
+
+# Test parsing recovery at obvious statement boundaries
+test("
+def test {
+  foo(
+  var x = 0
+  foo(
+  const y = 0
+  foo(
+  while true {}
+  foo(
+  for i in 0..5 {}
+  foo(
+  if true {}
+  foo(
+  else {}
+  foo(
+  return
+  foo(
+  break
+  foo(
+  continue
+  foo(
+  try {}
+  foo(
+  catch e dynamic {}
+  foo(
+  finally {}
+}
+", "
+<stdin>:3:3: error: Unexpected \"var\"
+  var x = 0
+  ~~~
+<stdin>:5:3: error: Unexpected \"const\"
+  const y = 0
+  ~~~~~
+<stdin>:7:3: error: Unexpected \"while\"
+  while true {}
+  ~~~~~
+<stdin>:9:3: error: Unexpected \"for\"
+  for i in 0..5 {}
+  ~~~
+<stdin>:11:3: error: Unexpected \"if\"
+  if true {}
+  ~~
+<stdin>:13:3: error: Unexpected \"else\"
+  else {}
+  ~~~~
+<stdin>:15:3: error: Unexpected \"return\"
+  return
+  ~~~~~~
+<stdin>:17:3: error: Unexpected \"break\"
+  break
+  ~~~~~
+<stdin>:19:3: error: Unexpected \"continue\"
+  continue
+  ~~~~~~~~
+<stdin>:21:3: error: Unexpected \"try\"
+  try {}
+  ~~~
+<stdin>:23:3: error: Unexpected \"catch\"
+  catch e dynamic {}
+  ~~~~~
+<stdin>:25:3: error: Unexpected \"finally\"
+  finally {}
+  ~~~~~~~
+<stdin>:2:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:4:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:6:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:8:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:10:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:12:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:14:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:16:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:17:3: error: Cannot use \"break\" outside a loop
+  break
+  ~~~~~
+<stdin>:18:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:19:3: error: Cannot use \"continue\" outside a loop
+  continue
+  ~~~~~~~~
+<stdin>:20:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:22:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:24:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:3:7: warning: Local variable \"x\" is never read
+  var x = 0
+      ^
+<stdin>:5:9: warning: Local variable \"y\" is never read
+  const y = 0
+        ^
+")
+
+# Test parsing recovery after "var" and "const"
+test("
+def test {
+  var
+  var x = 0
+  const
+  const y = 0
+}
+", "
+<stdin>:2:6: error: Expected identifier but found newline
+  var
+     ^
+<stdin>:4:8: error: Expected identifier but found newline
+  const
+       ^
+<stdin>:3:7: warning: Local variable \"x\" is never read
+  var x = 0
+      ^
+<stdin>:5:9: warning: Local variable \"y\" is never read
+  const y = 0
+        ^
+")
+
+# Test partial statement presence during parsing recovery
+test("
+@export
+def test {
+  var x = [
+  var y = x # This should not be a reference error about \"x\"
+}
+", "
+<stdin>:4:3: error: Unexpected \"var\"
+  var y = x # This should not be a reference error about \"x\"
+  ~~~
+<stdin>:4:7: warning: Local variable \"y\" is never read
+  var y = x # This should not be a reference error about \"x\"
+      ^
+")
+
+# This should not infinite loop
+test("
+def test {
+  f(
+}
+", "
+<stdin>:3:1: error: Unexpected \"}\"
+}
+^
+<stdin>:2:3: error: \"f\" is not declared
+  f(
+  ^
+")
+
+# Check for a special error message when attempting to use C-style variable declarations (complex cases aren't handled but are still tested)
+test("
+def test {
+  # Bad
+  int a = 0
+  List<int> b = []
+  fn(int) int c = x => x
+  dynamic d = null
+
+  # Good
+  var w int = 0
+  var x List<int> = []
+  var y fn(int) int = x => x
+  var z dynamic = null
+}
+", "
+<stdin>:3:3: error: Declare variables using \"var\" and put the type after the variable name
+  int a = 0
+  ~~~
+<stdin>:4:3: error: Declare variables using \"var\" and put the type after the variable name
+  List<int> b = []
+  ~~~~~~~~~
+<stdin>:5:11: error: Expected newline but found identifier
+  fn(int) int c = x => x
+          ~~~
+<stdin>:5:11: error: Declare variables using \"var\" and put the type after the variable name
+  fn(int) int c = x => x
+          ~~~
+<stdin>:6:11: error: Expected \".\" but found identifier
+  dynamic d = null
+          ^
+<stdin>:5:3: error: \"fn\" is not declared
+  fn(int) int c = x => x
+  ~~
+<stdin>:5:6: error: Unexpected type \"int\"
+  fn(int) int c = x => x
+     ~~~
+<stdin>:5:19: error: Unable to determine the type of \"x\"
+  fn(int) int c = x => x
+                  ^
+<stdin>:5:19: error: Cannot convert from type \"fn(dynamic) dynamic\" to type \"int\"
+  fn(int) int c = x => x
+                  ~~~~~~
+<stdin>:6:11: error: \"d\" is not declared
+  dynamic d = null
+          ^
+<stdin>:3:7: warning: Local variable \"a\" is never read
+  int a = 0
+      ^
+<stdin>:4:13: warning: Local variable \"b\" is never read
+  List<int> b = []
+            ^
+<stdin>:5:15: warning: Local variable \"c\" is never read
+  fn(int) int c = x => x
+              ^
+<stdin>:9:7: warning: Local variable \"w\" is never read
+  var w int = 0
+      ^
+<stdin>:10:7: warning: Local variable \"x\" is never read
+  var x List<int> = []
+      ^
+<stdin>:11:7: warning: Local variable \"y\" is never read
+  var y fn(int) int = x => x
+      ^
+<stdin>:12:7: warning: Local variable \"z\" is never read
+  var z dynamic = null
+      ^
+<stdin>:3:3: fix: Declare \"a\" correctly
+  int a = 0
+  ~~~~~
+  [var a int]
+<stdin>:4:3: fix: Declare \"b\" correctly
+  List<int> b = []
+  ~~~~~~~~~~~
+  [var b List<int>]
+<stdin>:5:11: fix: Declare \"c\" correctly
+  fn(int) int c = x => x
+          ~~~~~
+          [var c int]
+")
+
+# Check for issues with parsing type parameters and string interpolation
+test("
+var a = \"\\(x > y)\"
+var b = \"\\(x < y)\"
+var c = \"\\(x <= y)\"
+var d = \"\\(x >= y)\"
+var e = \"\\(x <=> y)\"
+", "
+<stdin>:1:12: error: \"x\" is not declared
+var a = \"\\(x > y)\"
+           ^
+<stdin>:1:16: error: \"y\" is not declared
+var a = \"\\(x > y)\"
+               ^
+<stdin>:2:12: error: \"x\" is not declared
+var b = \"\\(x < y)\"
+           ^
+<stdin>:2:16: error: \"y\" is not declared
+var b = \"\\(x < y)\"
+               ^
+<stdin>:3:12: error: \"x\" is not declared
+var c = \"\\(x <= y)\"
+           ^
+<stdin>:3:17: error: \"y\" is not declared
+var c = \"\\(x <= y)\"
+                ^
+<stdin>:4:12: error: \"x\" is not declared
+var d = \"\\(x >= y)\"
+           ^
+<stdin>:4:17: error: \"y\" is not declared
+var d = \"\\(x >= y)\"
+                ^
+<stdin>:5:12: error: \"x\" is not declared
+var e = \"\\(x <=> y)\"
+           ^
+<stdin>:5:18: error: \"y\" is not declared
+var e = \"\\(x <=> y)\"
+                 ^
+")
+
+# Check that comma separated variables are parsed correctly
+test("
+var a int, b int
+var c = 1, d = 2
+const e = 3, f = 4
+
+class Foo {
+  var a int, b int
+  var c = 1, d = 2
+  const e = 3, f = 4
+}
+
+def test {
+  var a int, b int
+  var c = 1, d = 2
+  const e = 3, f = 4
+}
+", "
+<stdin>:12:7: warning: Local variable \"a\" is never read
+  var a int, b int
+      ^
+<stdin>:12:14: warning: Local variable \"b\" is never read
+  var a int, b int
+             ^
+<stdin>:13:7: warning: Local variable \"c\" is never read
+  var c = 1, d = 2
+      ^
+<stdin>:13:14: warning: Local variable \"d\" is never read
+  var c = 1, d = 2
+             ^
+<stdin>:14:9: warning: Local variable \"e\" is never read
+  const e = 3, f = 4
+        ^
+<stdin>:14:16: warning: Local variable \"f\" is never read
+  const e = 3, f = 4
+               ^
+")
+
+# Check that using braces on the next line works
+test("
+class Foo : int
+{
+  def test
+  {
+    if true
+    {
+    }
+
+    else if false
+    {
+    }
+
+    else
+    {
+    }
+
+    while true
+    {
+    }
+
+    for x = 0; x < 1; x++
+    {
+    }
+
+    for x in 1..2
+    {
+    }
+
+    switch 0
+    {
+      case 0
+      {
+      }
+
+      case 1, 2
+      {
+      }
+
+      default
+      {
+      }
+    }
+
+    try
+    {
+    }
+
+    catch e dynamic
+    {
+    }
+
+    finally
+    {
+    }
+
+    =>
+    {
+    }
+  }
+}
+", "
+<stdin>:1:13: error: Cannot extend type \"int\"
+class Foo : int
+            ~~~
+<stdin>:57:5: error: Cannot infer a type for this literal
+    {
+    ^
+<stdin>:56:5: warning: Unused expression
+    =>
+    ~~
+")
+
+# Check for a crash due to a type comparison on a dot expression with an implicit target
+test("
+def test {
+  switch 0 {
+    case .X {
+    case .Y {}
+  }
+}
+", "
+<stdin>:4:5: error: Unexpected \"case\"
+    case .Y {}
+    ~~~~
+<stdin>:4:10: error: Expected newline but found \".\"
+    case .Y {}
+         ^
+<stdin>:4:13: error: Expected newline but found \"{\"
+    case .Y {}
+            ^
+<stdin>:6:2: error: Expected newline but found end of input
+}
+ ^
+")
+
+# Allow commas between enums and allow enums between other declarations
+test("
+enum Foo {
+  def x {}
+  A, B
+  X, Y
+  def y {}
+}
+", "
+")
+
+# Forbid invalid enum names
+test("
+enum Foo {
+  def, A
+}
+", "
+<stdin>:2:6: error: Expected identifier but found \",\"
+  def, A
+     ^
+")
+
+# Forbid invalid enum names
+test("
+enum Foo {
+  A, def
+}
+", "
+<stdin>:2:6: error: Expected newline but found identifier
+  A, def
+     ~~~
+")
+
+# Warn about extra commas
+test("
+enum Foo {
+  A, B,
+  X, Y,
+}
+enum Bar { A, B, }
+", "
+<stdin>:2:7: warning: Unnecessary comma
+  A, B,
+      ^
+<stdin>:3:7: warning: Unnecessary comma
+  X, Y,
+      ^
+<stdin>:5:16: warning: Unnecessary comma
+enum Bar { A, B, }
+               ^
+<stdin>:2:7: fix: Remove comma
+  A, B,
+      ^
+      []
+<stdin>:3:7: fix: Remove comma
+  X, Y,
+      ^
+      []
+<stdin>:5:16: fix: Remove comma
+enum Bar { A, B, }
+               ^
+               []
+")
+
+# Test comment removal inside expressions
+test("
+def test {
+  0
+    .foo
+
+  0 # x
+    .foo
+
+  0
+    # x
+    .foo
+
+  0 # x
+    # x
+    .foo
+
+  true
+    ? 0
+    : 0
+
+  true # x
+    ? 0 # x
+    : 0
+
+  true
+    # x
+    ? 0
+    # x
+    : 0
+
+  true # x
+    # x
+    ? 0 # x
+    # x
+    : 0
+
+  foo(
+    0
+    , 1
+    )
+
+  foo(
+    0 # x
+    , 1 # x
+    )
+
+  foo(
+    0
+    # x
+    , 1
+    # x
+    )
+
+  foo(
+    0 # x
+    # x
+    , 1 # x
+    # x
+    )
+
+  [
+    null
+    , 1
+    ]
+
+  [
+    null # x
+    , 1 # x
+    ]
+
+  [
+    null
+    # x
+    , 1
+    # x
+    ]
+
+  [
+    null # x
+    # x
+    , 1 # x
+    # x
+    ]
+}
+", "
+<stdin>:3:6: error: \"foo\" is not declared on type \"int\"
+    .foo
+     ~~~
+<stdin>:6:6: error: \"foo\" is not declared on type \"int\"
+    .foo
+     ~~~
+<stdin>:10:6: error: \"foo\" is not declared on type \"int\"
+    .foo
+     ~~~
+<stdin>:14:6: error: \"foo\" is not declared on type \"int\"
+    .foo
+     ~~~
+<stdin>:17:7: warning: Both sides of \":\" are identical, is this a bug?
+    ? 0
+      ^
+<stdin>:17:7: warning: Unused expression
+    ? 0
+      ^
+<stdin>:18:7: warning: Unused expression
+    : 0
+      ^
+<stdin>:21:7: warning: Both sides of \":\" are identical, is this a bug?
+    ? 0 # x
+      ~~~~~
+<stdin>:21:7: warning: Unused expression
+    ? 0 # x
+      ^
+<stdin>:22:7: warning: Unused expression
+    : 0
+      ^
+<stdin>:26:7: warning: Both sides of \":\" are identical, is this a bug?
+    ? 0
+      ^
+<stdin>:26:7: warning: Unused expression
+    ? 0
+      ^
+<stdin>:28:7: warning: Unused expression
+    : 0
+      ^
+<stdin>:32:7: warning: Both sides of \":\" are identical, is this a bug?
+    ? 0 # x
+      ~~~~~
+<stdin>:32:7: warning: Unused expression
+    ? 0 # x
+      ^
+<stdin>:34:7: warning: Unused expression
+    : 0
+      ^
+<stdin>:36:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:41:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:46:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:53:3: error: \"foo\" is not declared
+  foo(
+  ~~~
+<stdin>:62:7: error: No common type for \"null\" and \"int\"
+    , 1
+      ^
+<stdin>:60:3: warning: Unused expression
+  [
+  ^
+<stdin>:67:7: error: No common type for \"null\" and \"int\"
+    , 1 # x
+      ^
+<stdin>:65:3: warning: Unused expression
+  [
+  ^
+<stdin>:73:7: error: No common type for \"null\" and \"int\"
+    , 1
+      ^
+<stdin>:70:3: warning: Unused expression
+  [
+  ^
+<stdin>:80:7: error: No common type for \"null\" and \"int\"
+    , 1 # x
+      ^
+<stdin>:77:3: warning: Unused expression
+  [
+  ^
+")
+
+# Check comment corrections
+test("
+var x int = false //this is a test
+var y int = false // this is also a test
+//////////
+", "
+<stdin>:1:19: error: Comments start with \"#\" instead of \"//\"
+var x int = false //this is a test
+                  ~~~~~~~~~~~~~~~~
+<stdin>:2:19: error: Comments start with \"#\" instead of \"//\"
+var y int = false // this is also a test
+                  ~~~~~~~~~~~~~~~~~~~~~~
+<stdin>:3:1: error: Comments start with \"#\" instead of \"//\"
+//////////
+~~~~~~~~~~
+<stdin>:1:13: error: Cannot convert from type \"bool\" to type \"int\" without a cast
+var x int = false //this is a test
+            ~~~~~
+<stdin>:2:13: error: Cannot convert from type \"bool\" to type \"int\" without a cast
+var y int = false // this is also a test
+            ~~~~~
+<stdin>:1:19: fix: Replace \"//\" with \"#\"
+var x int = false //this is a test
+                  ~~~~~~~~~~~~~~~~
+                  [#this is a test]
+<stdin>:2:19: fix: Replace \"//\" with \"#\"
+var y int = false // this is also a test
+                  ~~~~~~~~~~~~~~~~~~~~~~
+                  [# this is also a test]
+<stdin>:3:1: fix: Replace \"//\" with \"#\"
+//////////
+~~~~~~~~~~
+[#########]
+")
+
+# Check == and != corrections
+test("
+var x = 0 === 1
+var y = 0 !== 1
+", "
+<stdin>:1:11: error: Use the \"==\" operator instead
+var x = 0 === 1
+          ~~~
+<stdin>:2:11: error: Use the \"!=\" operator instead
+var y = 0 !== 1
+          ~~~
+<stdin>:1:11: fix: Replace with \"==\"
+var x = 0 === 1
+          ~~~
+          [==]
+<stdin>:2:11: fix: Replace with \"!=\"
+var y = 0 !== 1
+          ~~~
+          [!=]
+")
+
+# Check List<T> corrections
+test("
+var a int[] = []
+var b Foo.Bar.Baz[] = []
+var c Foo<T, fn() int>[] = []
+var d fn() int[] = null
+", "
+<stdin>:1:7: error: The array type is \"List<T>\"
+var a int[] = []
+      ~~~~~
+<stdin>:2:7: error: The array type is \"List<T>\"
+var b Foo.Bar.Baz[] = []
+      ~~~~~~~~~~~~~
+<stdin>:3:7: error: The array type is \"List<T>\"
+var c Foo<T, fn() int>[] = []
+      ~~~~~~~~~~~~~~~~~~
+<stdin>:4:12: error: The array type is \"List<T>\"
+var d fn() int[] = null
+           ~~~~~
+<stdin>:1:7: fix: Replace with \"List<int>\"
+var a int[] = []
+      ~~~~~
+      [List<int>]
+<stdin>:2:7: fix: Replace with \"List<Foo.Bar.Baz>\"
+var b Foo.Bar.Baz[] = []
+      ~~~~~~~~~~~~~
+      [List<Foo.Bar.Baz>]
+<stdin>:3:7: fix: Replace with \"List<Foo<T, fn() int>>\"
+var c Foo<T, fn() int>[] = []
+      ~~~~~~~~~~~~~~~~~~
+      [List<Foo<T, fn() int>>]
+<stdin>:4:12: fix: Replace with \"List<int>\"
+var d fn() int[] = null
+           ~~~~~
+           [List<int>]
+")
+
+# Check parentheses corrections on statements
+test("
+def test {
+  while (true) {}
+  for (i in 0..5) {}
+  for (i in [1, 2, 3]) {}
+  for (i = 0; i < 10; i++) {}
+  for (var i = 0; i < 10; i++) {}
+  for var i = 0; i < 10; i++ {}
+  if (true) {} else if (true) {}
+
+  while(true) {}
+  for(i in 0..5) {}
+  for(i in [1, 2, 3]) {}
+  for(i = 0; i < 10; i++) {}
+  for(var i = 0; i < 10; i++) {}
+  if(true) {} else if(true) {}
+}
+", "
+<stdin>:2:9: warning: Unnecessary parentheses
+  while (true) {}
+        ~~~~~~
+<stdin>:3:7: warning: Unnecessary parentheses
+  for (i in 0..5) {}
+      ~~~~~~~~~~~
+<stdin>:4:7: warning: Unnecessary parentheses
+  for (i in [1, 2, 3]) {}
+      ~~~~~~~~~~~~~~~~
+<stdin>:5:7: warning: Unnecessary parentheses
+  for (i = 0; i < 10; i++) {}
+      ~~~~~~~~~~~~~~~~~~~~
+<stdin>:6:8: error: The \"var\" keyword is unnecessary here since for loops automatically declare their variables
+  for (var i = 0; i < 10; i++) {}
+       ~~~
+<stdin>:6:7: warning: Unnecessary parentheses
+  for (var i = 0; i < 10; i++) {}
+      ~~~~~~~~~~~~~~~~~~~~~~~~
+<stdin>:7:7: error: The \"var\" keyword is unnecessary here since for loops automatically declare their variables
+  for var i = 0; i < 10; i++ {}
+      ~~~
+<stdin>:8:6: warning: Unnecessary parentheses
+  if (true) {} else if (true) {}
+     ~~~~~~
+<stdin>:8:24: warning: Unnecessary parentheses
+  if (true) {} else if (true) {}
+                       ~~~~~~
+<stdin>:10:8: warning: Unnecessary parentheses
+  while(true) {}
+       ~~~~~~
+<stdin>:11:6: warning: Unnecessary parentheses
+  for(i in 0..5) {}
+     ~~~~~~~~~~~
+<stdin>:12:6: warning: Unnecessary parentheses
+  for(i in [1, 2, 3]) {}
+     ~~~~~~~~~~~~~~~~
+<stdin>:13:6: warning: Unnecessary parentheses
+  for(i = 0; i < 10; i++) {}
+     ~~~~~~~~~~~~~~~~~~~~
+<stdin>:14:7: error: The \"var\" keyword is unnecessary here since for loops automatically declare their variables
+  for(var i = 0; i < 10; i++) {}
+      ~~~
+<stdin>:14:6: warning: Unnecessary parentheses
+  for(var i = 0; i < 10; i++) {}
+     ~~~~~~~~~~~~~~~~~~~~~~~~
+<stdin>:15:5: warning: Unnecessary parentheses
+  if(true) {} else if(true) {}
+    ~~~~~~
+<stdin>:15:22: warning: Unnecessary parentheses
+  if(true) {} else if(true) {}
+                     ~~~~~~
+<stdin>:2:9: fix: Remove parentheses
+  while (true) {}
+        ~~~~~~
+        [true]
+<stdin>:3:7: fix: Remove parentheses
+  for (i in 0..5) {}
+      ~~~~~~~~~~~
+      [i in 0..5]
+<stdin>:4:7: fix: Remove parentheses
+  for (i in [1, 2, 3]) {}
+      ~~~~~~~~~~~~~~~~
+      [i in [1, 2, 3]]
+<stdin>:5:7: fix: Remove parentheses
+  for (i = 0; i < 10; i++) {}
+      ~~~~~~~~~~~~~~~~~~~~
+      [i = 0; i < 10; i++]
+<stdin>:6:8: fix: Remove \"var\"
+  for (var i = 0; i < 10; i++) {}
+       ~~~~
+       []
+<stdin>:6:7: fix: Remove parentheses
+  for (var i = 0; i < 10; i++) {}
+      ~~~~~~~~~~~~~~~~~~~~~~~~
+      [var i = 0; i < 10; i++]
+<stdin>:7:7: fix: Remove \"var\"
+  for var i = 0; i < 10; i++ {}
+      ~~~~
+      []
+<stdin>:8:6: fix: Remove parentheses
+  if (true) {} else if (true) {}
+     ~~~~~~
+     [true]
+<stdin>:8:24: fix: Remove parentheses
+  if (true) {} else if (true) {}
+                       ~~~~~~
+                       [true]
+<stdin>:10:8: fix: Remove parentheses
+  while(true) {}
+       ~~~~~~
+       [ true]
+<stdin>:11:6: fix: Remove parentheses
+  for(i in 0..5) {}
+     ~~~~~~~~~~~
+     [ i in 0..5]
+<stdin>:12:6: fix: Remove parentheses
+  for(i in [1, 2, 3]) {}
+     ~~~~~~~~~~~~~~~~
+     [ i in [1, 2, 3]]
+<stdin>:13:6: fix: Remove parentheses
+  for(i = 0; i < 10; i++) {}
+     ~~~~~~~~~~~~~~~~~~~~
+     [ i = 0; i < 10; i++]
+<stdin>:14:7: fix: Remove \"var\"
+  for(var i = 0; i < 10; i++) {}
+      ~~~~
+      []
+<stdin>:14:6: fix: Remove parentheses
+  for(var i = 0; i < 10; i++) {}
+     ~~~~~~~~~~~~~~~~~~~~~~~~
+     [ var i = 0; i < 10; i++]
+<stdin>:15:5: fix: Remove parentheses
+  if(true) {} else if(true) {}
+    ~~~~~~
+    [ true]
+<stdin>:15:22: fix: Remove parentheses
+  if(true) {} else if(true) {}
+                     ~~~~~~
+                     [ true]
+")
+
+# Check for colon-before-type corrections
+test("
+var a: int, b: int
+
+def c(d: int, e: int): int {
+  var f: int, g: int
+  var h = (i: int, j: int) => {}
+}
+", "
+<stdin>:1:6: error: Do not use a colon before a type expression
+var a: int, b: int
+     ^
+<stdin>:1:14: error: Do not use a colon before a type expression
+var a: int, b: int
+             ^
+<stdin>:3:8: error: Do not use a colon before a type expression
+def c(d: int, e: int): int {
+       ^
+<stdin>:3:16: error: Do not use a colon before a type expression
+def c(d: int, e: int): int {
+               ^
+<stdin>:3:22: error: Do not use a colon before a type expression
+def c(d: int, e: int): int {
+                     ^
+<stdin>:4:8: error: Do not use a colon before a type expression
+  var f: int, g: int
+       ^
+<stdin>:4:16: error: Do not use a colon before a type expression
+  var f: int, g: int
+               ^
+<stdin>:5:13: error: Do not use a colon before a type expression
+  var h = (i: int, j: int) => {}
+            ^
+<stdin>:5:21: error: Do not use a colon before a type expression
+  var h = (i: int, j: int) => {}
+                    ^
+<stdin>:3:5: error: All control paths for \"c\" must return a value of type \"int\"
+def c(d: int, e: int): int {
+    ^
+<stdin>:4:7: warning: Local variable \"f\" is never read
+  var f: int, g: int
+      ^
+<stdin>:4:15: warning: Local variable \"g\" is never read
+  var f: int, g: int
+              ^
+<stdin>:5:7: warning: Local variable \"h\" is never read
+  var h = (i: int, j: int) => {}
+      ^
+<stdin>:1:6: fix: Remove the colon
+var a: int, b: int
+     ^
+     []
+<stdin>:1:14: fix: Remove the colon
+var a: int, b: int
+             ^
+             []
+<stdin>:3:8: fix: Remove the colon
+def c(d: int, e: int): int {
+       ^
+       []
+<stdin>:3:16: fix: Remove the colon
+def c(d: int, e: int): int {
+               ^
+               []
+<stdin>:3:22: fix: Remove the colon
+def c(d: int, e: int): int {
+                     ^
+                     []
+<stdin>:4:8: fix: Remove the colon
+  var f: int, g: int
+       ^
+       []
+<stdin>:4:16: fix: Remove the colon
+  var f: int, g: int
+               ^
+               []
+<stdin>:5:13: fix: Remove the colon
+  var h = (i: int, j: int) => {}
+            ^
+            []
+<stdin>:5:21: fix: Remove the colon
+  var h = (i: int, j: int) => {}
+                    ^
+                    []
+")
+
+# Check for colon-before-type corrections
+test("
+def test {
+  var a = new Foo
+  var b = new Foo().foo
+  var c = new Foo.Bar<T>.Baz().foo
+}
+", "
+<stdin>:2:11: error: There is no \"new\" operator, use \"Foo.new\" instead
+  var a = new Foo
+          ~~~~~~~
+<stdin>:3:11: error: There is no \"new\" operator, use \"Foo.new\" instead
+  var b = new Foo().foo
+          ~~~~~~~
+<stdin>:4:11: error: There is no \"new\" operator, use \"Foo.Bar<T>.Baz.new\" instead
+  var c = new Foo.Bar<T>.Baz().foo
+          ~~~~~~~~~~~~~~~~~~
+<stdin>:2:7: warning: Local variable \"a\" is never read
+  var a = new Foo
+      ^
+<stdin>:3:7: warning: Local variable \"b\" is never read
+  var b = new Foo().foo
+      ^
+<stdin>:4:7: warning: Local variable \"c\" is never read
+  var c = new Foo.Bar<T>.Baz().foo
+      ^
+<stdin>:2:11: fix: Replace with \"Foo.new\"
+  var a = new Foo
+          ~~~~~~~
+          [Foo.new]
+<stdin>:3:11: fix: Replace with \"Foo.new\"
+  var b = new Foo().foo
+          ~~~~~~~
+          [Foo.new]
+<stdin>:4:11: fix: Replace with \"Foo.Bar<T>.Baz.new\"
+  var c = new Foo.Bar<T>.Baz().foo
+          ~~~~~~~~~~~~~~~~~~
+          [Foo.Bar<T>.Baz.new]
+")
+
+# Check for Java-style class keyword corrections
+test("
+class Foo extends Bar implements Baz {}
+", "
+<stdin>:1:11: error: Use \":\" instead of \"extends\" to indicate a base class
+class Foo extends Bar implements Baz {}
+          ~~~~~~~
+<stdin>:1:23: error: Use \"::\" instead of \"implements\" to indicate implemented interfaces
+class Foo extends Bar implements Baz {}
+                      ~~~~~~~~~~
+<stdin>:1:19: error: \"Bar\" is not declared
+class Foo extends Bar implements Baz {}
+                  ~~~
+<stdin>:1:34: error: \"Baz\" is not declared
+class Foo extends Bar implements Baz {}
+                                 ~~~
+<stdin>:1:11: fix: Replace \"extends\" with \":\"
+class Foo extends Bar implements Baz {}
+          ~~~~~~~
+          [:]
+<stdin>:1:23: fix: Replace \"implements\" with \"::\"
+class Foo extends Bar implements Baz {}
+                      ~~~~~~~~~~
+                      [::]
+")
+
+# Check for TypeScript-style variable and function declarations
+test("
+class Foo {
+  a = 0
+  b: int
+  c = 0
+
+  d() {}
+  e(): int {}
+  f() {}
+}
+", "
+<stdin>:2:3: error: Use \"var\" before variable declarations
+  a = 0
+  ^
+<stdin>:3:3: error: Use \"var\" before variable declarations
+  b: int
+  ^
+<stdin>:3:4: error: Do not use a colon before a type expression
+  b: int
+   ^
+<stdin>:4:3: error: Use \"var\" before variable declarations
+  c = 0
+  ^
+<stdin>:6:3: error: Use \"def\" before function declarations
+  d() {}
+  ^
+<stdin>:6:4: error: Functions without arguments do not use parentheses
+  d() {}
+   ~~
+<stdin>:7:3: error: Use \"def\" before function declarations
+  e(): int {}
+  ^
+<stdin>:7:4: error: Functions without arguments do not use parentheses
+  e(): int {}
+   ~~
+<stdin>:7:6: error: Do not use a colon before a type expression
+  e(): int {}
+     ^
+<stdin>:8:3: error: Use \"def\" before function declarations
+  f() {}
+  ^
+<stdin>:8:4: error: Functions without arguments do not use parentheses
+  f() {}
+   ~~
+<stdin>:7:3: error: All control paths for \"e\" must return a value of type \"int\"
+  e(): int {}
+  ^
+<stdin>:2:3: fix: Insert \"var\"
+  a = 0
+  ^
+  [var a]
+<stdin>:3:3: fix: Insert \"var\"
+  b: int
+  ^
+  [var b]
+<stdin>:3:4: fix: Remove the colon
+  b: int
+   ^
+   []
+<stdin>:4:3: fix: Insert \"var\"
+  c = 0
+  ^
+  [var c]
+<stdin>:6:3: fix: Insert \"def\"
+  d() {}
+  ^
+  [def d]
+<stdin>:6:4: fix: Remove parentheses
+  d() {}
+   ~~
+   []
+<stdin>:7:3: fix: Insert \"def\"
+  e(): int {}
+  ^
+  [def e]
+<stdin>:7:4: fix: Remove parentheses
+  e(): int {}
+   ~~
+   []
+<stdin>:7:6: fix: Remove the colon
+  e(): int {}
+     ^
+     []
+<stdin>:8:3: fix: Insert \"def\"
+  f() {}
+  ^
+  [def f]
+<stdin>:8:4: fix: Remove parentheses
+  f() {}
+   ~~
+   []
+")
+
+# Don't stop the whole parse if a function argument has invalid syntax
+test("
+def x(a b c) {}
+def y(a b c) {}
+", "
+<stdin>:1:11: error: Expected \",\" but found identifier
+def x(a b c) {}
+          ^
+<stdin>:2:11: error: Expected \",\" but found identifier
+def y(a b c) {}
+          ^
+<stdin>:1:9: error: \"b\" is not declared
+def x(a b c) {}
+        ^
+<stdin>:2:9: error: \"b\" is not declared
+def y(a b c) {}
+        ^
+")
+
+# Skip over top-level identifiers
+test("
+class Foo {
+  nonsense var a = 0
+  static var b = 0
+  public c int = 0
+  private d: int = 0
+  protected e() {}
+
+  var nonsense = 0
+  var static = 0
+  var public = 0
+  var private = 0
+  var protected = 0
+}
+", "
+<stdin>:2:3: error: Unexpected identifier
+  nonsense var a = 0
+  ~~~~~~~~
+<stdin>:3:3: error: There is no \"static\" keyword (declare this symbol in a namespace called \"Foo\" instead)
+  static var b = 0
+  ~~~~~~
+<stdin>:4:3: error: There is no \"public\" keyword
+  public c int = 0
+  ~~~~~~
+<stdin>:4:10: error: Unexpected identifier
+  public c int = 0
+         ^
+<stdin>:4:12: error: Use \"var\" before variable declarations
+  public c int = 0
+           ~~~
+<stdin>:5:3: error: There is no \"private\" keyword (to give something protected access, use a name starting with \"_\" instead)
+  private d: int = 0
+  ~~~~~~~
+<stdin>:5:11: error: Use \"var\" before variable declarations
+  private d: int = 0
+          ^
+<stdin>:5:12: error: Do not use a colon before a type expression
+  private d: int = 0
+           ^
+<stdin>:6:3: error: There is no \"protected\" keyword (to give something protected access, use a name starting with \"_\" instead)
+  protected e() {}
+  ~~~~~~~~~
+<stdin>:6:13: error: Use \"def\" before function declarations
+  protected e() {}
+            ^
+<stdin>:6:14: error: Functions without arguments do not use parentheses
+  protected e() {}
+             ~~
+<stdin>:5:14: error: Cannot access instance member \"int\" from a global context
+  private d: int = 0
+             ~~~
+<stdin>:5:14: error: Unexpected expression of type \"int\"
+  private d: int = 0
+             ~~~
+<stdin>:4:12: fix: Insert \"var\"
+  public c int = 0
+           ~~~
+           [var int]
+<stdin>:5:11: fix: Insert \"var\"
+  private d: int = 0
+          ^
+          [var d]
+<stdin>:5:12: fix: Remove the colon
+  private d: int = 0
+           ^
+           []
+<stdin>:6:13: fix: Insert \"def\"
+  protected e() {}
+            ^
+            [def e]
+<stdin>:6:14: fix: Remove parentheses
+  protected e() {}
+             ~~
+             []
+")
+
+# Check for parser recovery on a C-style switch statement
+test("
+def test {
+  switch 0 {
+    case 1: x = 0; y = 0; break;
+    case 2: case 3: x = 0; y = 0; break;
+    case 4:
+    case 5:
+      x = 0;
+      y = 0;
+      break;
+    default:
+      x = 0;
+      y = 0;
+  }
+}
+", "
+<stdin>:3:18: error: Expected newline but found \";\"
+    case 1: x = 0; y = 0; break;
+                 ^
+<stdin>:3:25: error: Expected newline but found \";\"
+    case 1: x = 0; y = 0; break;
+                        ^
+<stdin>:3:32: error: Expected newline but found \";\"
+    case 1: x = 0; y = 0; break;
+                               ^
+<stdin>:3:11: error: Surround the body of case and default statements with \"{\" and \"}\" instead of \":\" and \"break\"
+    case 1: x = 0; y = 0; break;
+          ^
+<stdin>:4:11: error: Use a comma between multiple values in a case statement (example: \"case 1, 2, 3 { ... }\")
+    case 2: case 3: x = 0; y = 0; break;
+          ~~~~~~
+<stdin>:4:26: error: Expected newline but found \";\"
+    case 2: case 3: x = 0; y = 0; break;
+                         ^
+<stdin>:4:33: error: Expected newline but found \";\"
+    case 2: case 3: x = 0; y = 0; break;
+                                ^
+<stdin>:4:40: error: Expected newline but found \";\"
+    case 2: case 3: x = 0; y = 0; break;
+                                       ^
+<stdin>:4:19: error: Surround the body of case and default statements with \"{\" and \"}\" instead of \":\" and \"break\"
+    case 2: case 3: x = 0; y = 0; break;
+                  ^
+<stdin>:5:11: error: Use a comma between multiple values in a case statement (example: \"case 1, 2, 3 { ... }\")
+    case 4:
+          ^
+<stdin>:7:12: error: Expected newline but found \";\"
+      x = 0;
+           ^
+<stdin>:8:12: error: Expected newline but found \";\"
+      y = 0;
+           ^
+<stdin>:9:12: error: Expected newline but found \";\"
+      break;
+           ^
+<stdin>:6:11: error: Surround the body of case and default statements with \"{\" and \"}\" instead of \":\" and \"break\"
+    case 5:
+          ^
+<stdin>:11:12: error: Expected newline but found \";\"
+      x = 0;
+           ^
+<stdin>:12:12: error: Expected newline but found \";\"
+      y = 0;
+           ^
+<stdin>:10:12: error: Surround the body of case and default statements with \"{\" and \"}\" instead of \":\" and \"break\"
+    default:
+           ^
+<stdin>:3:13: error: \"x\" is not declared
+    case 1: x = 0; y = 0; break;
+            ^
+<stdin>:3:20: error: \"y\" is not declared
+    case 1: x = 0; y = 0; break;
+                   ^
+<stdin>:4:21: error: \"x\" is not declared
+    case 2: case 3: x = 0; y = 0; break;
+                    ^
+<stdin>:4:28: error: \"y\" is not declared
+    case 2: case 3: x = 0; y = 0; break;
+                           ^
+<stdin>:7:7: error: \"x\" is not declared
+      x = 0;
+      ^
+<stdin>:8:7: error: \"y\" is not declared
+      y = 0;
+      ^
+<stdin>:11:7: error: \"x\" is not declared
+      x = 0;
+      ^
+<stdin>:12:7: error: \"y\" is not declared
+      y = 0;
+      ^
+<stdin>:3:18: fix: Remove \";\"
+    case 1: x = 0; y = 0; break;
+                 ^
+                 []
+<stdin>:3:25: fix: Remove \";\"
+    case 1: x = 0; y = 0; break;
+                        ^
+                        []
+<stdin>:3:32: fix: Remove \";\"
+    case 1: x = 0; y = 0; break;
+                               ^
+                               []
+<stdin>:3:11: fix: Replace \":\" and \"break\" with \"{\" and \"}\"
+    case 1: x = 0; y = 0; break;
+          ~~~~~~~~~~~~~~~~~~~~~~
+          [ { x = 0; y = 0; }]
+<stdin>:4:11: fix: Replace this with a comma
+    case 2: case 3: x = 0; y = 0; break;
+          ~~~~~~
+          [,]
+<stdin>:4:26: fix: Remove \";\"
+    case 2: case 3: x = 0; y = 0; break;
+                         ^
+                         []
+<stdin>:4:33: fix: Remove \";\"
+    case 2: case 3: x = 0; y = 0; break;
+                                ^
+                                []
+<stdin>:4:40: fix: Remove \";\"
+    case 2: case 3: x = 0; y = 0; break;
+                                       ^
+                                       []
+<stdin>:4:19: fix: Replace \":\" and \"break\" with \"{\" and \"}\"
+    case 2: case 3: x = 0; y = 0; break;
+                  ~~~~~~~~~~~~~~~~~~~~~~
+                  [ { x = 0; y = 0; }]
+<stdin>:5:11: fix: Replace this with a comma
+    case 4:
+          ^
+          [,]
+<stdin>:7:12: fix: Remove \";\"
+      x = 0;
+           ^
+           []
+<stdin>:8:12: fix: Remove \";\"
+      y = 0;
+           ^
+           []
+<stdin>:9:12: fix: Remove \";\"
+      break;
+           ^
+           []
+<stdin>:6:11: fix: Replace \":\" and \"break\" with \"{\" and \"}\"
+    case 5:
+          ^
+          [ {
+      x = 0;
+      y = 0;
+    }]
+<stdin>:11:12: fix: Remove \";\"
+      x = 0;
+           ^
+           []
+<stdin>:12:12: fix: Remove \";\"
+      y = 0;
+           ^
+           []
+")
+
+# Check for an infinite loop due to a parse error
+test("
+def test {
+  switch 0 {
+    case 1: blah;
+    case 2: case 3: blah;
+  }
+}
+", "
+<stdin>:3:17: error: Expected newline but found \";\"
+    case 1: blah;
+                ^
+<stdin>:3:11: error: Surround the body of case and default statements with \"{\" and \"}\" instead of \":\" and \"break\"
+    case 1: blah;
+          ^
+<stdin>:4:11: error: Use a comma between multiple values in a case statement (example: \"case 1, 2, 3 { ... }\")
+    case 2: case 3: blah;
+          ~~~~~~
+<stdin>:4:25: error: Expected newline but found \";\"
+    case 2: case 3: blah;
+                        ^
+<stdin>:4:19: error: Surround the body of case and default statements with \"{\" and \"}\" instead of \":\" and \"break\"
+    case 2: case 3: blah;
+                  ^
+<stdin>:3:13: error: \"blah\" is not declared
+    case 1: blah;
+            ~~~~
+<stdin>:4:21: error: \"blah\" is not declared
+    case 2: case 3: blah;
+                    ~~~~
+<stdin>:3:17: fix: Remove \";\"
+    case 1: blah;
+                ^
+                []
+<stdin>:4:11: fix: Replace this with a comma
+    case 2: case 3: blah;
+          ~~~~~~
+          [,]
+<stdin>:4:25: fix: Remove \";\"
+    case 2: case 3: blah;
+                        ^
+                        []
+")
+
+  }
+}
