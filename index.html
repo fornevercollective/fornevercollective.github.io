@@ -1,208 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf8">
-    <link rel="stylesheet" href="skew/style2.css">
-    <title>.fornever</title>
-    <meta name="viewport" content="width=device-width">
-  </head>
-  <body>
-    <header>
-      <section>
-        <div><h2>.fornever</h2></div>
-        <div align="left">
-        <a id="nav-try-live" href="javascript:toggleLiveEditor()">code</a><a id="nav-getting-started" href="#start">link</div><a id="nav-docs" href="#docs">chat</a><a  id="nav-ip_address" href="https://tools.keycdn.com/traceroute">ip</a>
-        </div>
-      </section>
-    </header>
-
-        <div id="background" class="theme-twilight">
-      <section>
-        <div class="spacer"></div>
-        <h1><span><b>Skew</b><ul>
-            <div><a id="nav-ip_address">ip</a></div>
-                        <a id="nav-blank">|</a>
-            <a id="nav-current_time" href="https://www.timeanddate.com/worldclock/">clock</a>
-                        <a id="nav-blank">|</a>
-            <a id="nav-epoch_time" href="https://www.unixtimestamp.com/">unix</a>
-                        <a id="nav-blank">|</a>
-            <a id="nav-github" href="https://github.com/evanw/skew">GitHub</a>
-          </ul></span></h1>
-      </section>
-    </div>
 
 
 
-
-      <dev><section>
-      <center>
-        <div><h2>
-          <ul>
-            <div><a id="nav-ip_address">ip</a></div>
-                        <a id="nav-blank">|</a>
-            <a id="nav-current_time" href="https://www.timeanddate.com/worldclock/">clock</a>
-                        <a id="nav-blank">|</a>
-            <a id="nav-epoch_time" href="https://www.unixtimestamp.com/">unix</a>
-                        <a id="nav-blank">|</a>
-            <a id="nav-github" href="https://github.com/evanw/skew">GitHub</a>
-          </ul>
-        </h2></div>
-       </center>
-      </section></dev>
-
-
-  
-    <section id="content" class="theme-light">
-      <h3 id="what">What is it?</h3>
-
-      <p>
-        Skew is a programming language for building cross-platform software.
-        It compiles to straightforward, readable source code in other languages and is designed to be easy to integrate into a mixed-language code base.
-        The main focus of the project has been to develop solid, production-quality code for the web.
-        Skew looks like this:
-      </p>
-  
-
-      <pre class="skew">
-# Execution starts at the entry point
-@entry
-def fizzBuzz {
-  for i in 1..101 {
-    var text = mod(i, 3, "Fizz") + mod(i, 5, "Buzz")
-    document.write((text == "" ? i.toString : text) + "\n")
-  }
-}
-
-# The compiler inlines this function in release mode
-def mod(i int, n int, text string) string {
-  return i % n == 0 ? text : ""
-}
-
-# Imported declarations are just for type checking
-@import
-namespace document {
-  def write(text string)
-}
-</pre>
-
-      <p>
-        The language and compiler are in development and are still somewhat subject to change.
-        The compiler is bootstrapped, which means it's written in Skew and compiles itself.
-        It currently contains production-quality JavaScript generation and working C# generation.
-        C++ generation is next and is already in progress.
-      </p>
-
-      
-
-
-      
-<dev>
-<!-- Nearby Connections -->
-<div><a  id="network-info">network info</a>
-<!-- Traffic Data -->
-<a  id="traffic-data">traffic data</a></div>
-<title>Skew Compiler</title>
-<link rel="stylesheet" href="https://fornevercollective.github.io/skew/www/style.css">
-<div>
-  <h2>Input</h2>
-  <textarea id="input" rows="10" spellcheck="false" autofocus></textarea>
-</div>
-<div>
-  <h2>Log</h2>
-  <textarea id="outputLog" rows="10" spellcheck="false" readonly></textarea>
-  <p>
-    <span id="compileTime">Loading...</span>
-    Target: <span id="targetArea"></span>
-    <span id="optionArea"></span>
-  </p>
-  <h2>Code</h2>
-  <textarea id="outputCode" rows="20" spellcheck="false" readonly></textarea>
-</div>
-<script src="https://fornevercollective.github.io/skew/www/out/skew-api.js" id="skew-api"></script>
-<script src="https://fornevercollective.github.io/skew/www/index.js"></script>
-  </dev>
-
-      <h3 id="why">Why use it?</h3>
-
-      <p>
-        The intent is to use this language for the platform-independent stuff in an application and to use the language native to the target platform for the platform-specific stuff.
-        When done properly, the vast majority of the code is completely platform-independent and new platforms can be targeted easily with a small platform-specific shim.
-      </p>
-
-      Pros:
-
-      <ul class="padded">
-        <li>
-          <b>Advanced optimizations:</b>
-          The optimizations in the compiler combined with certain language features (integers, explicit exports, wrapped types, etc.) makes writing compact, efficient JavaScript code easy and pleasant.</li>
-        <li>
-          <b>Fast compile times:</b>
-          Code compiles at the speed of a browser refresh.
-          Web development still feels like web development despite using an optimizing compiler with static typing.
-          This is in contrast to many other comparable compile-to-JavaScript languages.
-        </li>
-
-        <li>
-          <b>Natural debugging experience:</b>
-          Debugging is done in a single language using the platform-native debugger.
-          No need to try to debug a multi-language app with a debugger that only understands one language.
-        </li>
-
-        <li>
-          <b>Easy integration:</b>
-          Generated code is very readable and closely corresponds with the original.
-          Language features allow for the easy import and export of code to and from the target language.
-        </li>
-
-        <li>
-          <b>Fast iteration time:</b>
-          In addition to a fast compiler and a good debugging experience, garbage collection is used instead of manual memory management.
-          This eliminates a whole class of time-consuming bugs that get in the way of the important stuff.
-        </li>
-
-        <li>
-          <b>Native code emission:</b>
-          For native targets, application logic is compiled directly to native code and is not interpreted in a virtual machine.
-          Native apps don't have to pay for JIT warmup time and native app performance is not at the whim of heuristics.
-          The generated code can be compiled using industry-standard compilers that leverage decades of optimization work.
-        </li>
-      </ul>
-
-      Cons:
-
-      <ul class="padded">
-        <li>
-          <b>Lack of IDE support:</b>
-          IDE support is planned but is a significant undertaking and will not materialize for a while.
-          Developers who normally lean heavily on IDEs will be less efficient than usual.
-        </li>
-
-        <li>
-          <b>Immaturity:</b>
-          This is a new programming language and hasn't stood the test of time.
-          There will likely be many rough edges both in the language design and in the tools.
-          Many planned features are not yet implemented.
-        </li>
-
-        <li>
-          <b>Lack of community:</b>
-          New programming languages don't have the wealth of searchable Q&amp;A data that established programming languages have.
-          Solutions to random issues are likely not available online.
-        </li>
-
-        <li>
-          <b>No cross-platform multithreading:</b>
-          Multithreading is not a language feature and needs to be done in the target language.
-          This limits multithreading opportunities to cleanly separable tasks like image decoding.
-        </li>
-
-        <li>
-          <b>Lack of low-level features:</b>
-          Features such as memory layout, move semantics, destructors, and vector instructions are intentionally omitted.
-          These features don't map well to all language targets and their emulation is expensive.
-          Use of these features is limited to imported library routines implemented in the target language.
-        </li>
-      </ul>
 
 <ul>
 <p>Links <p/>
@@ -367,9 +165,231 @@ https://github.com/fornevercollective/ios-first-lab-0
 
 https://github.com/fornevercollective/api-ai
 
-</ul>
 
-      <h3 id="get">Getting Started</h3>
+
+  <body>
+    <header>
+      <section>
+        <div><h2>.fornever</h2></div>
+        <div align="left">
+        <a id="nav-try-live" href="javascript:toggleLiveEditor()">code</a><a id="nav-getting-started" href="#start">link</div><a id="nav-docs" href="#docs">chat</a><a  id="nav-ip_address" href="https://tools.keycdn.com/traceroute">ip</a>
+        </div>
+      </section>
+    </header>
+
+        <div id="background" class="theme-twilight">
+      <section>
+        <div class="spacer"></div>
+        <h1><span><b>Skew</b><ul>
+            <div><a id="nav-ip_address">ip</a></div>
+                        <a id="nav-blank">|</a>
+            <a id="nav-current_time" href="https://www.timeanddate.com/worldclock/">clock</a>
+                        <a id="nav-blank">|</a>
+            <a id="nav-epoch_time" href="https://www.unixtimestamp.com/">unix</a>
+                        <a id="nav-blank">|</a>
+            <a id="nav-github" href="https://github.com/evanw/skew">GitHub</a>
+          </ul></span></h1>
+      </section>
+    </div>
+
+
+
+
+      <dev><section>
+      <center>
+        <div><h2>
+          <ul>
+            <div><a id="nav-ip_address">ip</a></div>
+                        <a id="nav-blank">|</a>
+            <a id="nav-current_time" href="https://www.timeanddate.com/worldclock/">clock</a>
+                        <a id="nav-blank">|</a>
+            <a id="nav-epoch_time" href="https://www.unixtimestamp.com/">unix</a>
+                        <a id="nav-blank">|</a>
+            <a id="nav-github" href="https://github.com/evanw/skew">GitHub</a>
+          </ul>
+        </h2></div>
+       </center>
+      </section></dev>
+
+
+      
+
+
+      
+<dev>
+<!-- Nearby Connections -->
+<div><a  id="network-info">network info</a>
+<!-- Traffic Data -->
+<a  id="traffic-data">traffic data</a></div>
+<title>Skew Compiler</title>
+<link rel="stylesheet" href="https://fornevercollective.github.io/skew/www/style.css">
+<div>
+  <h2>Input</h2>
+  <textarea id="input" rows="10" spellcheck="false" autofocus></textarea>
+</div>
+<div>
+  <h2>Log</h2>
+  <textarea id="outputLog" rows="10" spellcheck="false" readonly></textarea>
+  <p>
+    <span id="compileTime">Loading...</span>
+    Target: <span id="targetArea"></span>
+    <span id="optionArea"></span>
+  </p>
+  <h2>Code</h2>
+  <textarea id="outputCode" rows="20" spellcheck="false" readonly></textarea>
+</div>
+<script src="https://fornevercollective.github.io/skew/www/out/skew-api.js" id="skew-api"></script>
+<script src="https://fornevercollective.github.io/skew/www/index.js"></script>
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8">
+    <link rel="stylesheet" href="style2.css">
+    <title>The Skew Programming Language</title>
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body>
+    <header>
+      <section>
+        <div><h2>Skew</h2></div>
+        <div><a id="nav-try-live" href="javascript:toggleLiveEditor()">Try Live</a></div>
+        <div><a id="nav-getting-started" href="#start">Getting Started</a></div>
+        <div><a id="nav-docs" href="#docs">Docs</a></div>
+        <div><a id="nav-github" href="https://github.com/evanw/skew">GitHub</a></div>
+      </section>
+    </header>
+
+    <div id="background" class="theme-twilight">
+      <section>
+        <div class="spacer"></div>
+        <h1><span><b>Skew</b> is a web-first, cross-platform programming language with an optimizing compiler.</span></h1>
+      </section>
+    </div>
+
+    <section id="content" class="theme-light">
+      <h3 id="what">What is it?</h3>
+
+      <p>
+        Skew is a programming language for building cross-platform software.
+        It compiles to straightforward, readable source code in other languages and is designed to be easy to integrate into a mixed-language code base.
+        The main focus of the project has been to develop solid, production-quality code for the web.
+        Skew looks like this:
+      </p>
+
+      <pre class="skew">
+# Execution starts at the entry point
+@entry
+def fizzBuzz {
+  for i in 1..101 {
+    var text = mod(i, 3, "Fizz") + mod(i, 5, "Buzz")
+    document.write((text == "" ? i.toString : text) + "\n")
+  }
+}
+
+# The compiler inlines this function in release mode
+def mod(i int, n int, text string) string {
+  return i % n == 0 ? text : ""
+}
+
+# Imported declarations are just for type checking
+@import
+namespace document {
+  def write(text string)
+}
+</pre>
+
+      <p>
+        The language and compiler are in development and are still somewhat subject to change.
+        The compiler is bootstrapped, which means it's written in Skew and compiles itself.
+        It currently contains production-quality JavaScript generation and working C# generation.
+        C++ generation is next and is already in progress.
+      </p>
+
+      <h3 id="why">Why use it?</h3>
+
+      <p>
+        The intent is to use this language for the platform-independent stuff in an application and to use the language native to the target platform for the platform-specific stuff.
+        When done properly, the vast majority of the code is completely platform-independent and new platforms can be targeted easily with a small platform-specific shim.
+      </p>
+
+      Pros:
+
+      <ul class="padded">
+        <li>
+          <b>Advanced optimizations:</b>
+          The optimizations in the compiler combined with certain language features (integers, explicit exports, wrapped types, etc.) makes writing compact, efficient JavaScript code easy and pleasant.</li>
+        <li>
+          <b>Fast compile times:</b>
+          Code compiles at the speed of a browser refresh.
+          Web development still feels like web development despite using an optimizing compiler with static typing.
+          This is in contrast to many other comparable compile-to-JavaScript languages.
+        </li>
+
+        <li>
+          <b>Natural debugging experience:</b>
+          Debugging is done in a single language using the platform-native debugger.
+          No need to try to debug a multi-language app with a debugger that only understands one language.
+        </li>
+
+        <li>
+          <b>Easy integration:</b>
+          Generated code is very readable and closely corresponds with the original.
+          Language features allow for the easy import and export of code to and from the target language.
+        </li>
+
+        <li>
+          <b>Fast iteration time:</b>
+          In addition to a fast compiler and a good debugging experience, garbage collection is used instead of manual memory management.
+          This eliminates a whole class of time-consuming bugs that get in the way of the important stuff.
+        </li>
+
+        <li>
+          <b>Native code emission:</b>
+          For native targets, application logic is compiled directly to native code and is not interpreted in a virtual machine.
+          Native apps don't have to pay for JIT warmup time and native app performance is not at the whim of heuristics.
+          The generated code can be compiled using industry-standard compilers that leverage decades of optimization work.
+        </li>
+      </ul>
+
+      Cons:
+
+      <ul class="padded">
+        <li>
+          <b>Lack of IDE support:</b>
+          IDE support is planned but is a significant undertaking and will not materialize for a while.
+          Developers who normally lean heavily on IDEs will be less efficient than usual.
+        </li>
+
+        <li>
+          <b>Immaturity:</b>
+          This is a new programming language and hasn't stood the test of time.
+          There will likely be many rough edges both in the language design and in the tools.
+          Many planned features are not yet implemented.
+        </li>
+
+        <li>
+          <b>Lack of community:</b>
+          New programming languages don't have the wealth of searchable Q&amp;A data that established programming languages have.
+          Solutions to random issues are likely not available online.
+        </li>
+
+        <li>
+          <b>No cross-platform multithreading:</b>
+          Multithreading is not a language feature and needs to be done in the target language.
+          This limits multithreading opportunities to cleanly separable tasks like image decoding.
+        </li>
+
+        <li>
+          <b>Lack of low-level features:</b>
+          Features such as memory layout, move semantics, destructors, and vector instructions are intentionally omitted.
+          These features don't map well to all language targets and their emulation is expensive.
+          Use of these features is limited to imported library routines implemented in the target language.
+        </li>
+      </ul>
+
+      <h3 id="start">Getting Started</h3>
 
       <h4>Installation</h4>
 
@@ -2837,9 +2857,6 @@ def test {
         </div>
       </div>
 
-      ~ ///// load chat gpt in this section or whatver you want ///// ~
-
-
       <div id="editor-generated"></div>
       <div id="editor-generated-label">Output</div>
       <div id="editor-generated-buttons">
@@ -2855,9 +2872,7 @@ def test {
       </div>
     </div>
   </body>
-</html>
-
-<script>
+  <script>
 <js>
   <!-- location for time -->
 <js name="geolocation">
@@ -3002,6 +3017,4 @@ navigator.bluetooth.requestDevice({
 <script src="skew/ace.min.js"></script>
 <script src="skew/script2.js"></script>
 <script src="script.js"></script> <!-- External JS link -->
-
-</body>
 </html>
