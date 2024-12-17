@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf8">
     <link rel="stylesheet" href="style2.css">
-    <title>The Skew Programming Language</title>
+    <title>.fornever/title>
     <meta name="viewport" content="width=device-width">
   </head>
   <body>
     <header>
       <section>
-        <div><h2>Skew</h2></div>
+        <div><h2>.fornever</h2></div>
         <div><a id="nav-try-live" href="javascript:toggleLiveEditor()">code</a></div>
         <div><a id="nav-getting-started" href="get.html">get</a></div>
         <div><a id="nav-docs" href="#docs">docs</a></div>
@@ -21,19 +21,18 @@
     <div id="background" class="theme-twilight">
       <section>
         <div class="spacer"></div>
-        <h1><span><b>Skew</b> is a web-first, cross-platform programming language with an optimizing compiler.</span></h1>
+        <h1><span><b>.fornever</b> is a web-first, cross-platform programming language with an optimizing compiler.</span></h1>
       </section>
     </div>
 
     <section id="content" class="theme-light">
-        <div class="spacer"></div>
-        <h1><span><b>Skew</b><ul>
-            <div><a id="nav-ip_address">ip</a></div>
-                        <a id="nav-blank">|</a>
+        <h1><span><b>.fornever/b><ul>
+            <a id="nav-ip_address">ip</a>
+            <a id="nav-blank">|</a>
             <a id="nav-current_time" href="https://www.timeanddate.com/worldclock/">clock</a>
-                        <a id="nav-blank">|</a>
+            <a id="nav-blank">|</a>
             <a id="nav-epoch_time" href="https://www.unixtimestamp.com/">unix</a>
-                        <a id="nav-blank">|</a>
+            <a id="nav-blank">|</a>
             <a id="nav-github" href="https://github.com/evanw/skew">GitHub</a>
           </ul></span></h1>
       </section>
@@ -43,13 +42,13 @@
       <center>
         <div><h2>
           <ul>
-            <div><a id="nav-ip_address">ip</a></div>
-                        <a id="nav-blank">|</a>
-            <a id="nav-current_time" href="https://www.timeanddate.com/worldclock/">clock</a>
-                        <a id="nav-blank">|</a>
-            <a id="nav-epoch_time" href="https://www.unixtimestamp.com/">unix</a>
-                        <a id="nav-blank">|</a>
-            <a id="nav-github" href="https://github.com/evanw/skew">GitHub</a>
+          <a id="nav-ip_address">ip</a>
+          <a id="nav-blank">|</a>
+          <a id="nav-current_time" href="https://www.timeanddate.com/worldclock/">clock</a>
+          <a id="nav-blank">|</a>
+          <a id="nav-epoch_time" href="https://www.unixtimestamp.com/">unix</a>
+          <a id="nav-blank">|</a>
+          <a id="nav-github" href="https://github.com/evanw/skew">GitHub</a>
           </ul>
         </h2></div>
        </center>
@@ -110,6 +109,7 @@ namespace document {
   def write(text string)
 }
 </pre>
+  
 
       <p>
         The language and compiler are in development and are still somewhat subject to change.
@@ -119,7 +119,74 @@ namespace document {
       </p>
 
       <h3 id="why">Why use it?</h3>
+  <label class="hidden" for="search_text">Search <abbr title="Internet Corporation for Assigned Names and Numbers">ICANN</abbr>.org</label><input type="search" name="search_text" id="search_text" value="" placeholder="Search ICANN.org" class="SearchBox-textField searchText"><input type="hidden" name="previous_text" id="previous_text" autocomplete="off"><input type="submit" name="commit" value="" class="SearchBox-submit" data-disable-with="">
 
+
+ <h3 id="whois">whois ///</h3>
+  
+        <h1>IANA WHOIS Service</h1>
+
+        <p>The IANA WHOIS Service is provided using the WHOIS protocol on port 43. This web gateway will query this
+            server and return the results. Accepted query arguments are domain names, IP addresses and AS numbers.
+            By submitting any personal data, you acknowledge and agree that the personal data submitted will be
+            processed in accordance with our <a href="https://www.icann.org/privacy/policy">Privacy Policy</a>, and
+            you agree to abide by the website <a href="https://www.icann.org/privacy/tos">Terms of Service</a>.
+        </p>
+        <div id="form">
+        <form method="get" action="/whois" id="search_form">
+        <input type="text" size="24" name="q" id="query" value="who.int" class="whois-input">&nbsp;
+        <input type="submit" value="Submit" class="button submit" id="form-submit-button">
+        </form>
+        </div>
+        <script>document.getElementById("query").focus();</script>
+        <p id="results">
+        </p><pre>% IANA WHOIS server
+% for more information on IANA, visit http://www.iana.org
+% This query returned 1 object
+
+domain:       WHO.INT
+
+organisation: World Health Organization (WHO)
+address:      20, Avenue Appia
+address:      Geneva 27
+address:      Geneva Geneva CH-1211
+address:      Switzerland
+
+contact:      administrative
+name:         WHO-IMT-ESS
+address:      20, Avenue Appia
+address:      Geneva 27
+address:      Geneva  CH-1211
+address:      Switzerland
+phone:        +41 22 791 2411
+fax-no:       +41 22 791 3111
+e-mail:       hostmaster@who.int
+
+contact:      technical
+name:         WHO-IMT-ESS
+address:      20, Avenue Appia
+address:      Geneva 27
+address:      Geneva  CH-1211
+address:      Switzerland
+phone:        +41 22 791 2411
+fax-no:       +41 22 791 3111
+e-mail:       hostmaster@who.int
+
+nserver:      EXT-DNS-2.CERN.CH 192.91.245.85
+nserver:      NS1.WPRO.WHO.INT 123.176.64.11
+nserver:      WHQDNS1.WHO.INT 158.232.12.5
+nserver:      WHQDNS2.WHO.INT 158.232.12.6
+nserver:      WHQDNS3.WHO.INT 211.24.11.120
+
+created:      1998-06-05
+changed:      2020-12-10
+source:       IANA
+
+</pre>
+        <p></p>
+  
+   whois ///  
+  
       <p>
         The intent is to use this language for the platform-independent stuff in an application and to use the language native to the target platform for the platform-specific stuff.
         When done properly, the vast majority of the code is completely platform-independent and new platforms can be targeted easily with a small platform-specific shim.
