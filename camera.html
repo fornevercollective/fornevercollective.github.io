@@ -2,72 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="PhoneProject.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>camera</title>
+    <title>Webcam Capture</title>
 </head>
 <body>
-        <!-- Stream video via webcam -->
-        <div class="video-wrap">
-            <video id="video" playsinline autoplay></video>
-        </div>
-
-        <!-- Trigger canvas web API -->
-        <div class="controller">
-            <button id="snap">Capture</button>
-        </div>
-
-        <!-- Webcam video snapshot -->
-        <canvas id="canvas" width="100" height="100"></canvas>
-    </div>
+    <h1>Webcam Capture</h1>
+    <video id="videoElement" autoplay></video>
+    <button id="startButton">Start Webcam</button>
+    <button id="captureButton">Capture Photo</button>
+    <canvas id="canvasElement" style="display: none;"></canvas>
+    <img id="photoElement" style="display: none;">
     
-    <script>
-      'use strict';
-  
-  const video = document.getElementById('video');
-  const canvas = document.getElementById('canvas');
-  const snap = document.getElementById("snap");
-  const errorMsgElement = document.querySelector('span#errorMsg');
-  
-  const constraints = {
-      audio: true,
-      video: {
-          width: 300, height: 400
-      }
-  };
-  
-  // Access webcam
-  async function init() {
-      try {
-          const stream = await navigator.mediaDevices.getUserMedia(constraints);
-          handleSuccess(stream);
-      } catch (e) {
-          errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
-      }
-  }
-  
-  // Success
-  function handleSuccess(stream) {
-      window.stream = stream;
-      video.srcObject = stream;
-  }
-  
-  // Load init
-  init();
-  
-  // Draw image
-  var context = canvas.getContext('2d');
-  snap.addEventListener("click", function() {
-      context.drawImage(video, 0, 0, 640, 480);
+    <!-- JavaScript code will go here -->
+    const videoElement = document.getElementById('videoElement');
+    const canvasElement = document.getElementById('canvasElement');
+    const photoElement = document.getElementById('photoElement');
+    const startButton = document.getElementById('startButton');
+    const captureButton = document.getElementById('captureButton');
 
-    const startBtn = document.querySelector('#startBtn');
+    let stream;
 
+    async function startWebcam() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoElement.srcObject = stream;
+            startButton.disabled = true;
+            captureButton.disabled = false;
+        } catch (error) {
+            console.error('Error accessing webcam:', error);
+        }
+    }
 
-    startBtn.addEventListener('click', () => {
-    init();
-  });
-  </script>
+    startButton.addEventListener('click', startWebcam);
+
+        function capturePhoto() {
+        canvasElement.width = videoElement.videoWidth;
+        canvasElement.height = videoElement.videoHeight;
+        canvasElement.getContext('2d').drawImage(videoElement, 0, 0);
+        const photoDataUrl = canvasElement.toDataURL('image/jpeg');
+        photoElement.src = photoDataUrl;
+        photoElement.style.display = 'block';
+    }    
+
+    captureButton.addEventListener('click', capturePhoto);
+    
 </body>
 </html>
+
+
+
