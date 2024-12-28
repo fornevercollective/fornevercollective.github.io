@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webcam Capture</title>
 </head>
-<body>
+<body><p align="left">
+    <button id="startButton">Start</button>
+    <button id="stopButton">Stop</button>
+    <button id="captureButton">Capture</button>
+    </p>
     <h1>Webcam Capture</h1>
     <video id="videoElement" autoplay></video>
-    <button id="startButton">Start Webcam</button>
-    <button id="captureButton">Capture Photo</button>
     <canvas id="canvasElement" style="display: none;"></canvas>
+    <img id="photoElement" style="display: none;">
+    <img id="photoElement" style="display: none;">
     <img id="photoElement" style="display: none;">
 
     <script>
@@ -19,6 +23,7 @@
     const canvasElement = document.getElementById('canvasElement');
     const photoElement = document.getElementById('photoElement');
     const startButton = document.getElementById('startButton');
+    const stopButton = document.getElementById('stopButton');
     const captureButton = document.getElementById('captureButton');
 
     let stream;
@@ -28,6 +33,18 @@
             stream = await navigator.mediaDevices.getUserMedia({ video: true });
             videoElement.srcObject = stream;
             startButton.disabled = true;
+            stopButton.disabled = false;
+            captureButton.disabled = false;
+        } catch (error) {
+            console.error('Error accessing webcam:', error);
+        }
+    }
+    async function stopWebcam() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: false });
+            videoElement.srcObject = none;
+            startButton.disabled = false;
+            stopButton.disabled = false;
             captureButton.disabled = false;
         } catch (error) {
             console.error('Error accessing webcam:', error);
