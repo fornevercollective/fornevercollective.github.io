@@ -34,52 +34,53 @@
     <img id="photoElement" style="display: none;">
 
     <script>
-    <!-- JavaScript code will go here -->
-    const videoElement = document.getElementById('videoElement');
-    const canvasElement = document.getElementById('canvasElement');
-    const photoElement = document.getElementById('photoElement');
-    const startButton = document.getElementById('startButton');
-    const stopButton = document.getElementById('stopButton');
-    const captureButton = document.getElementById('captureButton');
+        const videoElement = document.getElementById('videoElement');
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const captureButton = document.getElementById('captureButton');
 
-    let stream;
+        let stream;
 
-    async function startWebcam() {
-        try {
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            videoElement.srcObject = stream;
-            startButton.disabled = true;
-            stopButton.disabled = false;
-            captureButton.disabled = false;
-        } catch (error) {
-            console.error('Error accessing webcam:', error);
+        async function startWebcam() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'user' } // Use 'environment' for rear camera
+                });
+                videoElement.srcObject = stream;
+                startButton.disabled = true;
+                stopButton.disabled = false;
+                captureButton.disabled = false;
+            } catch (error) {
+                console.error('Error accessing webcam:', error);
+            }
         }
-    }
-    async function stopWebcam() {
-        try {
-            stream = await navigator.mediaDevices.getUserMedia({ video: false });
-            videoElement.srcObject = none;
+
+        function stopWebcam() {
+            stream.getTracks().forEach(track => track.stop());
+            videoElement.srcObject = null;
             startButton.disabled = false;
-            stopButton.disabled = false;
-            captureButton.disabled = false;
-        } catch (error) {
-            console.error('Error accessing webcam:', error);
+            stopButton.disabled = true;
+            captureButton.disabled = true;
         }
-    }
-
-    startButton.addEventListener('click', startWebcam);
 
         function capturePhoto() {
-        canvasElement.width = videoElement.videoWidth;
-        canvasElement.height = videoElement.videoHeight;
-        canvasElement.getContext('2d').drawImage(videoElement, 0, 0);
-        const photoDataUrl = canvasElement.toDataURL('image/jpeg');
-        photoElement.src = photoDataUrl;
-        photoElement.style.display = 'block';
-    }    
+            const canvas = document.getElementById('canvasElement');
+            const context = canvas.getContext('2d');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            const photo = document.getElementById('photoElement');
+            photo.src = canvas.toDataURL('image/png');
+            photo.style.display = 'block';
+        }
 
-    captureButton.addEventListener('click', capturePhoto);
-</script>
+        startButton.addEventListener('click', startWebcam);
+        stopButton.addEventListener('click', stopWebcam);
+        captureButton.addEventListener('click', capturePhoto);
+
+        stopButton.disabled = true;
+        captureButton.disabled = true;
+    </script>
 </body>
 </html>
 
