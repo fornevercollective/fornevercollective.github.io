@@ -27,8 +27,42 @@
             text-align: center;
             padding: 10px 0;
         }
-        footer button {
-            margin: 0 5px;
+        .hamburger-menu {
+            position: relative;
+            display: inline-block;
+        }
+        .hamburger-menu input {
+            display: none;
+        }
+        .hamburger-menu label {
+            cursor: pointer;
+            display: block;
+            padding: 10px;
+            background-color: #444;
+            border-radius: 5px;
+        }
+        .menu-content {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: #555;
+            border-radius: 5px;
+            overflow: hidden;
+            max-width: 0;
+            transition: max-width 0.3s ease-out;
+            white-space: nowrap;
+        }
+        .hamburger-menu input:checked ~ .menu-content {
+            max-width: 200px; /* Adjust as needed */
+        }
+        .menu-content button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #666;
+            border: none;
+            color: white;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -41,9 +75,15 @@
     <img id="photoElement" style="display: none;">
 
     <footer>
-        <button id="startButton">Start</button>
-        <button id="stopButton">Stop</button>
-        <button id="captureButton">Capture</button>
+        <div class="hamburger-menu">
+            <input type="checkbox" id="menu-toggle">
+            <label for="menu-toggle">☰</label>
+            <div class="menu-content">
+                <button id="startButton">Start</button>
+                <button id="stopButton">Stop</button>
+                <button id="captureButton">Capture</button>
+            </div>
+        </div>
     </footer>
 
     <script>
