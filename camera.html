@@ -125,6 +125,14 @@
             cursor: pointer;
             margin-left: 10px;
         }
+        .hex-code {
+            margin-top: 10px;
+            background-color: #222;
+            padding: 10px;
+            border-radius: 5px;
+            color: #00ff00;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
@@ -137,6 +145,7 @@
     <video id="videoElement" autoplay playsinline controls></video>
     <canvas id="canvasElement" style="display: none;"></canvas>
     <img id="photoElement" style="display: none;">
+    <div class="hex-code" id="hexCode">Hex Code: #000000</div>
 
     <footer>
         <div class="chatroom-input">
@@ -193,7 +202,7 @@
                 </select>
                 <label for="resolutionControl">Resolution:</label>
                 <select id="resolutionControl">
-                    <option value="640x480">640x480</option>
+                    <option value="640x480">640x480</</option>
                     <option value="1280x720">1280x720</option>
                     <option value="1920x1080">1920x1080</option>
                     <option value="3840x2160">3840x2160</option>
@@ -226,6 +235,7 @@
         const chatInput = document.getElementById('chatInput');
         const sendButton = document.getElementById('sendButton');
         const captureToChat = document.getElementById('captureToChat');
+        const hexCode = document.getElementById('hexCode');
 
         let stream;
         let lidarEnabled = false;
@@ -250,6 +260,7 @@
                 unmuteButton.disabled = false;
                 fullscreenButton.disabled = false;
                 webcamLight.classList.add('active');
+                updateHexCode();
             } catch (error) {
                 console.error('Error accessing webcam:', error);
             }
@@ -365,6 +376,26 @@
             messageElement.appendChild(imgElement);
             chatroomMessages.appendChild(messageElement);
             chatroomMessages.scrollTop = chatroomMessages.scrollHeight;
+        }
+
+        function updateHexCode() {
+            const canvas = document.getElementById('canvasElement');
+            const context = canvas.getContext('2d');
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            const frame = context.getImageData(0, 0, canvas.width, canvas.height);
+            const length = frame.data.length;
+            let r = 0, g = 0, b = 0;
+            for (let i = 0; i < length; i += 4) {
+                r += frame.data[i];
+                g += frame.data[i + 1];
+                b += frame.data[i + 2];
+            }
+            r = Math.floor(r / (length / 4));
+            g = Math.floor(g / (length / 4));
+            b = Math.floor(b / (length / 4));
+            const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
+            hexCode.textContent = `Hex Code: ${hex}`;
+            requestAnimationFrame(updateHexCode);
         }
 
         startButton.addEventListener('click', startWebcam);
