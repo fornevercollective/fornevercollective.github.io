@@ -18,20 +18,33 @@
             max-width: 600px;
             height: auto;
         }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        footer button {
+            margin: 0 5px;
+        }
     </style>
 </head>
 <body>
-    <p align="left">
-        <button id="startButton">Start</button>
-        <button id="stopButton">Stop</button>
-        <button id="captureButton">Capture</button>
-    </p>
     <h1>Webcam Capture</h1>
     <video id="videoElement" autoplay></video>
     <canvas id="canvasElement" style="display: none;"></canvas>
     <img id="photoElement" style="display: none;">
     <img id="photoElement" style="display: none;">
     <img id="photoElement" style="display: none;">
+
+    <footer>
+        <button id="startButton">Start</button>
+        <button id="stopButton">Stop</button>
+        <button id="captureButton">Capture</button>
+    </footer>
 
     <script>
         const videoElement = document.getElementById('videoElement');
