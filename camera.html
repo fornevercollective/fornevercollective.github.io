@@ -133,19 +133,45 @@
             color: #00ff00;
             font-family: monospace;
         }
+        .timestamp {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #00ff00;
+            font-family: monospace;
+        }
+        .pantone-squares {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .pantone-square {
+            width: 20px;
+            height: 20px;
+            margin: 0 5px;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
     <div class="chatroom" id="chatroom">
+        <div class="timestamp" id="timestamp">UTC Time: --:--:--</div>
         <div class="chatroom-messages" id="chatroomMessages"></div>
+        <button id="shareButton">Share Stream</button>
+        <button id="joinButton">Join Stream</button>
     </div>
 
     <h1>Webcam Capture</h1>
-    <div class="webcam-light" id="webcamLight"></div>
+    <div class="pantone-squares" id="pantoneSquares">
+        <div class="pantone-square" id="pantoneSquare1"></div>
+        <div class="pantone-square" id="pantoneSquare2"></div>
+        <div class="pantone-square" id="pantoneSquare3"></div>
+        <div class="pantone-square" id="pantoneSquare4"></div>
+        <div class="pantone-square" id="pantoneSquare5"></div>
+    </div>
+    <div class="hex-code" id="hexCode">Hex Code: #000000</div>
     <video id="videoElement" autoplay playsinline controls></video>
     <canvas id="canvasElement" style="display: none;"></canvas>
     <img id="photoElement" style="display: none;">
-    <div class="hex-code" id="hexCode">Hex Code: #000000</div>
 
     <footer>
         <div class="chatroom-input">
@@ -202,13 +228,11 @@
                 </select>
                 <label for="resolutionControl">Resolution:</label>
                 <select id="resolutionControl">
-                    <option value="640x480">640x480</</option>
+                    <option value="640x480">640x480</option>
                     <option value="1280x720">1280x720</option>
                     <option value="1920x1080">1920x1080</option>
                     <option value="3840x2160">3840x2160</option>
                 </select>
-                <button id="shareButton">Share Stream</button>
-                <button id="joinButton">Join Stream</button>
             </div>
         </div>
     </footer>
@@ -236,6 +260,14 @@
         const sendButton = document.getElementById('sendButton');
         const captureToChat = document.getElementById('captureToChat');
         const hexCode = document.getElementById('hexCode');
+        const timestamp = document.getElementById('timestamp');
+        const pantoneSquares = [
+            document.getElementById('pantoneSquare1'),
+            document.getElementById('pantoneSquare2'),
+            document.getElementById('pantoneSquare3'),
+            document.getElementById('pantoneSquare4'),
+            document.getElementById('pantoneSquare5')
+        ];
 
         let stream;
         let lidarEnabled = false;
@@ -261,6 +293,8 @@
                 fullscreenButton.disabled = false;
                 webcamLight.classList.add('active');
                 updateHexCode();
+                updateTimestamp();
+                updatePantoneSquares();
             } catch (error) {
                 console.error('Error accessing webcam:', error);
             }
@@ -359,7 +393,8 @@
             const message = chatInput.value;
             if (message.trim()) {
                 const messageElement = document.createElement('div');
-                messageElement.textContent = message;
+                const shortTimestamp = new Date().toISOString().slice(11, 19);
+                messageElement.textContent = `${message} [${shortTimestamp}]`;
                 chatroomMessages.appendChild(messageElement);
                 chatInput.value = '';
                 chatroomMessages.scrollTop = chatroomMessages.scrollHeight;
@@ -370,10 +405,12 @@
             const captureSrc = capturePhoto();
             const messageElement = document.createElement('div');
             const imgElement = document.createElement('img');
+            const shortTimestamp = new Date().toISOString().slice(11, 19);
             imgElement.src = captureSrc;
             imgElement.style.width = '100px';
             imgElement.style.height = 'auto';
             messageElement.appendChild(imgElement);
+            messageElement.appendChild(document.createTextNode(` [${shortTimestamp}]`));
             chatroomMessages.appendChild(messageElement);
             chatroomMessages.scrollTop = chatroomMessages.scrollHeight;
         }
@@ -396,6 +433,31 @@
             const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
             hexCode.textContent = `Hex Code: ${hex}`;
             requestAnimationFrame(updateHexCode);
+        }
+
+        function updatePantoneSquares() {
+            const canvas = document.getElementById('canvasElement');
+            const context = canvas.getContext('2d');
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            const frame = context.getImageData(0, 0, canvas.width, canvas.height);
+            const length = frame.data.length;
+            const step = Math.floor(length / (4 * pantoneSquares.length));
+            for (let i = 0; i < pantoneSquares.length; i++) {
+                const index = i * step * 4;
+                const r = frame.data[index];
+                const g = frame.data[index + 1];
+                const b = frame.data[index + 2];
+                const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
+                pantoneSquares[i].style.backgroundColor = hex;
+            }
+            requestAnimationFrame(updatePantoneSquares);
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            const utcTime = now.toISOString().slice(11, 19);
+            timestamp.textContent = `UTC Time: ${utcTime}`;
+            setTimeout(updateTimestamp, 1000);
         }
 
         startButton.addEventListener('click', startWebcam);
