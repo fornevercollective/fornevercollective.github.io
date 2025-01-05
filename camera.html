@@ -53,6 +53,7 @@
             max-height: 0;
             transition: max-height 0.3s ease-out;
             white-space: nowrap;
+            overflow-y: auto; /* Make the menu scrollable */
         }
         .hamburger-menu input:checked ~ .menu-content {
             max-height: 500px; /* Adjust as needed */
@@ -85,12 +86,13 @@
         }
         .chatroom {
             position: fixed;
-            top: 10px;
-            right: 10px;
-            width: 300px;
+            top: 0; /* Change from 10px to 0 */
+            right: 0;
+            left: 0; /* Extend across the entire top */
+            width: auto; /* Adjust width */
             max-height: 400px;
             background-color: #333;
-            border-radius: 5px;
+            border-radius: 0 0 5px 5px; /* Adjust border-radius */
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -177,10 +179,17 @@
             background-color: rgba(0, 0, 0, 0.5);
             border-radius: 5px;
         }
+        .connection-speed {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #00ff00;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
     <div class="chatroom" id="chatroom">
+        <div class="connection-speed" id="connectionSpeed">Connection Speed: -- Mbps</div>
         <div class="ip-address" id="ipAddress">IP Address: --.--.--.--</div>
         <div class="timestamp" id="timestamp">UTC Time: --:--:--</div>
         <div class="chatroom-messages" id="chatroomMessages"></div>
@@ -197,7 +206,11 @@
             <div class="pantone-square" id="pantoneSquare4"></div>
             <div class="pantone-square" id="pantoneSquare5"></div>
         </div>
-        <div class="hex-code" id="hexCode">Hex Code: #000000</div>
+        <div class="hex-code" id="hexCode1">Hex Code: #000000</div>
+        <div class="hex-code" id="hexCode2">Hex Code: #000000</div>
+        <div class="hex-code" id="hexCode3">Hex Code: #000000</div>
+        <div class="hex-code" id="hexCode4">Hex Code: #000000</div>
+        <div class="hex-code" id="hexCode5">Hex Code: #000000</div>
     </div>
     <video id="videoElement" autoplay playsinline controls></video>
     <canvas id="canvasElement" style="display: none;"></canvas>
@@ -209,7 +222,7 @@
         <div class="chatroom-input">
             <input type="text" id="chatInput" placeholder="Type a message...">
             <button id="sendButton">Send</button>
-            <img id="captureToChat" src="https://github.com/eckoln/nextdaily/raw/main/public/logo192.png" alt="Capture to Chat">
+            <img id="captureToChat" src="https://github.com/eckoln/nextdaily/raw/main/public/logo192.png" alt="Snap">
         </div>
         <div class="hamburger-menu">
             <input type="checkbox" id="menu-toggle">
@@ -263,6 +276,8 @@
                     <option value="1920x1080">1920x1080</option>
                     <option value="3840x2160">3840x2160</option>
                 </select>
+                <label for="cameraSelect">Camera:</label>
+                <select id="cameraSelect"></select>
             </div>
         </div>
     </footer>
@@ -297,26 +312,49 @@
             document.getElementById('pantoneSquare4'),
             document.getElementById('pantoneSquare5')
         ];
+        const hexCodes = [
+            document.getElementById('hexCode1'),
+            document.getElementById('hexCode2'),
+            document.getElementById('hexCode3'),
+            document.getElementById('hexCode4'),
+            document.getElementById('hexCode5')
+        ];
         const overlayCanvas = document.getElementById('overlayCanvas');
         const vectorscopeCanvas = document.getElementById('vectorscopeCanvas');
+        const connectionSpeed = document.getElementById('connectionSpeed');
+        const cameraSelect = document.getElementById('cameraSelect');
 
         let stream;
         let lidarEnabled = false;
         let isWebcamActive = false;
         let isMuted = false;
 
+        async function getCameras() {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+            cameraSelect.innerHTML = '';
+            videoDevices.forEach(device => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Camera ${cameraSelect.length + 1}`;
+                cameraSelect.appendChild(option);
+            });
+        }
+
         async function startWebcam() {
             try {
                 const resolution = resolutionControl.value.split('x');
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
+                const constraints = {
+                    video: {
+                        deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined,
                         facingMode: 'user',
                         frameRate: { ideal: fpsControl.value },
                         width: { ideal: parseInt(resolution[0]) },
                         height: { ideal: parseInt(resolution[1]) },
                         advanced: [{ iso: isoControl.value }]
                     }
-                });
+                };
+                stream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = stream;
                 toggleButton.textContent = 'Stop';
                 captureButton.disabled = false;
@@ -488,6 +526,7 @@
                 const b = frame.data[index + 2];
                 const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
                 pantoneSquares[i].style.backgroundColor = hex;
+                hexCodes[i].textContent = `Hex Code: ${hex}`;
             }
             requestAnimationFrame(updatePantoneSquares);
         }
@@ -505,8 +544,16 @@
             const canvas = document.getElementById('vectorscopeCanvas');
             const context = canvas.getContext('2d');
             context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
             // Implement RGB parade vectorscope logic here
             requestAnimationFrame(updateVectorscope);
+        }
+
+        function updateConnectionSpeed() {
+            // Implement logic to calculate and update connection speed
+            const speed = Math.random() * 100; // Placeholder for actual speed calculation
+            connectionSpeed.textContent = `Connection Speed: ${speed.toFixed(2)} Mbps`;
+            setTimeout(updateConnectionSpeed, 5000); // Update every 5 seconds
         }
 
         toggleButton.addEventListener('click', toggleWebcam);
@@ -529,6 +576,16 @@
         captureButton.disabled = true;
         muteToggleButton.disabled = true;
         fullscreenButton.disabled = true;
+
+        cameraSelect.addEventListener('change', () => {
+            if (isWebcamActive) {
+                stopWebcam();
+                startWebcam();
+            }
+        });
+
+        getCameras();
+        updateConnectionSpeed();
     </script>
 </body>
 </html>
