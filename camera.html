@@ -156,21 +156,6 @@
             color: white; /* Change font color to white */
             font-family: monospace;
         }
-        .pantone-squares {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-        .pantone-square {
-            width: 20px;
-            height: 20px;
-            margin: 0 5px;
-            border-radius: 3px;
-        }
-        .pantone-container {
-            display: flex;
-            align-items: center;
-        }
         .overlay {
             position: absolute;
             top: 0;
@@ -218,20 +203,7 @@
     </div>
 
     <h1>Webcam Capture</h1>
-    <div class="pantone-container">
-        <div class="pantone-squares" id="pantoneSquares">
-            <div class="pantone-square" id="pantoneSquare1"></div>
-            <div class="pantone-square" id="pantoneSquare2"></div>
-            <div class="pantone-square" id="pantoneSquare3"></div>
-            <div class="pantone-square" id="pantoneSquare4"></div>
-            <div class="pantone-square" id="pantoneSquare5"></div>
-        </div>
-        <div class="hex-code" id="hexCode1">Hex Code: #000000</div>
-        <div class="hex-code" id="hexCode2">Hex Code: #000000</div>
-        <div class="hex-code" id="hexCode3">Hex Code: #000000</div>
-        <div class="hex-code" id="hexCode4">Hex Code: #000000</div>
-        <div class="hex-code" id="hexCode5">Hex Code: #000000</div>
-    </div>
+    <!-- Removed pantone containers -->
     <video id="videoElement" autoplay playsinline controls></video>
     <canvas id="canvasElement" style="display: none;"></canvas>
     <img id="photoElement" style="display: none;">
@@ -288,6 +260,10 @@
                 <select id="cameraSelect"></select>
             </div>
         </div>
+        <div class="connection-speed-meter">
+            <label for="connectionSpeedMeter">Connection Speed:</label>
+            <meter id="connectionSpeedMeter" min="0" max="100" value="0"></meter>
+        </div>
     </footer>
 
     <script>
@@ -310,23 +286,8 @@
         const chatInput = document.getElementById('chatInput');
         const sendButton = document.getElementById('sendButton');
         const captureToChat = document.getElementById('captureToChat');
-        const hexCode = document.getElementById('hexCode');
         const timestamp = document.getElementById('timestamp');
         const ipAddress = document.getElementById('ipAddress');
-        const pantoneSquares = [
-            document.getElementById('pantoneSquare1'),
-            document.getElementById('pantoneSquare2'),
-            document.getElementById('pantoneSquare3'),
-            document.getElementById('pantoneSquare4'),
-            document.getElementById('pantoneSquare5')
-        ];
-        const hexCodes = [
-            document.getElementById('hexCode1'),
-            document.getElementById('hexCode2'),
-            document.getElementById('hexCode3'),
-            document.getElementById('hexCode4'),
-            document.getElementById('hexCode5')
-        ];
         const overlayCanvas = document.getElementById('overlayCanvas');
         const vectorscopeCanvas = document.getElementById('vectorscopeCanvas');
         const connectionSpeed = document.getElementById('connectionSpeed');
@@ -369,9 +330,7 @@
                 muteToggleButton.disabled = false;
                 fullscreenButton.disabled = false;
                 webcamLight.classList.add('active');
-                updateHexCode();
                 updateTimestamp();
-                updatePantoneSquares();
                 updateOverlay();
                 updateVectorscope();
                 isWebcamActive = true;
@@ -500,45 +459,6 @@
             chatroomMessages.scrollTop = chatroomMessages.scrollHeight;
         }
 
-        function updateHexCode() {
-            const canvas = document.getElementById('canvasElement');
-            const context = canvas.getContext('2d');
-            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-            const frame = context.getImageData(0, 0, canvas.width, canvas.height);
-            const length = frame.data.length;
-            let r = 0, g = 0, b = 0;
-            for (let i = 0; i < length; i += 4) {
-                r += frame.data[i];
-                g += frame.data[i + 1];
-                b += frame.data[i + 2];
-            }
-            r = Math.floor(r / (length / 4));
-            g = Math.floor(g / (length / 4));
-            b = Math.floor(b / (length / 4));
-            const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
-            hexCode.textContent = `Hex Code: ${hex}`;
-            requestAnimationFrame(updateHexCode);
-        }
-
-        function updatePantoneSquares() {
-            const canvas = document.getElementById('canvasElement');
-            const context = canvas.getContext('2d');
-            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-            const frame = context.getImageData(0, 0, canvas.width, canvas.height);
-            const length = frame.data.length;
-            const step = Math.floor(length / (4 * pantoneSquares.length));
-            for (let i = 0; i < pantoneSquares.length; i++) {
-                const index = i * step * 4;
-                const r = frame.data[index];
-                const g = frame.data[index + 1];
-                const b = frame.data[index + 2];
-                const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
-                pantoneSquares[i].style.backgroundColor = hex;
-                hexCodes[i].textContent = `Hex Code: ${hex}`;
-            }
-            requestAnimationFrame(updatePantoneSquares);
-        }
-
         function updateOverlay() {
             const canvas = document.getElementById('overlayCanvas');
             const context = canvas.getContext('2d');
@@ -561,6 +481,7 @@
             // Implement logic to calculate and update connection speed
             const speed = Math.random() * 100; // Placeholder for actual speed calculation
             connectionSpeed.textContent = `Connection Speed: ${speed.toFixed(2)} Mbps`;
+            document.getElementById('connectionSpeedMeter').value = speed;
             setTimeout(updateConnectionSpeed, 5000); // Update every 5 seconds
         }
 
@@ -574,29 +495,7 @@
         shareButton.addEventListener('click', shareStream);
         joinButton.addEventListener('click', joinStream);
         sendButton.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-        captureToChat.addEventListener('click', sendCaptureToChat);
-
-        captureButton.disabled = true;
-        muteToggleButton.disabled = true;
-        fullscreenButton.disabled = true;
-
-        cameraSelect.addEventListener('change', () => {
-            if (isWebcamActive) {
-                stopWebcam();
-                startWebcam();
-            }
-        });
-
-        getCameras();
-        updateConnectionSpeed();
-    </script>
-</body>
-</html>
+        chatInput.addEventListener('keypress', (e) =>
 
 
 
