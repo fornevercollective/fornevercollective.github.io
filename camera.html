@@ -126,7 +126,7 @@
             margin-left: 10px;
         }
         .hex-code {
-            margin-top: 10px;
+            margin-left: 10px;
             background-color: #222;
             padding: 10px;
             border-radius: 5px;
@@ -150,6 +150,27 @@
             margin: 0 5px;
             border-radius: 3px;
         }
+        .pantone-container {
+            display: flex;
+            align-items: center;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .vectorscope {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -161,17 +182,21 @@
     </div>
 
     <h1>Webcam Capture</h1>
-    <div class="pantone-squares" id="pantoneSquares">
-        <div class="pantone-square" id="pantoneSquare1"></div>
-        <div class="pantone-square" id="pantoneSquare2"></div>
-        <div class="pantone-square" id="pantoneSquare3"></div>
-        <div class="pantone-square" id="pantoneSquare4"></div>
-        <div class="pantone-square" id="pantoneSquare5"></div>
+    <div class="pantone-container">
+        <div class="pantone-squares" id="pantoneSquares">
+            <div class="pantone-square" id="pantoneSquare1"></div>
+            <div class="pantone-square" id="pantoneSquare2"></div>
+            <div class="pantone-square" id="pantoneSquare3"></div>
+            <div class="pantone-square" id="pantoneSquare4"></div>
+            <div class="pantone-square" id="pantoneSquare5"></div>
+        </div>
+        <div class="hex-code" id="hexCode">Hex Code: #000000</div>
     </div>
-    <div class="hex-code" id="hexCode">Hex Code: #000000</div>
     <video id="videoElement" autoplay playsinline controls></video>
     <canvas id="canvasElement" style="display: none;"></canvas>
     <img id="photoElement" style="display: none;">
+    <canvas class="overlay" id="overlayCanvas"></canvas>
+    <canvas class="vectorscope" id="vectorscopeCanvas"></canvas>
 
     <footer>
         <div class="chatroom-input">
@@ -183,11 +208,9 @@
             <input type="checkbox" id="menu-toggle">
             <label for="menu-toggle">☰</label>
             <div class="menu-content">
-                <button id="startButton">Start</button>
-                <button id="stopButton">Stop</button>
+                <button id="toggleButton">Start</button>
                 <button id="captureButton">Capture</button>
-                <button id="muteButton">Mute</button>
-                <button id="unmuteButton">Unmute</button>
+                <button id="muteToggleButton">Mute</button>
                 <button id="fullscreenButton">Fullscreen</button>
                 <label for="fpsControl">FPS:</label>
                 <select id="fpsControl">
@@ -239,11 +262,9 @@
 
     <script>
         const videoElement = document.getElementById('videoElement');
-        const startButton = document.getElementById('startButton');
-        const stopButton = document.getElementById('stopButton');
+        const toggleButton = document.getElementById('toggleButton');
         const captureButton = document.getElementById('captureButton');
-        const muteButton = document.getElementById('muteButton');
-        const unmuteButton = document.getElementById('unmuteButton');
+        const muteToggleButton = document.getElementById('muteToggleButton');
         const fullscreenButton = document.getElementById('fullscreenButton');
         const fpsControl = document.getElementById('fpsControl');
         const isoControl = document.getElementById('isoControl');
@@ -268,9 +289,13 @@
             document.getElementById('pantoneSquare4'),
             document.getElementById('pantoneSquare5')
         ];
+        const overlayCanvas = document.getElementById('overlayCanvas');
+        const vectorscopeCanvas = document.getElementById('vectorscopeCanvas');
 
         let stream;
         let lidarEnabled = false;
+        let isWebcamActive = false;
+        let isMuted = false;
 
         async function startWebcam() {
             try {
@@ -285,16 +310,17 @@
                     }
                 });
                 videoElement.srcObject = stream;
-                startButton.disabled = true;
-                stopButton.disabled = false;
+                toggleButton.textContent = 'Stop';
                 captureButton.disabled = false;
-                muteButton.disabled = false;
-                unmuteButton.disabled = false;
+                muteToggleButton.disabled = false;
                 fullscreenButton.disabled = false;
                 webcamLight.classList.add('active');
                 updateHexCode();
                 updateTimestamp();
                 updatePantoneSquares();
+                updateOverlay();
+                updateVectorscope();
+                isWebcamActive = true;
             } catch (error) {
                 console.error('Error accessing webcam:', error);
             }
@@ -303,13 +329,20 @@
         function stopWebcam() {
             stream.getTracks().forEach(track => track.stop());
             videoElement.srcObject = null;
-            startButton.disabled = false;
-            stopButton.disabled = true;
+            toggleButton.textContent = 'Start';
             captureButton.disabled = true;
-            muteButton.disabled = true;
-            unmuteButton.disabled = true;
+            muteToggleButton.disabled = true;
             fullscreenButton.disabled = true;
             webcamLight.classList.remove('active');
+            isWebcamActive = false;
+        }
+
+        function toggleWebcam() {
+            if (isWebcamActive) {
+                stopWebcam();
+            } else {
+                startWebcam();
+            }
         }
 
         function capturePhoto() {
@@ -324,12 +357,10 @@
             return photo.src;
         }
 
-        function muteVideo() {
-            videoElement.muted = true;
-        }
-
-        function unmuteVideo() {
-            videoElement.muted = false;
+        function toggleMute() {
+            isMuted = !isMuted;
+            videoElement.muted = isMuted;
+            muteToggleButton.textContent = isMuted ? 'Unmute' : 'Mute';
         }
 
         function toggleFullscreen() {
@@ -453,18 +484,26 @@
             requestAnimationFrame(updatePantoneSquares);
         }
 
-        function updateTimestamp() {
-            const now = new Date();
-            const utcTime = now.toISOString().slice(11, 19);
-            timestamp.textContent = `UTC Time: ${utcTime}`;
-            setTimeout(updateTimestamp, 1000);
+        function updateOverlay() {
+            const canvas = document.getElementById('overlayCanvas');
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            // Implement color correction overlay logic here
+            requestAnimationFrame(updateOverlay);
         }
 
-        startButton.addEventListener('click', startWebcam);
-        stopButton.addEventListener('click', stopWebcam);
+        function updateVectorscope() {
+            const canvas = document.getElementById('vectorscopeCanvas');
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            // Implement RGB parade vectorscope logic here
+            requestAnimationFrame(updateVectorscope);
+        }
+
+        toggleButton.addEventListener('click', toggleWebcam);
         captureButton.addEventListener('click', capturePhoto);
-        muteButton.addEventListener('click', muteVideo);
-        unmuteButton.addEventListener('click', unmuteVideo);
+        muteToggleButton.addEventListener('click', toggleMute);
         fullscreenButton.addEventListener('click', toggleFullscreen);
         lidarButton.addEventListener('click', toggleLiDAR);
         lutControl.addEventListener('change', applyLUT);
@@ -479,10 +518,8 @@
         });
         captureToChat.addEventListener('click', sendCaptureToChat);
 
-        stopButton.disabled = true;
         captureButton.disabled = true;
-        muteButton.disabled = true;
-        unmuteButton.disabled = true;
+        muteToggleButton.disabled = true;
         fullscreenButton.disabled = true;
     </script>
 </body>
