@@ -27,12 +27,12 @@
             text-align: center;
             padding: 10px 0;
             display: flex;
-            justify-content: flex-end; /* Change to flex-end to align right */
+            justify-content: center; /* Change to center to align middle */
         }
         .hamburger-menu {
             position: relative;
             display: inline-block;
-            margin-right: 20px; /* Add margin to the right */
+            margin: 0 20px; /* Adjust margin to center */
         }
         .hamburger-menu input {
             display: none;
@@ -223,6 +223,7 @@
             <div class="menu-content">
                 <button id="toggleButton">Start</button> <!-- Added start/stop button -->
                 <button id="fullscreenButton">Fullscreen</button> <!-- Added fullscreen button -->
+                <button id="captureButton">Capture</button> <!-- Added capture button -->
                 <select id="fpsControl">
                     <option value="30">30 FPS</option>
                     <option value="60">60 FPS</option>
