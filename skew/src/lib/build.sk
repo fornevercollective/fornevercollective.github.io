@@ -1,7 +1,0 @@
-enum Build {
-  SKEWC
-  API
-  TEST
-}
-
-const BUILD = Build.SKEWC

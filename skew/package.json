@@ -1,5 +1,0 @@
-{
-  "scripts": {
-    "test": "python build.py test_js"
-  }
-}
