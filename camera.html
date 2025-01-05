@@ -27,11 +27,12 @@
             text-align: center;
             padding: 10px 0;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end; /* Change to flex-end to align right */
         }
         .hamburger-menu {
             position: relative;
             display: inline-block;
+            margin-right: 20px; /* Add margin to the right */
         }
         .hamburger-menu input {
             display: none;
@@ -193,6 +194,10 @@
                 <button id="shareButton">Share Stream</button>
                 <button id="joinButton">Join Stream</button>
             </div>
+            <div class="connection-speed-meter">
+                <label for="connectionSpeedMeter">Connection Speed:</label>
+                <meter id="connectionSpeedMeter" min="0" max="100" value="0"></meter>
+            </div>
         </div>
         <div class="chatroom-messages" id="chatroomMessages"></div>
         <div class="chatroom-input">
@@ -261,10 +266,6 @@
                 <label for="cameraSelect">Camera:</label>
                 <select id="cameraSelect"></select>
             </div>
-        </div>
-        <div class="connection-speed-meter">
-            <label for="connectionSpeedMeter">Connection Speed:</label>
-            <meter id="connectionSpeedMeter" min="0" max="100" value="0"></meter>
         </div>
     </footer>
 
