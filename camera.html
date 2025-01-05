@@ -185,23 +185,23 @@
 <body>
     <div class="chatroom" id="chatroom">
         <div class="header-info">
-            <div class="connection-speed" id="connectionSpeed">
-                <a href="#" style="color: white; text-decoration: none;">Video Connection Speed: Link</a>
-            </div>
-            <div class="ip-address" id="ipAddress">IP: --.--.--.--</div>
-            <div class="timestamp" id="timestamp">UTC: --:--:--</div>
-            <div>
-                <button id="shareButton">Share Stream</button>
-                <button id="joinButton">Join Stream</button>
-            </div>
-            <div class="connection-speed-meter">
-                <label for="connectionSpeedMeter">Connection Speed:</label>
-                <meter id="connectionSpeedMeter" min="0" max="100" value="0"></meter>
-            </div>
+            <div class="chatroom-messages" id="chatroomMessages"></div>
+            <div class="chatroom-output" id="chatroomOutput"></div> <!-- Added chatroom output -->
         </div>
-        <div class="chatroom-messages" id="chatroomMessages"></div>
-        <div class="chatroom-output" id="chatroomOutput"></div> <!-- Added chatroom output -->
-    </div>
+
+        <div class="connection-speed" id="connectionSpeed">
+            <a href="#" style="color: white; text-decoration: none;">Video Connection Speed: Link</a>
+        </div>
+        <div class="ip-address" id="ipAddress">IP: --.--.--.--</div>
+        <div class="timestamp" id="timestamp">UTC: --:--:--</div>
+        <div>
+            <button id="shareButton">Share Stream</button>
+            <button id="joinButton">Join Stream</button>
+        </div>
+        <div class="connection-speed-meter">
+            <label for="connectionSpeedMeter">Connection Speed:</label>
+            <meter id="connectionSpeedMeter" min="0" max="100" value="0"></meter>
+        </div>   </div>
 
     <h1>Webcam Capture</h1>
     <!-- Removed pantone containers -->
