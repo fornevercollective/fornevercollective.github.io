@@ -97,6 +97,15 @@
             display: flex;
             flex-direction: column;
         }
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 10px;
+            color: white; /* Change font color to white */
+            font-family: monospace;
+        }
         .chatroom-messages {
             flex: 1;
             overflow-y: auto;
@@ -132,19 +141,19 @@
             background-color: #222;
             padding: 10px;
             border-radius: 5px;
-            color: #00ff00;
+            color: white; /* Change font color to white */
             font-family: monospace;
         }
         .timestamp {
             text-align: center;
             margin-bottom: 10px;
-            color: #00ff00;
+            color: white; /* Change font color to white */
             font-family: monospace;
         }
         .ip-address {
             text-align: center;
             margin-bottom: 10px;
-            color: #00ff00;
+            color: white; /* Change font color to white */
             font-family: monospace;
         }
         .pantone-squares {
@@ -182,19 +191,28 @@
         .connection-speed {
             text-align: center;
             margin-bottom: 10px;
-            color: #00ff00;
+            color: white; /* Change font color to white */
             font-family: monospace;
         }
     </style>
 </head>
 <body>
     <div class="chatroom" id="chatroom">
-        <div class="connection-speed" id="connectionSpeed">Connection Speed: -- Mbps</div>
-        <div class="ip-address" id="ipAddress">IP Address: --.--.--.--</div>
-        <div class="timestamp" id="timestamp">UTC Time: --:--:--</div>
+        <div class="header-info">
+            <div class="connection-speed" id="connectionSpeed">Connection Speed: -- Mbps</div>
+            <div class="ip-address" id="ipAddress">IP Address: --.--.--.--</div>
+            <div class="timestamp" id="timestamp">UTC Time: --:--:--</div>
+            <div>
+                <button id="shareButton">Share Stream</button>
+                <button id="joinButton">Join Stream</button>
+            </div>
+        </div>
         <div class="chatroom-messages" id="chatroomMessages"></div>
-        <button id="shareButton">Share Stream</button>
-        <button id="joinButton">Join Stream</button>
+        <div class="chatroom-input">
+            <input type="text" id="chatInput" placeholder="Type a message...">
+            <button id="sendButton">Send</button>
+            <button id="captureToChat" style="padding: 10px; background-color: #555; border: none; color: white; cursor: pointer;">Snap</button>
+        </div>
     </div>
 
     <h1>Webcam Capture</h1>
@@ -226,13 +244,6 @@
         </div>
         <div class="hamburger-menu">
             <input type="checkbox" id="menu-toggle">
-            <label for="menu-toggle">☰</label>
-            <div class="menu-content">
-                <button id="toggleButton">Start</button>
-                <button id="captureButton">Capture</button>
-                <button id="muteToggleButton">Mute</button>
-                <button id="fullscreenButton">Fullscreen</button>
-                <label for="fpsControl">FPS:</label>
                 <select id="fpsControl">
                     <option value="30">30 FPS</option>
                     <option value="60">60 FPS</option>
