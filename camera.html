@@ -495,7 +495,29 @@
         shareButton.addEventListener('click', shareStream);
         joinButton.addEventListener('click', joinStream);
         sendButton.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) =>
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        captureToChat.addEventListener('click', sendCaptureToChat);
+
+        captureButton.disabled = true;
+        muteToggleButton.disabled = true;
+        fullscreenButton.disabled = true;
+
+        cameraSelect.addEventListener('change', () => {
+            if (isWebcamActive) {
+                stopWebcam();
+                startWebcam();
+            }
+        });
+
+        getCameras();
+        updateConnectionSpeed();
+    </script>
+</body>
+</html>
 
 
 
