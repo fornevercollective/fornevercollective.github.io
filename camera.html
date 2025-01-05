@@ -546,6 +546,28 @@
         updateConnectionSpeed();
         updateTimestamp(); // Start updating the timestamp
         updateIPAddress(); // Start updating the IP address
+
+        // Implement database link using react-native-camera-kit
+        async function savePhotoToDatabase(photoSrc) {
+            try {
+                const response = await fetch('https://your-database-url.com/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ photo: photoSrc })
+                });
+                const data = await response.json();
+                console.log('Photo saved to database:', data);
+            } catch (error) {
+                console.error('Error saving photo to database:', error);
+            }
+        }
+
+        captureButton.addEventListener('click', async () => {
+            const photoSrc = capturePhoto();
+            await savePhotoToDatabase(photoSrc);
+        });
     </script>
 </body>
 </html>
