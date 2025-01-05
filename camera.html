@@ -139,6 +139,12 @@
             color: #00ff00;
             font-family: monospace;
         }
+        .ip-address {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #00ff00;
+            font-family: monospace;
+        }
         .pantone-squares {
             display: flex;
             justify-content: center;
@@ -175,6 +181,7 @@
 </head>
 <body>
     <div class="chatroom" id="chatroom">
+        <div class="ip-address" id="ipAddress">IP Address: --.--.--.--</div>
         <div class="timestamp" id="timestamp">UTC Time: --:--:--</div>
         <div class="chatroom-messages" id="chatroomMessages"></div>
         <button id="shareButton">Share Stream</button>
@@ -282,6 +289,7 @@
         const captureToChat = document.getElementById('captureToChat');
         const hexCode = document.getElementById('hexCode');
         const timestamp = document.getElementById('timestamp');
+        const ipAddress = document.getElementById('ipAddress');
         const pantoneSquares = [
             document.getElementById('pantoneSquare1'),
             document.getElementById('pantoneSquare2'),
