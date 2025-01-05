@@ -484,6 +484,28 @@
             requestAnimationFrame(updateVectorscope);
         }
 
+        async function updateTimestamp() {
+            try {
+                const response = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+                const data = await response.json();
+                const utcTime = new Date(data.utc_datetime);
+                timestamp.textContent = `UTC: ${utcTime.toISOString().slice(11, 19)}`;
+            } catch (error) {
+                console.error('Error fetching UTC time:', error);
+            }
+            setTimeout(updateTimestamp, 1000); // Update every second
+        }
+
+        async function updateIPAddress() {
+            try {
+                const response = await fetch('http://ip-api.com/json/?fields=query');
+                const data = await response.json();
+                ipAddress.textContent = `IP: ${data.query}`;
+            } catch (error) {
+                console.error('Error fetching IP address:', error);
+            }
+        }
+
         function updateConnectionSpeed() {
             // Implement logic to calculate and update connection speed
             const speed = Math.random() * 100; // Placeholder for actual speed calculation
@@ -522,6 +544,8 @@
 
         getCameras();
         updateConnectionSpeed();
+        updateTimestamp(); // Start updating the timestamp
+        updateIPAddress(); // Start updating the IP address
     </script>
 </body>
 </html>
