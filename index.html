@@ -206,88 +206,72 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const accordionTitles = document.querySelectorAll('.accordion-title');
-            accordionTitles.forEach(title => {
-                title.addEventListener('click', function() {
-                    this.classList.toggle('active');
-                    const content = this.nextElementSibling;
-                    if (content.style.display === "block") {
-                        content.style.display = "none";
-                    } else {
-                        content.style.display = "block";
-                    }
-                });
-            });
-        });
-
-        async function fetchProjectData() {
-            const response = await fetch('https://api.github.com/repos/fornevercollective/fornevercollective.github.io/projects/3/columns', {
-                headers: {
-                    'Authorization': 'token YOUR_PERSONAL_ACCESS_TOKEN',
-                    'Accept': 'application/vnd.github.inertia-preview+json'
-                }
-            });
-            const columns = await response.json();
-            return columns;
-        }
-
-        let currentPage = 1;
-        const itemsPerPage = 5;
-
-        async function displayProjectData(page = 1) {
-            const columns = await fetchProjectData();
-            const feed = document.getElementById('feed');
-            const startIndex = (page - 1) * itemsPerPage;
-            const endIndex = page * itemsPerPage;
-            const paginatedColumns = columns.slice(startIndex, endIndex);
-
-            paginatedColumns.forEach(column => {
-                const columnDiv = document.createElement('div');
-                columnDiv.classList.add('column');
-
-                const columnTitle = document.createElement('h2');
-                columnTitle.textContent = column.name;
-                columnDiv.appendChild(columnTitle);
-
-                columnDiv.addEventListener('click', () => {
-                    displayContent(column);
-                });
-
-                feed.appendChild(columnDiv);
-            });
-        }
-
-        function displayContent(column) {
-            const content = document.getElementById('content');
-            content.innerHTML = `<h2>${column.name}</h2><p>${column.body}</p>`;
-        }
-
-        function handleScroll() {
-            const feed = document.getElementById('feed');
-            if (feed.scrollTop + feed.clientHeight >= feed.scrollHeight) {
-                currentPage++;
-                displayProjectData(currentPage);
+  <script>
+    async function fetchProjectData() {
+        const response = await fetch('https://api.github.com/repos/fornevercollective/fornevercollective.github.io/projects/3/columns', {
+            headers: {
+                'Accept': 'application/vnd.github.inertia-preview+json'
             }
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function (...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            displayProjectData();
-            document.getElementById('feed').addEventListener('scroll', debounce(handleScroll, 100));
         });
+        const columns = await response.json();
+        return columns;
+    }
 
-        document.getElementById('backButton').addEventListener('click', () => {
-            // Implement back button functionality
+    let currentPage = 1;
+    const itemsPerPage = 5;
+
+    async function displayProjectData(page = 1) {
+        const columns = await fetchProjectData();
+        const feed = document.getElementById('feed');
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = page * itemsPerPage;
+        const paginatedColumns = columns.slice(startIndex, endIndex);
+
+        paginatedColumns.forEach(column => {
+            const columnDiv = document.createElement('div');
+            columnDiv.classList.add('column');
+
+            const columnTitle = document.createElement('h2');
+            columnTitle.textContent = column.name;
+            columnDiv.appendChild(columnTitle);
+
+            columnDiv.addEventListener('click', () => {
+                displayContent(column);
+            });
+
+            feed.appendChild(columnDiv);
         });
-    </script>
+    }
+
+    function displayContent(column) {
+        const content = document.getElementById('content');
+        content.innerHTML = `<h2>${column.name}</h2><p>${column.body}</p>`;
+    }
+
+    function handleScroll() {
+        const feed = document.getElementById('feed');
+        if (feed.scrollTop + feed.clientHeight >= feed.scrollHeight) {
+            currentPage++;
+            displayProjectData(currentPage);
+        }
+    }
+
+    function debounce(func, wait) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        displayProjectData();
+        document.getElementById('feed').addEventListener('scroll', debounce(handleScroll, 100));
+    });
+
+    document.getElementById('backButton').addEventListener('click', () => {
+        // Implement back button functionality
+    });
+</script>
 </body>
 </html>
