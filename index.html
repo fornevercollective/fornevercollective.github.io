@@ -119,9 +119,14 @@
         .left-column {
             width: 250px;
             transition: transform 0.3s ease;
+            background-color: black; /* Change background to black */
         }
         .left-column.hidden {
             transform: translateX(-100%);
+        }
+        .left-column .menu-item {
+            padding-left: 5px; /* Add 5px left side padding */
+            color: white; /* Ensure text is visible on black background */
         }
         @media (max-width: 768px) {
             .hamburger {
@@ -132,7 +137,7 @@
                 top: 0;
                 left: 0;
                 height: 100%;
-                background-color: white;
+                background-color: black; /* Ensure background is black on mobile */
                 z-index: 1000;
             }
             .header {
