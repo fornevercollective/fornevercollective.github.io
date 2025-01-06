@@ -1,0 +1,50 @@
+.layout {
+    display: flex;
+}
+
+.left-column {
+    width: 250px;
+    transition: transform 0.3s ease;
+}
+
+.left-column.hidden {
+    transform: translateX(-100%);
+}
+
+.left-column.open {
+    transform: translateX(0);
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+}
+
+.hamburger {
+    cursor: pointer;
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.feed-title {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+    .left-column {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background-color: white;
+        z-index: 1000;
+    }
+}
