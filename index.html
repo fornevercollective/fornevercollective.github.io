@@ -18,13 +18,19 @@
             line-height: 1.6;
             display: flex;
         }
-        .accordion-menu {
+        .column {
             width: 250px;
             background-color: #333;
             color: #fff;
             padding: 10px;
             box-sizing: border-box;
-            height: 100vh; /* Make the left column extend the whole page */
+            height: 100vh; /* Make the column extend the whole page */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .section {
+            margin-bottom: 20px;
         }
         .accordion-title {
             padding: 15px;
@@ -59,24 +65,90 @@
             background: #fff;
             margin-top: 20px;
         }
+        .feed {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .header-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-buttons .left, .header-buttons .right {
+            display: flex;
+            align-items: center;
+        }
+        .header-buttons .right button {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>fornever</h1>
-        <div class="accordion-menu">
-            <button class="accordion-title">.projects</button>
-            <div class="accordion-content">
-                <nav>
-                    <ul>
-                        <li><a href="#" id="idea1">Idea 1: Simple Drag and Drop</a></li>
-                        <li><a href="#" id="idea2">Idea 2: Enhanced Drag and Drop</a></li>
-                        <li><a href="#" id="idea3">Idea 3: Interactive To-Do List</a></li>
-                    </ul>
-                </nav>
-            </div>
+    <div class="column">
+        <div class="section">
+            <header>
+                <h1>fornever</h1>
+            </header>
         </div>
-    </header>
+        <div class="section">
+            <menu>
+                <button class="accordion-title">.projects</button>
+                <div class="accordion-content">
+                    <nav>
+                        <ul>
+                            <li><a href="#" id="idea1">Idea 1: Simple Drag and Drop</a></li>
+                            <li><a href="#" id="idea2">Idea 2: Enhanced Drag and Drop</a></li>
+                            <li><a href="#" id="idea3">Idea 3: Interactive To-Do List</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </menu>
+        </div>
+        <div class="section">
+            <links>
+                <h2>Links</h2>
+                <ul>
+                    <li><a href="#">Link 1</a></li>
+                    <li><a href="#">Link 2</a></li>
+                    <li><a href="#">Link 3</a></li>
+                </ul>
+            </links>
+        </div>
+        <div class="section">
+            <social>
+                <h2>Social</h2>
+                <ul>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                </ul>
+            </social>
+        </div>
+    </div>
+    <div class="column">
+        <header>
+            <h1>Feed</h1>
+        </header>
+        <div class="feed" id="feed">
+            <!-- Infinite scroll content will be appended here -->
+        </div>
+    </div>
+    <div class="column">
+        <header>
+            <div class="header-buttons">
+                <div class="left">
+                    <button id="backButton">Back</button>
+                </div>
+                <div class="right">
+                    <button id="shareButton">Share</button>
+                    <button id="bookmarkButton">Bookmark</button>
+                </div>
+            </div>
+        </header>
+        <div class="content" id="content">
+            <!-- Content from column 2 selection will be displayed here -->
+        </div>
+    </div>
     <div class="main-content">
         <h1>Welcome to Build Ideas</h1>
         <p>Select an idea from the left menu to see more details.</p>
@@ -86,7 +158,7 @@
         async function fetchProjectData() {
             const response = await fetch('https://api.github.com/repos/fornevercollective/fornevercollective.github.io/projects/3/columns', {
                 headers: {
-                    'Authorization': 'Iv23li95qocfzGNiE90g',
+                    'Authorization': 'token YOUR_PERSONAL_ACCESS_TOKEN',
                     'Accept': 'application/vnd.github.inertia-preview+json'
                 }
             });
@@ -99,7 +171,7 @@
 
         async function displayProjectData(page = 1) {
             const columns = await fetchProjectData();
-            const mainContent = document.querySelector('.main-content');
+            const feed = document.getElementById('feed');
             const startIndex = (page - 1) * itemsPerPage;
             const endIndex = page * itemsPerPage;
             const paginatedColumns = columns.slice(startIndex, endIndex);
@@ -112,12 +184,22 @@
                 columnTitle.textContent = column.name;
                 columnDiv.appendChild(columnTitle);
 
-                mainContent.appendChild(columnDiv);
+                columnDiv.addEventListener('click', () => {
+                    displayContent(column);
+                });
+
+                feed.appendChild(columnDiv);
             });
         }
 
+        function displayContent(column) {
+            const content = document.getElementById('content');
+            content.innerHTML = `<h2>${column.name}</h2><p>${column.body}</p>`;
+        }
+
         function handleScroll() {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+            const feed = document.getElementById('feed');
+            if (feed.scrollTop + feed.clientHeight >= feed.scrollHeight) {
                 currentPage++;
                 displayProjectData(currentPage);
             }
@@ -125,7 +207,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             displayProjectData();
-            window.addEventListener('scroll', handleScroll);
+            document.getElementById('feed').addEventListener('scroll', handleScroll);
         });
     </script>
 </body>
