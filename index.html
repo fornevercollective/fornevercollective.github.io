@@ -225,9 +225,21 @@
             }
         }
 
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             displayProjectData();
-            document.getElementById('feed').addEventListener('scroll', handleScroll);
+            document.getElementById('feed').addEventListener('scroll', debounce(handleScroll, 100));
+        });
+
+        document.getElementById('backButton').addEventListener('click', () => {
+            // Implement back button functionality
         });
     </script>
 </body>
