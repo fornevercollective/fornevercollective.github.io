@@ -109,11 +109,38 @@
         .header-buttons .right button {
             margin-left: 10px;
         }
+        /* New styles for hamburger menu and left column */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 24px;
+        }
+        .left-column {
+            width: 250px;
+            transition: transform 0.3s ease;
+        }
+        .left-column.hidden {
+            transform: translateX(-100%);
+        }
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+            .left-column {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                background-color: white;
+                z-index: 1000;
+            }
+        }
     </style>
 </head>
 <body class="__className_3a0388">
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
     <div class="container">
-        <div class="column">
+        <div class="left-column hidden">
             <div class="section">
                 <header>
                     <h1>fornever</h1>
@@ -272,6 +299,11 @@
     document.getElementById('backButton').addEventListener('click', () => {
         // Implement back button functionality
     });
+
+    function toggleMenu() {
+        const leftColumn = document.querySelector('.left-column');
+        leftColumn.classList.toggle('hidden');
+    }
 </script>
 </body>
 </html>
