@@ -24,7 +24,7 @@
             color: #fff;
             padding: 10px;
             box-sizing: border-box;
-            height: 100vh;
+            height: 100vh; /* Make the left column extend the whole page */
         }
         .accordion-title {
             padding: 15px;
@@ -59,23 +59,6 @@
             background: #fff;
             margin-top: 20px;
         }
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-        }
-        .pagination button {
-            margin: 0 5px;
-            padding: 10px 20px;
-            background-color: #444;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-        .pagination button:hover {
-            background-color: #555;
-        }
     </style>
 </head>
 <body>
@@ -98,11 +81,6 @@
         <h1>Welcome to Build Ideas</h1>
         <p>Select an idea from the left menu to see more details.</p>
     </div>
-    <div class="pagination">
-        <button id="prevPage">Previous</button>
-        <span id="pageInfo"></span>
-        <button id="nextPage">Next</button>
-    </div>
 
     <script>
         async function fetchProjectData() {
@@ -122,8 +100,6 @@
         async function displayProjectData(page = 1) {
             const columns = await fetchProjectData();
             const mainContent = document.querySelector('.main-content');
-            mainContent.innerHTML = '';
-
             const startIndex = (page - 1) * itemsPerPage;
             const endIndex = page * itemsPerPage;
             const paginatedColumns = columns.slice(startIndex, endIndex);
@@ -138,24 +114,18 @@
 
                 mainContent.appendChild(columnDiv);
             });
-
-            document.getElementById('pageInfo').textContent = `Page ${page} of ${Math.ceil(columns.length / itemsPerPage)}`;
         }
 
-        document.getElementById('prevPage').addEventListener('click', function() {
-            if (currentPage > 1) {
-                currentPage--;
+        function handleScroll() {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+                currentPage++;
                 displayProjectData(currentPage);
             }
-        });
-
-        document.getElementById('nextPage').addEventListener('click', function() {
-            currentPage++;
-            displayProjectData(currentPage);
-        });
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             displayProjectData();
+            window.addEventListener('scroll', handleScroll);
         });
     </script>
 </body>
