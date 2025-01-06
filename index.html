@@ -37,17 +37,24 @@
             color: #fff;
             line-height: 1.6;
             display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
         }
         .column {
-            width: 250px;
+            flex: 1;
             background-color: #000;
             color: #fff;
             padding: 10px;
             box-sizing: border-box;
-            height: 100vh; /* Make the column extend the whole page */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            overflow-y: auto;
         }
         .section {
             margin-bottom: 20px;
@@ -105,99 +112,116 @@
     </style>
 </head>
 <body class="__className_3a0388">
-    <div class="column">
-        <div class="section">
+    <div class="container">
+        <div class="column">
+            <div class="section">
+                <header>
+                    <h1>fornever</h1>
+                </header>
+            </div>
+            <div class="section">
+                <menu>
+                    <button class="accordion-title">.projects</button>
+                    <div class="accordion-content">
+                        <nav>
+                            <ul>
+                                <li><a href="#" id="idea1">Idea 1: Simple Drag and Drop</a></li>
+                                <li><a href="#" id="idea2">Idea 2: Enhanced Drag and Drop</a></li>
+                                <li><a href="#" id="idea3">Idea 3: Interactive To-Do List</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </menu>
+            </div>
+            <div class="section">
+                <links>
+                    <h2>.links</h2>
+                    <ul>
+                        <li><a href="#">Link 1</a></li>
+                        <li><a href="#">Link 2</a></li>
+                        <li><a href="#">Link 3</a></li>
+                    </ul>
+                </links>
+            </div>
+            <div class="section">
+                <social>
+                    <h2>.social</h2>
+                    <ul>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Instagram</a></li>
+                    </ul>
+                </social>
+            </div>
+        </div>
+        <div class="column">
             <header>
-                <h1>fornever</h1>
+                <h1>.feed</h1>
             </header>
-        </div>
-        <div class="section">
-            <menu>
-                <button class="accordion-title">.projects</button>
-                <div class="accordion-content">
-                    <nav>
-                        <ul>
-                            <li><a href="#" id="idea1">Idea 1: Simple Drag and Drop</a></li>
-                            <li><a href="#" id="idea2">Idea 2: Enhanced Drag and Drop</a></li>
-                            <li><a href="#" id="idea3">Idea 3: Interactive To-Do List</a></li>
-                        </ul>
-                    </nav>
+            <div class="feed" id="feed">
+                <div class="content-section">
+                    <h2>Content Section 1</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
                 </div>
-            </menu>
-        </div>
-        <div class="section">
-            <links>
-                <h2>.links</h2>
-                <ul>
-                    <li><a href="#">Link 1</a></li>
-                    <li><a href="#">Link 2</a></li>
-                    <li><a href="#">Link 3</a></li>
-                </ul>
-            </links>
-        </div>
-        <div class="section">
-            <social>
-                <h2>.social</h2>
-                <ul>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Instagram</a></li>
-                </ul>
-            </social>
-        </div>
-    </div>
-    <div class="column">
-        <header>
-            <h1>.feed</h1>
-        </header>
-        <div class="feed" id="feed">
-    <div class="content-section">
-        <h2>Content Section 1</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
-    </div>
-    <div class="content-section">
-        <h2>Content Section 2</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
-    </div>
-    <div class="content-section">
-        <h2>Content Section 3</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
-    </div>
-    <div class="content-section">
-        <h2>Content Section 4</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
-    </div>
-    <div class="content-section">
-        <h2>Content Section 5</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
-    </div>
-</div>
-    </div>
-    <div class="column">
-        <header>
-            <div class="header-buttons">
-                <div class="left">
-                    <button id="backButton">back</button>
+                <div class="content-section">
+                    <h2>Content Section 2</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
                 </div>
-                <div class="right">
-                    <button id="shareButton">share</button>
-                    <button id="bookmarkButton">save</button>
+                <div class="content-section">
+                    <h2>Content Section 3</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
+                </div>
+                <div class="content-section">
+                    <h2>Content Section 4</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
+                </div>
+                <div class="content-section">
+                    <h2>Content Section 5</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
                 </div>
             </div>
-        </header>
-<div class="content" id="content">
-    <h2>Content Heading</h2>
-    <p>https://fornevercollective.github.io/ggwave/examples/ggwave-js/index-tmpl.html</p>
-    <p>https://fornevercollective.github.io/ggwave/examples/waver/index-tmpl.html</p>
-    <p>https://fornevercollective.github.io/ggwave/examples/spectrogram/index-tmpl.html</p>
-    <p>https://fornevercollective.github.io/ggwave/examples/ggwave-to-file/</p>
-    <p>https://fornevercollective.github.io/ggwave/examples/ggwave-py/</p>
-    <p>https://fornevercollective.github.io/ggwave/examples/ggwave-from-file/</p>
-    <p>https://fornevercollective.github.io/ggwave/examples/ggwave-cli/</p>
-</div>
+        </div>
+        <div class="column">
+            <header>
+                <div class="header-buttons">
+                    <div class="left">
+                        <button id="backButton">back</button>
+                    </div>
+                    <div class="right">
+                        <button id="shareButton">share</button>
+                        <button id="bookmarkButton">save</button>
+                    </div>
+                </div>
+            </header>
+            <div class="content" id="content">
+                <h2>Content Heading</h2>
+                <p>https://fornevercollective.github.io/ggwave/examples/ggwave-js/index-tmpl.html</p>
+                <p>https://fornevercollective.github.io/ggwave/examples/waver/index-tmpl.html</p>
+                <p>https://fornevercollective.github.io/ggwave/examples/spectrogram/index-tmpl.html</p>
+                <p>https://fornevercollective.github.io/ggwave/examples/ggwave-to-file/</p>
+                <p>https://fornevercollective.github.io/ggwave/examples/ggwave-py/</p>
+                <p>https://fornevercollective.github.io/ggwave/examples/ggwave-from-file/</p>
+                <p>https://fornevercollective.github.io/ggwave/examples/ggwave-cli/</p>
+            </div>
+        </div>
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const accordionTitles = document.querySelectorAll('.accordion-title');
+            accordionTitles.forEach(title => {
+                title.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    if (content.style.display === "block") {
+                        content.style.display = "none";
+                    } else {
+                        content.style.display = "block";
+                    }
+                });
+            });
+        });
+
         async function fetchProjectData() {
             const response = await fetch('https://api.github.com/repos/fornevercollective/fornevercollective.github.io/projects/3/columns', {
                 headers: {
