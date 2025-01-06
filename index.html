@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Ideas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        .accordion-menu {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .accordion-title {
+            padding: 15px;
+            cursor: pointer;
+            border: none;
+            text-align: left;
+            outline: none;
+            transition: 0.4s;
+            background-color: #444;
+        }
+        .accordion-title:hover {
+            background-color: #555;
+        }
+        .accordion-content {
+            background-color: #444;
+            display: none;
+            overflow: hidden;
+            padding: 0 15px;
+        }
+        .accordion-content a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 10px 0;
+        }
+        .accordion-content a:hover {
+            background-color: #555;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="accordion-menu">
+        <button class="accordion-title">Build Ideas</button>
+        <div class="accordion-content">
+            <a href="#" id="idea1">Idea 1: Simple Drag and Drop</a>
+            <a href="#" id="idea2">Idea 2: Enhanced Drag and Drop</a>
+            <a href="#" id="idea3">Idea 3: Interactive To-Do List</a>
+        </div>
+    </div>
+    <div class="main-content">
+        <h1>Welcome to Build Ideas</h1>
+        <p>Select an idea from the left menu to see more details.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var acc = document.getElementsByClassName("accordion-title");
+            var i;
+
+            for (i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    var panel = this.nextElementSibling;
+                    if (panel.style.display === "block") {
+                        panel.style.display = "none";
+                    } else {
+                        panel.style.display = "block";
+                    }
+                });
+            }
+
+            document.getElementById('idea1').addEventListener('click', function() {
+                document.querySelector('.main-content').innerHTML = `
+                    <h1>Idea 1: Simple Drag and Drop</h1>
+                    <p>This idea involves creating a simple drag and drop interface using HTML5 and JavaScript.</p>
+                `;
+            });
+
+            document.getElementById('idea2').addEventListener('click', function() {
+                document.querySelector('.main-content').innerHTML = `
+                    <h1>Idea 2: Enhanced Drag and Drop</h1>
+                    <p>This idea involves enhancing the drag and drop interface with additional features such as connecting nodes with lines and saving/loading positions.</p>
+                `;
+            });
+
+            document.getElementById('idea3').addEventListener('click', function() {
+                document.querySelector('.main-content').innerHTML = `
+                    <h1>Idea 3: Interactive To-Do List</h1>
+                    <p>This idea involves creating an interactive to-do list application with features like adding, editing, and removing tasks.</p>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
