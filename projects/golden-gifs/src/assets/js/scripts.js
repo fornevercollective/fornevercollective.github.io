@@ -23,6 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Function to update quote
+    function updateQuote() {
+        const adjective = document.getElementById('adjective-response').value;
+        document.getElementById('adjective').innerText = adjective;
+    }
+
     // Animation on scroll
     const animatedElements = document.querySelectorAll('.animate-on-scroll');
     const options = {

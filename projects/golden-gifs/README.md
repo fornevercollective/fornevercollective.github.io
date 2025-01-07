@@ -16,6 +16,20 @@ book-launch-landing-page
 ├── package.json
 └── README.md
 ```
+golden-girls-book/
+├── index.html
+├── css/
+│   └── styles.css
+├── images/
+│   ├── blanche-hair-flip.gif
+│   ├── dorothy-eye-roll.gif
+│   └── rose-innocence.gif
+├── js/
+│   └── script.js
+└── chapters/
+    ├── chapter1.html
+    ├── chapter2.html
+    └── chapter3.html
 
 ## Features
 
