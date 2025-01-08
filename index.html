@@ -42,7 +42,7 @@
         }
         .container {
             display: flex;
-            flex: 1;
+            flex-direction: column;
             overflow: hidden;
         }
         .column {
@@ -152,6 +152,23 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+            }
+        }
+        @media (min-width: 1920px) {
+            .container {
+                flex-direction: row;
+            }
+            .left-column {
+                width: 250px;
+                transition: transform 0.3s ease;
+                background-color: black;
+            }
+            .left-column.hidden {
+                transform: translateX(-100%);
+            }
+            .left-column .menu-item {
+                padding-left: 5px;
+                color: white;
             }
         }
     </style>
