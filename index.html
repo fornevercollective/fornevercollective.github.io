@@ -155,6 +155,8 @@
             }
         }
     </style>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@latest/dist/ionic/ionic.esm.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@latest/css/ionic.bundle.css"/>
 </head>
 <body class="__className_3a0388">
     <div class="hamburger" onclick="toggleMenu()">☰</div>
@@ -251,7 +253,19 @@
             </div>
         </div>
     </div>
-
+    <ion-modal id="modal">
+        <ion-header>
+            <ion-toolbar>
+                <ion-title>Modal Title</ion-title>
+                <ion-buttons slot="end">
+                    <ion-button onclick="dismissModal()">Close</ion-button>
+                </ion-buttons>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content>
+            <div id="modal-content"></div>
+        </ion-content>
+    </ion-modal>
   <script>
     async function fetchProjectData() {
         const response = await fetch('https://api.github.com/repos/fornevercollective/fornevercollective.github.io/projects/3/columns', {
@@ -289,9 +303,16 @@
         });
     }
 
-    function displayContent(column) {
-        const content = document.getElementById('content');
-        content.innerHTML = `<h2>${column.name}</h2><p>${column.body}</p>`;
+    async function displayContent(column) {
+        const modal = document.querySelector('ion-modal');
+        const modalContent = document.getElementById('modal-content');
+        modalContent.innerHTML = `<h2>${column.name}</h2><p>${column.body}</p>`;
+        await modal.present();
+    }
+
+    function dismissModal() {
+        const modal = document.querySelector('ion-modal');
+        modal.dismiss();
     }
 
     function handleScroll() {
