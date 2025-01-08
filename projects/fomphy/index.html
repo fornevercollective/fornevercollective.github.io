@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swipe to Read Mobile App</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow-y: auto;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 1.2em;
+        }
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            scroll-snap-type: y mandatory;
+        }
+        .page {
+            height: 100%;
+            scroll-snap-align: start;
+            padding: 10px;
+            background: #f4f4f4;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        .loader {
+            text-align: center;
+            font-size: 1.2em;
+            color: #888;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">Swipe to Read</div>
+    <div class="content" id="content">
+        <!-- Pages will be dynamically added here -->
+        <div class="page">Welcome to the Metaphysics of Frequency reader. Swipe down to start exploring!</div>
+    </div>
+    <div class="loader" id="loader">Loading more content...</div>
+</div>
+
+<script>
+    const content = document.getElementById('content');
+    const loader = document.getElementById('loader');
+    let currentPage = 1;
+    let maxPages = 10; // Example maximum pages
+
+    // Allow user to configure maxPages via a prompt
+    function configureMaxPages() {
+        const userInput = parseInt(prompt("Enter the maximum number of pages to load:", "10"), 10);
+        if (!isNaN(userInput) && userInput > 0) {
+            maxPages = userInput;
+        }
+    }
+
+    // Mock content generator
+    function generatePageContent(pageNumber) {
+        return `<div class="page">Page ${pageNumber}: This is a sample page of the book. Enjoy reading and swipe to navigate through the infinite scroll experience.</div>`;
+    }
+
+    // Add initial pages
+    function loadInitialPages() {
+        const fragment = document.createDocumentFragment();
+        for (let i = 1; i <= 3; i++) {
+            const pageContent = generatePageContent(i);
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = pageContent;
+            fragment.appendChild(tempDiv.firstChild);
+        }
+        content.appendChild(fragment);
+        currentPage = 3;
+    }
+
+    // Infinite scroll logic
+    function loadMorePages() {
+        if (currentPage >= maxPages) {
+            loader.style.display = 'none';
+            return;
+        }
+
+        setTimeout(() => {
+            const fragment = document.createDocumentFragment();
+            for (let i = 1; i <= 2; i++) { // Load 2 pages at a time
+                if (currentPage >= maxPages) break;
+                currentPage++;
+                const pageContent = generatePageContent(currentPage);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = pageContent;
+                fragment.appendChild(tempDiv.firstChild);
+            }
+            content.appendChild(fragment);
+        }, 1000); // Simulate network delay
+    }
+
+    // Debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func.apply(this, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Event listener for infinite scroll with debounce
+    content.addEventListener('scroll', debounce(() => {
+        if (content.scrollTop + content.clientHeight >= content.scrollHeight - 10) {
+            loadMorePages();
+        }
+    }, 200));
+
+    // Initial setup
+    configureMaxPages();
+    loadInitialPages();
+</script>
+
+</body>
+</html>
