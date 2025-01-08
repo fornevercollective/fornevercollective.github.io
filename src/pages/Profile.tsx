@@ -1,7 +1,10 @@
 import React from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 
 const Profile: React.FC = () => {
+  const history = useHistory();
+
   return (
     <IonPage>
       <IonHeader>
@@ -11,6 +14,7 @@ const Profile: React.FC = () => {
       </IonHeader>
       <IonContent>
         {/* Add your profile content here */}
+        <IonButton onClick={() => history.push('/home')}>Go to Home</IonButton>
       </IonContent>
     </IonPage>
   );
