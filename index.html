@@ -154,6 +154,23 @@
                 align-items: center;
             }
         }
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+            }
+            .left-column {
+                width: 250px;
+                transition: transform 0.3s ease;
+                background-color: black;
+            }
+            .left-column.hidden {
+                transform: translateX(-100%);
+            }
+            .left-column .menu-item {
+                padding-left: 5px;
+                color: white;
+            }
+        }
         @media (min-width: 1920px) {
             .container {
                 flex-direction: row;
