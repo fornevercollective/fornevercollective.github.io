@@ -1,6 +1,5 @@
-# Fomphy -  Page
+# Fomphy -  Frequency of Metaphysics
 
-Frequency of Metaphysics
 Metaphysics of frequency in human bodies their connections to piezoelectricity zero point field harmonic spins in super computers
 
 ## Project Structure
