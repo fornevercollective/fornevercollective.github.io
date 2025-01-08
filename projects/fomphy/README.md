@@ -1,7 +1,7 @@
 # Fomphy -  Frequency of Metaphysics
 
 Metaphysics of frequency in human bodies their connections to piezoelectricity zero point field harmonic spins in super computers
-
+Neuroscientist . NASA Research Scientist . Quantum Physicist . Biophysicist . Biomedical Engineer . Material Scientist . Medical Practitioner . Medical Diagnostic Innovator . Medical Imaging Specialist . AI and Machine Learning Expert . Game Engine Developer . Data Scientist/Engineer from Uber . Software Developer from SpaceX . Quantum Computing Specialist
 ## Project Structure
 
 ```
