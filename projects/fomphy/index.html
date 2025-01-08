@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swipe to Read Mobile App</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@latest/dist/ionic/ionic.esm.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@latest/css/ionic.bundle.css" />
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            overflow-y: auto;
         }
         .container {
             display: flex;
@@ -50,89 +51,87 @@
 
 <div class="container">
     <div class="header">Swipe to Read</div>
-    <div class="content" id="content">
-        <!-- Pages will be dynamically added here -->
-        <div class="page">Welcome to the Metaphysics of Frequency reader. Swipe down to start exploring!</div>
-    </div>
-    <div class="loader" id="loader">Loading more content...</div>
+    <ion-content id="content" fullscreen>
+        <ion-refresher slot="fixed" id="refresher">
+            <ion-refresher-content pulling-text="Pull to load more pages...">
+            </ion-refresher-content>
+        </ion-refresher>
+        <div id="pages">
+            <div class="page">Welcome to the Metaphysics of Frequency reader. Swipe down to start exploring!</div>
+        </div>
+        <div class="loader" id="loader">Loading more content...</div>
+    </ion-content>
 </div>
 
 <script>
-    const content = document.getElementById('content');
+    const pagesContainer = document.getElementById('pages');
     const loader = document.getElementById('loader');
     let currentPage = 1;
-    let maxPages = 10; // Example maximum pages
+    let maxPages = 10; // Default value if not dynamically set
+    let batchSize = 2; // Configurable batch size for loading pages
 
-    // Allow user to configure maxPages via a prompt
-    function configureMaxPages() {
-        const userInput = parseInt(prompt("Enter the maximum number of pages to load:", "10"), 10);
-        if (!isNaN(userInput) && userInput > 0) {
-            maxPages = userInput;
-        }
+    // Mock API function to simulate fetching page data
+    async function fetchPageContent(pageNumber) {
+        const simulatedNetworkDelay = Math.random() * 1000 + 500; // Delay between 500ms and 1500ms
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(`<strong>Page ${pageNumber}</strong>: This is a dynamically loaded page. Swipe to navigate.`);
+            }, simulatedNetworkDelay);
+        });
     }
 
-    // Mock content generator
-    function generatePageContent(pageNumber) {
-        return `<div class="page">Page ${pageNumber}: This is a sample page of the book. Enjoy reading and swipe to navigate through the infinite scroll experience.</div>`;
+    // Function to dynamically set maxPages
+    async function setMaxPages() {
+        // Simulating an API call to fetch maxPages
+        const simulatedApiDelay = Math.random() * 500 + 300;
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                maxPages = 15; // Example: Setting maxPages dynamically
+                resolve();
+            }, simulatedApiDelay);
+        });
     }
 
-    // Add initial pages
-    function loadInitialPages() {
-        const fragment = document.createDocumentFragment();
-        for (let i = 1; i <= 3; i++) {
-            const pageContent = generatePageContent(i);
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = pageContent;
-            fragment.appendChild(tempDiv.firstChild);
-        }
-        content.appendChild(fragment);
-        currentPage = 3;
-    }
-
-    // Infinite scroll logic
-    function loadMorePages() {
-        if (currentPage >= maxPages) {
-            loader.style.display = 'none';
-            return;
-        }
-
-        setTimeout(() => {
-            const fragment = document.createDocumentFragment();
-            for (let i = 1; i <= 2; i++) { // Load 2 pages at a time
-                if (currentPage >= maxPages) break;
-                currentPage++;
-                const pageContent = generatePageContent(currentPage);
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = pageContent;
-                fragment.appendChild(tempDiv.firstChild);
-            }
-            content.appendChild(fragment);
-        }, 1000); // Simulate network delay
-    }
-
-    // Debounce function
-    function debounce(func, wait) {
+    // Debounce function to limit event firing frequency
+    function debounce(func, delay) {
         let timeout;
         return function(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func.apply(this, args);
-            };
             clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
+            timeout = setTimeout(() => func.apply(this, args), delay);
         };
     }
 
-    // Event listener for infinite scroll with debounce
-    content.addEventListener('scroll', debounce(() => {
-        if (content.scrollTop + content.clientHeight >= content.scrollHeight - 10) {
-            loadMorePages();
+    // Function to load more pages
+    async function loadMorePages(event) {
+        if (!maxPages || currentPage >= maxPages) {
+            loader.style.display = 'none';
+            event?.detail.complete();
+            return;
         }
-    }, 200));
+
+        for (let i = 0; i < batchSize; i++) { // Load pages based on batchSize
+            if (currentPage >= maxPages) break;
+            currentPage++;
+            const content = await fetchPageContent(currentPage);
+
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'page';
+            pageDiv.innerHTML = content;
+            pagesContainer.appendChild(pageDiv);
+        }
+
+        event?.detail.complete(); // Complete the pull-to-refresh action
+    }
+
+    // Attach the refresher logic with debounce
+    const refresher = document.getElementById('refresher');
+    refresher.addEventListener('ionRefresh', debounce(loadMorePages, 300));
 
     // Initial setup
-    configureMaxPages();
-    loadInitialPages();
+    (async function initialize() {
+        await setMaxPages();
+        loadMorePages();
+    })();
 </script>
 
 </body>
