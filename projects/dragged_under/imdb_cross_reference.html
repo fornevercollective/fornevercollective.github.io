@@ -40,6 +40,18 @@
         section {
             margin-bottom: 40px;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -55,6 +67,32 @@
             <input type="text" id="search-input" placeholder="Search IMDB data...">
             <button onclick="searchIMDB()">Search</button>
             <div id="results"></div>
+        </section>
+        <section id="top-grosses">
+            <h2>Top Lifetime Grosses</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Title</th>
+                        <th>Lifetime Gross</th>
+                        <th>Year</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>Avatar</td><td>$2,923,706,026</td><td>2009</td></tr>
+                    <tr><td>2</td><td>Avengers: Endgame</td><td>$2,799,439,100</td><td>2019</td></tr>
+                    <tr><td>3</td><td>Avatar: The Way of Water</td><td>$2,320,250,281</td><td>2022</td></tr>
+                    <tr><td>4</td><td>Titanic</td><td>$2,264,750,694</td><td>1997</td></tr>
+                    <tr><td>5</td><td>Star Wars: Episode VII - The Force Awakens</td><td>$2,071,310,218</td><td>2015</td></tr>
+                    <tr><td>6</td><td>Avengers: Infinity War</td><td>$2,052,415,039</td><td>2018</td></tr>
+                    <tr><td>7</td><td>Spider-Man: No Way Home</td><td>$1,952,723,719</td><td>2021</td></tr>
+                    <tr><td>8</td><td>Inside Out 2</td><td>$1,698,778,437</td><td>2024</td></tr>
+                    <tr><td>9</td><td>Jurassic World</td><td>$1,671,537,444</td><td>2015</td></tr>
+                    <tr><td>10</td><td>The Lion King</td><td>$1,662,020,819</td><td>2019</td></tr>
+                    <!-- ...additional rows... -->
+                </tbody>
+            </table>
         </section>
     </main>
     <footer>
