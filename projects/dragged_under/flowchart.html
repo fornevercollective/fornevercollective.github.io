@@ -1,33 +1,47 @@
-from graphviz import Digraph
-
-# Create a directed graph
-flowchart = Digraph(format="png")
-flowchart.attr(rankdir='LR', size='10,7')
-
-# Define nodes
-flowchart.node("1", "Opening Scene (ZPF - Night)\nOdin's Establishment")
-flowchart.node("2", "Cult Basement (17 Years Later)\nReapers and Rituals")
-flowchart.node("3", "Flashback (Plane Incident)\nOdin Targets Zoë")
-flowchart.node("4", "Aftermath (Interrogation)\nZoë's Disappearance")
-flowchart.node("5", "Dormitory & Social Life\nEve Discovers Domino")
-flowchart.node("6", "Drive Home\nOdin Encounter")
-flowchart.node("7", "Family Dinner\nHistory of Aileen Revealed")
-flowchart.node("8", "Water Encounter\nMannix Appears")
-flowchart.node("9", "Devin’s Water House\nClues & Conflict with Odin")
-flowchart.node("10", "Final Showdown\nLibrary, ZPF, and Cave")
-
-# Define edges
-flowchart.edges([
-    ("1", "2"),
-    ("2", "3"),
-    ("3", "4"),
-    ("4", "5"),
-    ("5", "6"),
-    ("6", "7"),
-    ("7", "8"),
-    ("8", "9"),
-    ("9", "10")
-])
-
-# Render the flowchart
-flowchart.render("/mnt/data/film_script_flowchart", format="png", cleanup=False)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowchart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
+</head>
+<body>
+    <div id="flowchart"></div>
+    <script>
+        const dot = `
+        digraph {
+            rankdir=LR;
+            size="10,7";
+            "1" [label="Opening Scene (ZPF - Night)\nOdin's Establishment"];
+            "2" [label="Cult Basement (17 Years Later)\nReapers and Rituals"];
+            "3" [label="Flashback (Plane Incident)\nOdin Targets Zoë"];
+            "4" [label="Aftermath (Interrogation)\nZoë's Disappearance"];
+            "5" [label="Dormitory & Social Life\nEve Discovers Domino"];
+            "6" [label="Drive Home\nOdin Encounter"];
+            "7" [label="Family Dinner\nHistory of Aileen Revealed"];
+            "8" [label="Water Encounter\nMannix Appears"];
+            "9" [label="Devin’s Water House\nClues & Conflict with Odin"];
+            "10" [label="Final Showdown\nLibrary, ZPF, and Cave"];
+            "1" -> "2";
+            "2" -> "3";
+            "3" -> "4";
+            "4" -> "5";
+            "5" -> "6";
+            "6" -> "7";
+            "7" -> "8";
+            "8" -> "9";
+            "9" -> "10";
+        }`;
+        const viz = new Viz();
+        viz.renderSVGElement(dot)
+            .then(function(element) {
+                document.getElementById('flowchart').appendChild(element);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+</body>
+</html>
