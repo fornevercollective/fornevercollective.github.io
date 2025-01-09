@@ -1,2 +1,4 @@
 # ...existing dependencies...
 swisseph
+cspice
+flatlib

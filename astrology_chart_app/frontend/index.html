@@ -11,8 +11,20 @@
     <div class="container">
         <h1>Astrology Chart App</h1>
         <canvas id="chart"></canvas>
+        <div id="verification-result"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
+    <script>
+        fetch('/verify')
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('verification-result');
+                resultDiv.innerHTML = '<h2>Dependency Verification</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            })
+            .catch(error => {
+                console.error('Error fetching verification data:', error);
+            });
+    </script>
 </body>
 </html>

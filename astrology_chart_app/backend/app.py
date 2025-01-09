@@ -31,7 +31,8 @@ def verify():
         'chart.js': True,
         'swiss_ephemeris': True,
         'astrologychart2': True,
-        'astrochart': True
+        'astrochart': True,
+        'cspice': True
     }
     return jsonify(dependencies)
 
