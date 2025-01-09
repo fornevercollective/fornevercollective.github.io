@@ -16,12 +16,25 @@
 <body>
     <div class="container">
         <h1>Astrology Chart App</h1>
+        <div id="moon-phase"></div>
         <canvas id="chart"></canvas>
         <div id="verification-result"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
     <script>
+        // Fetch moon phase based on IP location
+        fetch('https://api.ipgeolocation.io/astronomy?apiKey=YOUR_API_KEY')
+            .then(response => response.json())
+            .then(data => {
+                const moonPhaseDiv = document.getElementById('moon-phase');
+                moonPhaseDiv.innerHTML = `<h2>Current Moon Phase: ${data.moon_phase}</h2>`;
+            })
+            .catch(error => {
+                console.error('Error fetching moon phase data:', error);
+            });
+
+        // Fetch dependency verification
         fetch('/verify')
             .then(response => response.json())
             .then(data => {
