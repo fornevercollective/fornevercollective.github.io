@@ -12,6 +12,7 @@
     <meta property="og:image" content="/client/common/images/site/astro-charts-img.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/astrochart@latest/dist/astrochart.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -55,6 +56,12 @@
         const Parallax = window.Parallax;
         const parallaxContainer = document.getElementById('parallax-container');
         const parallaxInstance = new Parallax(parallaxContainer);
+
+        // Initialize AstroChart
+        const chartCanvas = document.getElementById('chart');
+        const chart = new AstroChart(chartCanvas, {
+            // Add your chart configuration here
+        });
     </script>
 </body>
 </html>
