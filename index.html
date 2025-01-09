@@ -188,13 +188,39 @@
                 color: white;
             }
         }
+        .bottom-menu {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #000;
+            z-index: 1000;
+        }
+        .bottom-menu ion-menu-button {
+            color: white;
+        }
     </style>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@latest/dist/ionic/ionic.esm.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@latest/css/ionic.bundle.css"/>
 </head>
 <body class="__className_3a0388">
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-    <div class="container">
+    <ion-menu side="bottom" menu-id="bottomMenu" content-id="main-content">
+        <ion-header>
+            <ion-toolbar color="dark">
+                <ion-title>Menu</ion-title>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content>
+            <ion-list>
+                <ion-item button>Item 1</ion-item>
+                <ion-item button>Item 2</ion-item>
+                <ion-item button>Item 3</ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-menu>
+    <div class="bottom-menu">
+        <ion-menu-button menu="bottomMenu"></ion-menu-button>
+    </div>
+    <div class="container" id="main-content">
         <div class="left-column hidden">
             <div class="section">
                 <header>
@@ -375,8 +401,8 @@
     });
 
     function toggleMenu() {
-        const leftColumn = document.querySelector('.left-column');
-        leftColumn.classList.toggle('hidden');
+        const menu = document.querySelector('ion-menu[menu-id="bottomMenu"]');
+        menu.open();
     }
 </script>
 </body>
