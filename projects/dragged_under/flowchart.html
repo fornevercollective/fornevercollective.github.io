@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragged Under Film Project</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body, html {
             margin: 0;
@@ -60,44 +59,80 @@
             <h2>Flowchart</h2>
             <div id="flowchart-container" style="width: 100%; height: 600px;"></div>
             <script>
-                const nodes = new vis.DataSet([
-                    { id: 1, label: "Opening Scene (ZPF - Night)\nOdin's Establishment" },
-                    { id: 2, label: "Cult Basement (17 Years Later)\nReapers and Rituals" },
-                    { id: 3, label: "Flashback (Plane Incident)\nOdin Targets Zoë" },
-                    { id: 4, label: "Aftermath (Interrogation)\nZoë's Disappearance" },
-                    { id: 5, label: "Dormitory & Social Life\nEve Discovers Domino" },
-                    { id: 6, label: "Drive Home\nOdin Encounter" },
-                    { id: 7, label: "Family Dinner\nHistory of Aileen Revealed" },
-                    { id: 8, label: "Water Encounter\nMannix Appears" },
-                    { id: 9, label: "Devin’s Water House\nClues & Conflict with Odin" },
-                    { id: 10, label: "Final Showdown\nLibrary, ZPF, and Cave" }
-                ]);
-
-                const edges = new vis.DataSet([
-                    { from: 1, to: 2 },
-                    { from: 2, to: 3 },
-                    { from: 3, to: 4 },
-                    { from: 4, to: 5 },
-                    { from: 5, to: 6 },
-                    { from: 6, to: 7 },
-                    { from: 7, to: 8 },
-                    { from: 8, to: 9 },
-                    { from: 9, to: 10 }
-                ]);
-
-                const container = document.getElementById('flowchart-container');
-                const data = { nodes: nodes, edges: edges };
-                const options = {
-                    layout: {
-                        hierarchical: {
-                            direction: 'LR',
-                            sortMethod: 'directed'
-                        }
-                    },
-                    physics: false
+                const data = {
+                    nodes: [
+                        { id: 1, label: "Opening Scene (ZPF - Night)\nOdin's Establishment" },
+                        { id: 2, label: "Cult Basement (17 Years Later)\nReapers and Rituals" },
+                        { id: 3, label: "Flashback (Plane Incident)\nOdin Targets Zoë" },
+                        { id: 4, label: "Aftermath (Interrogation)\nZoë's Disappearance" },
+                        { id: 5, label: "Dormitory & Social Life\nEve Discovers Domino" },
+                        { id: 6, label: "Drive Home\nOdin Encounter" },
+                        { id: 7, label: "Family Dinner\nHistory of Aileen Revealed" },
+                        { id: 8, label: "Water Encounter\nMannix Appears" },
+                        { id: 9, label: "Devin’s Water House\nClues & Conflict with Odin" },
+                        { id: 10, label: "Final Showdown\nLibrary, ZPF, and Cave" }
+                    ],
+                    links: [
+                        { source: 1, target: 2 },
+                        { source: 2, target: 3 },
+                        { source: 3, target: 4 },
+                        { source: 4, target: 5 },
+                        { source: 5, target: 6 },
+                        { source: 6, target: 7 },
+                        { source: 7, target: 8 },
+                        { source: 8, target: 9 },
+                        { source: 9, target: 10 }
+                    ]
                 };
 
-                new vis.Network(container, data, options);
+                const width = document.getElementById('flowchart-container').clientWidth;
+                const height = document.getElementById('flowchart-container').clientHeight;
+
+                const svg = d3.select("#flowchart-container")
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+
+                const simulation = d3.forceSimulation(data.nodes)
+                    .force("link", d3.forceLink(data.links).id(d => d.id).distance(150))
+                    .force("charge", d3.forceManyBody().strength(-500))
+                    .force("center", d3.forceCenter(width / 2, height / 2));
+
+                const link = svg.append("g")
+                    .attr("class", "links")
+                    .selectAll("line")
+                    .data(data.links)
+                    .enter().append("line")
+                    .attr("stroke-width", 2)
+                    .attr("stroke", "#999");
+
+                const node = svg.append("g")
+                    .attr("class", "nodes")
+                    .selectAll("g")
+                    .data(data.nodes)
+                    .enter().append("g");
+
+                node.append("circle")
+                    .attr("r", 20)
+                    .attr("fill", "#1f77b4");
+
+                node.append("text")
+                    .attr("x", 25)
+                    .attr("y", 5)
+                    .text(d => d.label)
+                    .attr("fill", "#000")
+                    .style("font-size", "12px");
+
+                simulation.on("tick", () => {
+                    link
+                        .attr("x1", d => d.source.x)
+                        .attr("y1", d => d.source.y)
+                        .attr("x2", d => d.target.x)
+                        .attr("y2", d => d.target.y);
+
+                    node
+                        .attr("transform", d => `translate(${d.x},${d.y})`);
+                });
             </script>
         </section>
         <section id="outline">
