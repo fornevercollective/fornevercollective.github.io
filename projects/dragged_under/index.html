@@ -48,32 +48,297 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 </head>
 <body>
-    <header>
-        <a href="flowchart.html">Flowchart</a>
-        <a href="chatgpt.html">Outline</a>
-        <a href="chatgpt.html">Plot Throughline</a>
-        <a href="script.html">Script</a>
-        <a href="imdb_cross_reference.html">IMDB Cross Reference</a>
-    </header>
-    <main>
-        <section id="flowchart">
-            <h2>Flowchart</h2>
-            <p>Film script outline, create an index flowchart of scenes...</p>
-            <!-- ...existing flowchart content... -->
-        </section>
-        <section id="outline">
-            <h2>Outline</h2>
-            <p>Film script outline, create an index flowchart of scenes...</p>
-            <!-- ...existing outline content... -->
-        </section>
-        <section id="plot">
-            <h2>Plot Throughline</h2>
-            <p>The script revolves around Eve, her struggle against supernatural forces, and her quest for answers after her sister Zoë's mysterious disappearance...</p>
-            <!-- ...existing plot throughline content... -->
-        </section>
-    </main>
-    <footer>
-        <p>Original concept date 1999 - 16 yr old Tad</p>
-    </footer>
+    <ion-app>
+        <ion-header>
+            <ion-toolbar color="primary">
+                <ion-title>Dragged Under Film Project</ion-title>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content>
+            <ion-tabs>
+                <ion-tab-bar slot="bottom">
+                    <ion-tab-button tab="home">
+                        <ion-label>Home</ion-label>
+                    </ion-tab-button>
+                    <ion-tab-button tab="flowchart">
+                        <ion-label>Flowchart</ion-label>
+                    </ion-tab-button>
+                    <ion-tab-button tab="outline">
+                        <ion-label>Outline</ion-label>
+                    </ion-tab-button>
+                    <ion-tab-button tab="plot">
+                        <ion-label>Plot Throughline</ion-label>
+                    </ion-tab-button>
+                    <ion-tab-button tab="script">
+                        <ion-label>Script</ion-label>
+                    </ion-tab-button>
+                    <ion-tab-button tab="imdb">
+                        <ion-label>IMDB Cross Reference</ion-label>
+                    </ion-tab-button>
+                </ion-tab-bar>
+
+                <ion-tab tab="home">
+                    <ion-content>
+                        <section id="home">
+                            <h2>Home</h2>
+                            <p>Welcome to the Dragged Under Film Project.</p>
+                        </section>
+                    </ion-content>
+                </ion-tab>
+
+                <ion-tab tab="flowchart">
+                    <ion-content>
+                        <section id="flowchart">
+                            <h2>Flowchart</h2>
+                            <div id="flowchart-container" style="width: 100%; height: 600px;"></div>
+                            <script>
+                                const data = {
+                                    nodes: [
+                                        { id: 1, label: "Opening Scene (ZPF - Night)\nOdin's Establishment" },
+                                        { id: 2, label: "Cult Basement (17 Years Later)\nReapers and Rituals" },
+                                        { id: 3, label: "Flashback (Plane Incident)\nOdin Targets Zoë" },
+                                        { id: 4, label: "Aftermath (Interrogation)\nZoë's Disappearance" },
+                                        { id: 5, label: "Dormitory & Social Life\nEve Discovers Domino" },
+                                        { id: 6, label: "Drive Home\nOdin Encounter" },
+                                        { id: 7, label: "Family Dinner\nHistory of Aileen Revealed" },
+                                        { id: 8, label: "Water Encounter\nMannix Appears" },
+                                        { id: 9, label: "Devin’s Water House\nClues & Conflict with Odin" },
+                                        { id: 10, label: "Final Showdown\nLibrary, ZPF, and Cave" }
+                                    ],
+                                    links: [
+                                        { source: 1, target: 2 },
+                                        { source: 2, target: 3 },
+                                        { source: 3, target: 4 },
+                                        { source: 4, target: 5 },
+                                        { source: 5, target: 6 },
+                                        { source: 6, target: 7 },
+                                        { source: 7, target: 8 },
+                                        { source: 8, target: 9 },
+                                        { source: 9, target: 10 }
+                                    ]
+                                };
+
+                                const width = document.getElementById('flowchart-container').clientWidth;
+                                const height = document.getElementById('flowchart-container').clientHeight;
+
+                                const svg = d3.select("#flowchart-container")
+                                    .append("svg")
+                                    .attr("width", width)
+                                    .attr("height", height);
+
+                                const simulation = d3.forceSimulation(data.nodes)
+                                    .force("link", d3.forceLink(data.links).id(d => d.id).distance(150))
+                                    .force("charge", d3.forceManyBody().strength(-500))
+                                    .force("center", d3.forceCenter(width / 2, height / 2));
+
+                                const link = svg.append("g")
+                                    .attr("class", "links")
+                                    .selectAll("line")
+                                    .data(data.links)
+                                    .enter().append("line")
+                                    .attr("stroke-width", 2)
+                                    .attr("stroke", "#999");
+
+                                const node = svg.append("g")
+                                    .attr("class", "nodes")
+                                    .selectAll("g")
+                                    .data(data.nodes)
+                                    .enter().append("g");
+
+                                node.append("circle")
+                                    .attr("r", 20)
+                                    .attr("fill", "#1f77b4");
+
+                                node.append("text")
+                                    .attr("x", 25)
+                                    .attr("y", 5)
+                                    .text(d => d.label)
+                                    .attr("fill", "#000")
+                                    .style("font-size", "12px");
+
+                                simulation.on("tick", () => {
+                                    link
+                                        .attr("x1", d => d.source.x)
+                                        .attr("y1", d => d.source.y)
+                                        .attr("x2", d => d.target.x)
+                                        .attr("y2", d => d.target.y);
+
+                                    node
+                                        .attr("transform", d => `translate(${d.x},${d.y})`);
+                                });
+                            </script>
+                        </section>
+                    </ion-content>
+                </ion-tab>
+
+                <ion-tab tab="outline">
+                    <ion-content>
+                        <section id="outline">
+                            <h2>Outline</h2>
+                            <p>Film script outline, create an index flowchart of scenes...</p>
+                            <!-- ...existing outline content... -->
+                        </section>
+                    </ion-content>
+                </ion-tab>
+
+                <ion-tab tab="plot">
+                    <ion-content>
+                        <section id="plot">
+                            <h2>Plot Throughline</h2>
+                            <p>The script revolves around Eve, her struggle against supernatural forces, and her quest for answers after her sister Zoë's mysterious disappearance...</p>
+                            <!-- ...existing plot throughline content... -->
+                        </section>
+                    </ion-content>
+                </ion-tab>
+
+                <ion-tab tab="script">
+                    <ion-content>
+                        <section id="script" class="editable">
+                            <h2>Script</h2>
+                            <p>Film script content goes here...</p>
+                            <!-- ...existing script content... -->
+                            <textarea name="editor1"></textarea>
+                        </section>
+                    </ion-content>
+                </ion-tab>
+
+                <ion-tab tab="imdb">
+                    <ion-content>
+                        <section id="search">
+                            <h2>IMDB Cross Reference</h2>
+                            <input type="text" id="search-input" placeholder="Search IMDB data..." oninput="autocompleteSearch()">
+                            <button onclick="startDictation()">🎤</button>
+                            <select id="search-type">
+                                <option value="basics">Basics</option>
+                                <option value="akas">AKAs</option>
+                                <option value="crew">Crew</option>
+                                <option value="episode">Episode</option>
+                                <option value="principals">Principals</option>
+                                <option value="ratings">Ratings</option>
+                                <option value="imbd_pro">IMDB Pro</option>
+                            </select>
+                            <button onclick="searchIMDB()">Search</button>
+                            <div id="autocomplete-results"></div>
+                            <div id="results"></div>
+                        </section>
+                        <section id="search-results">
+                            <h2>Search Results</h2>
+                            <div id="results"></div>
+                        </section>
+                        <section id="top-grosses">
+                            <h2>Top Lifetime Grosses</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Title</th>
+                                        <th>Lifetime Gross</th>
+                                        <th>Year</th>
+                                        <th>Rating MPA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="5">Ratings Summary: PG-13 (50), PG (30), R (10), G (10)</td></tr>
+                                    <tr class="genre-scifi"><td>1</td><td>Avatar</td><td>$2,923,706,026</td><td>2009</td><td>PG-13</td></tr>
+                                    <tr class="genre-superhero"><td>2</td><td>Avengers: Endgame</td><td>$2,799,439,100</td><td>2019</td><td>PG-13</td></tr>
+                                    <tr class="genre-scifi"><td>3</td><td>Avatar: The Way of Water</td><td>$2,320,250,281</td><td>2022</td><td>PG-13</td></tr>
+                                    <tr class="genre-drama"><td>4</td><td>Titanic</td><td>$2,264,750,694</td><td>1997</td><td>PG-13</td></tr>
+                                    <tr class="genre-scifi"><td>5</td><td>Star Wars: Episode VII - The Force Awakens</td><td>$2,071,310,218</td><td>2015</td><td>PG-13</td></tr>
+                                    <tr class="genre-superhero"><td>6</td><td>Avengers: Infinity War</td><td>$2,052,415,039</td><td>2018</td><td>PG-13</td></tr>
+                                    <tr class="genre-superhero"><td>7</td><td>Spider-Man: No Way Home</td><td>$1,952,723,719</td><td>2021</td><td>PG-13</td></tr>
+                                    <tr class="genre-animation"><td>8</td><td>Inside Out 2</td><td>$1,698,778,437</td><td>2024</td><td>PG</td></tr>
+                                    <tr class="genre-adventure"><td>9</td><td>Jurassic World</td><td>$1,671,537,444</td><td>2015</td><td>PG-13</td></tr>
+                                    <tr class="genre-animation"><td>10</td><td>The Lion King</td><td>$1,662,020,819</td><td>2019</td><td>PG</td></tr>
+                                    <!-- ...existing table content... -->
+                                </tbody>
+                            </table>
+                        </section>
+                        <section id="genres">
+                            <h2>Genres Based on Top-Grossing Films</h2>
+                            <ul>
+                                <li class="genre-scifi">Science Fiction (e.g., Avatar, Avengers: Endgame, Star Wars)</li>
+                                <li class="genre-superhero">Superhero (e.g., Avengers: Infinity War, Spider-Man: No Way Home, Black Panther)</li>
+                                <li class="genre-fantasy">Fantasy (e.g., Harry Potter, The Lord of the Rings, Frozen)</li>
+                                <li class="genre-animation">Animation (e.g., Inside Out 2, The Lion King, Minions)</li>
+                                <li class="genre-adventure">Adventure (e.g., Jurassic World, Pirates of the Caribbean, The Hunger Games)</li>
+                                <li class="genre-action">Action (e.g., Fast & Furious, Mission: Impossible, Transformers)</li>
+                                <li class="genre-drama">Drama (e.g., Titanic, Bohemian Rhapsody, Oppenheimer)</li>
+                                <li class="genre-comedy">Comedy (e.g., Barbie, The Secret Life of Pets, Shrek 2)</li>
+                                <li class="genre-romance">Romance (e.g., Beauty and the Beast, Twilight Saga: Breaking Dawn, Aladdin)</li>
+                                <li class="genre-musical">Musical (e.g., The Lion King, Frozen II, Mamma Mia!)</li>
+                                <li class="genre-thriller">Thriller (e.g., Joker, The Sixth Sense, Inception)</li>
+                                <li class="genre-horror">Horror (e.g., It, The Twilight Saga: New Moon, The Hunger Games: Catching Fire)</li>
+                                <li class="genre-historical">Historical (e.g., Oppenheimer, The Passion of the Christ)</li>
+                                <li class="genre-family">Family (e.g., Coco, Moana, The Croods)</li>
+                            </ul>
+                        </section>
+                    </ion-content>
+                </ion-tab>
+            </ion-tabs>
+        </ion-content>
+    </ion-app>
+    <script>
+        async function searchIMDB() {
+            const query = document.getElementById('search-input').value;
+            const type = document.getElementById('search-type').value;
+            const response = await fetch(`https://datasets.imdbws.com/${type}/${query}`);
+            const data = await response.json();
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = JSON.stringify(data, null, 2);
+        }
+
+        async function autocompleteSearch() {
+            const query = document.getElementById('search-input').value;
+            if (query.length < 3) {
+                document.getElementById('autocomplete-results').innerHTML = '';
+                return;
+            }
+            const response = await axios.get(`https://api.example.com/autocomplete?query=${query}`);
+            const suggestions = response.data;
+            const autocompleteDiv = document.getElementById('autocomplete-results');
+            autocompleteDiv.innerHTML = suggestions.map(s => `<div>${s}</div>`).join('');
+        }
+
+        function startDictation() {
+            if (window.hasOwnProperty('webkitSpeechRecognition')) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = "en-US";
+                recognition.start();
+
+                recognition.onresult = function(e) {
+                    document.getElementById('search-input').value = e.results[0][0].transcript;
+                    recognition.stop();
+                    searchIMDB();
+                };
+
+                recognition.onerror = function(e) {
+                    recognition.stop();
+                };
+            }
+        }
+
+        async function chatWithGPT() {
+            const query = document.getElementById('search-input').value;
+            const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
+                prompt: query,
+                max_tokens: 150
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer YOUR_OPENAI_API_KEY`
+                }
+            });
+            const data = response.data;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = data.choices[0].text;
+        }
+
+        window.onload = function() {
+            CKEDITOR.replaceAll('editable');
+            CKEDITOR.replace('editor1');
+        };
+    </script>
 </body>
 </html>
