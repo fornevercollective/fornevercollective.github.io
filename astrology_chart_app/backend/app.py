@@ -26,7 +26,12 @@ def verify():
         'flatlib': True,
         'pip': True,
         'app.py': True,
-        'postman': True
+        'postman': True,
+        'd3.js': True,
+        'chart.js': True,
+        'swiss_ephemeris': True,
+        'astrologychart2': True,
+        'astrochart': True
     }
     return jsonify(dependencies)
 

@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    // ...existing dependencies...
+    "d3": "^7.0.0",
+    "chart.js": "^3.0.0",
+    "swisseph": "^2.10.0",
+    "astrologychart2": "^1.0.0",
+    "astrochart": "^1.0.0"
+  }
+}
