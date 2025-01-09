@@ -77,6 +77,11 @@
         .genre-historical { color: #98df8a; }
         .genre-family { color: #ff9896; }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 </head>
 <body>
     <header>
@@ -245,8 +250,8 @@
                 document.getElementById('autocomplete-results').innerHTML = '';
                 return;
             }
-            const response = await fetch(`https://api.example.com/autocomplete?query=${query}`);
-            const suggestions = await response.json();
+            const response = await axios.get(`https://api.example.com/autocomplete?query=${query}`);
+            const suggestions = response.data;
             const autocompleteDiv = document.getElementById('autocomplete-results');
             autocompleteDiv.innerHTML = suggestions.map(s => `<div>${s}</div>`).join('');
         }
@@ -273,18 +278,16 @@
 
         async function chatWithGPT() {
             const query = document.getElementById('search-input').value;
-            const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
-                method: 'POST',
+            const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
+                prompt: query,
+                max_tokens: 150
+            }, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer YOUR_OPENAI_API_KEY`
-                },
-                body: JSON.stringify({
-                    prompt: query,
-                    max_tokens: 150
-                })
+                }
             });
-            const data = await response.json();
+            const data = response.data;
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = data.choices[0].text;
         }
