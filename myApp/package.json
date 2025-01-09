@@ -23,8 +23,10 @@
     ]
   },
   "dependencies": {
+    "@capacitor/android": "6.2.0",
     "@capacitor/camera": "^6.1.2",
     "@capacitor/cli": "^6.2.0",
-    "@capacitor/core": "^6.2.0"
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/ios": "6.2.0"
   }
 }
