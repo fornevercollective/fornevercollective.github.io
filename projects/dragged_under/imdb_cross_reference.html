@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragged Under Film Project</title>
+    <title>IMDB Cross Reference</title>
     <style>
         body, html {
             margin: 0;
@@ -44,30 +44,30 @@
 </head>
 <body>
     <header>
-        <a href="#flowchart">Flowchart</a>
-        <a href="#outline">Outline</a>
-        <a href="#plot">Plot Throughline</a>
-        <a href="imdb_cross_reference.html">IMDB Cross Reference</a>
+        <a href="index.html">Home</a>
+        <a href="flowchart.html">Flowchart</a>
+        <a href="chatgpt.html">Outline</a>
+        <a href="script.html">Script</a>
     </header>
     <main>
-        <section id="flowchart">
-            <h2>Flowchart</h2>
-            <p>Film script outline, create an index flowchart of scenes...</p>
-            <!-- ...existing flowchart content... -->
-        </section>
-        <section id="outline">
-            <h2>Outline</h2>
-            <p>Film script outline, create an index flowchart of scenes...</p>
-            <!-- ...existing outline content... -->
-        </section>
-        <section id="plot">
-            <h2>Plot Throughline</h2>
-            <p>The script revolves around Eve, her struggle against supernatural forces, and her quest for answers after her sister Zoë's mysterious disappearance...</p>
-            <!-- ...existing plot throughline content... -->
+        <section id="search">
+            <h2>IMDB Cross Reference</h2>
+            <input type="text" id="search-input" placeholder="Search IMDB data...">
+            <button onclick="searchIMDB()">Search</button>
+            <div id="results"></div>
         </section>
     </main>
     <footer>
         <p>Original concept date 1999 - 16 yr old Tad</p>
     </footer>
+    <script>
+        async function searchIMDB() {
+            const query = document.getElementById('search-input').value;
+            const response = await fetch(`https://datasets.imdbws.com/${query}`);
+            const data = await response.json();
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = JSON.stringify(data, null, 2);
+        }
+    </script>
 </body>
 </html>
