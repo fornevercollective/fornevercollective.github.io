@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "d3": "^7.0.0",
-    "chart.js": "^2.9.4",
-    "swisseph": "^2.10.0",
-    "astrologychart2": "^1.0.0",
-    "astrochart": "^1.0.0"
+    "d3": "git+https://github.com/d3/d3.git",
+    "chart.js": "git+https://github.com/chartjs/Chart.js.git",
+    "swisseph": "git+https://github.com/arturania/swisseph.git",
+    "astrologychart2": "git+https://github.com/Kibo/AstrologyChart2.git",
+    "astrochart": "git+https://github.com/afucher/AstroChartSVG.git"
   }
 }

@@ -32,7 +32,7 @@ def verify():
         'swiss_ephemeris': True,
         'astrologychart2': True,
         'astrochart': True,
-        'cspice': True
+        # 'cspice': True
     }
     return jsonify(dependencies)
 
