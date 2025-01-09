@@ -294,6 +294,7 @@
                 <div class="header-buttons">
                     <div class="left">
                         <button id="backButton">back</button>
+                        <button id="nextButton">next</button> <!-- Add next button here -->
                     </div>
                     <div class="right">
                         <button id="shareButton">share</button>
@@ -391,9 +392,34 @@
         };
     }
 
+    let currentContentIndex = 0;
+
+    function updateContent() {
+        const contentSections = document.querySelectorAll('.feed .content-section');
+        contentSections.forEach((section, index) => {
+            section.style.display = index === currentContentIndex ? 'block' : 'none';
+        });
+    }
+
+    document.getElementById('backButton').addEventListener('click', () => {
+        if (currentContentIndex > 0) {
+            currentContentIndex--;
+            updateContent();
+        }
+    });
+
+    document.getElementById('nextButton').addEventListener('click', () => {
+        const contentSections = document.querySelectorAll('.feed .content-section');
+        if (currentContentIndex < contentSections.length - 1) {
+            currentContentIndex++;
+            updateContent();
+        }
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
         displayProjectData();
         document.getElementById('feed').addEventListener('scroll', debounce(handleScroll, 100));
+        updateContent(); // Initialize content display
     });
 
     document.getElementById('backButton').addEventListener('click', () => {
