@@ -40,14 +40,17 @@
         section {
             margin-bottom: 40px;
         }
+        #script {
+            opacity: 0.8;
+            max-height: 400px;
+            overflow-y: scroll;
+        }
     </style>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <script>
-        tinymce.init({
-            selector: 'section',
-            plugins: 'link image code',
-            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
-        });
+        window.onload = function() {
+            CKEDITOR.replaceAll('editable');
+        };
     </script>
 </head>
 <body>
@@ -59,22 +62,22 @@
         <a href="imdb_cross_reference.html">IMDB Cross Reference</a>
     </header>
     <main>
-        <section id="flowchart">
+        <section id="flowchart" class="editable">
             <h2>Flowchart</h2>
             <p>Film script outline, create an index flowchart of scenes...</p>
             <!-- ...existing flowchart content... -->
         </section>
-        <section id="outline">
+        <section id="outline" class="editable">
             <h2>Outline</h2>
             <p>Film script outline, create an index flowchart of scenes...</p>
             <!-- ...existing outline content... -->
         </section>
-        <section id="plot">
+        <section id="plot" class="editable">
             <h2>Plot Throughline</h2>
             <p>The script revolves around Eve, her struggle against supernatural forces, and her quest for answers after her sister Zoë's mysterious disappearance...</p>
             <!-- ...existing plot throughline content... -->
         </section>
-        <section id="script">
+        <section id="script" class="editable">
             <h2>Script</h2>
             <p>Film script content goes here...</p>
             <!-- ...existing script content... -->
