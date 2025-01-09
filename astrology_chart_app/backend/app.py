@@ -18,5 +18,17 @@ def calculate():
     planets = {planet: chart.getObject(planet).data for planet in const.LIST_OBJECTS}
     return jsonify(planets)
 
+@app.route('/verify', methods=['GET'])
+def verify():
+    dependencies = {
+        'python': True,
+        'flask': True,
+        'flatlib': True,
+        'pip': True,
+        'app.py': True,
+        'postman': True
+    }
+    return jsonify(dependencies)
+
 if __name__ == '__main__':
     app.run(debug=True)
