@@ -1,0 +1,7 @@
+{
+  "name": "hauteville-family-tabs",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
