@@ -27,19 +27,22 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
   private drawingConfig = {
     strokeStyle: 'black',
     lineWidth: 2,
+    fillStyle: 'rgba(0, 0, 0, 0.1)', // New option for fill style
   };
 
   private showGrid = false; // New option to toggle grid overlay
+  private showCoordinates = false; // New option to toggle coordinates display
 
   ngAfterViewInit() {
     this.initializeViewer();
     this.addDrawingLayer();
     this.addGridToggleButton(); // Add grid toggle button
+    this.addCoordinatesToggleButton(); // Add coordinates toggle button
   }
 
   ngOnDestroy(): void {
     if (this.viewer && this.resizeHandler) {
-      this.viewer.removeHandler('resize', this.resizeHandler);
+      this.viewer.removeHandler('resize', this.resizeHandler); // Ensure the resizeHandler is consistently detached to prevent potential memory leaks or unexpected behavior during component destruction.
     }
     this.viewer.destroy(); // Ensure viewer is fully cleaned up to avoid memory leaks.
   }
@@ -53,7 +56,7 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
 
   private addDrawingLayer(): void {
     const existingCanvas = this.viewer.canvas.querySelector('canvas');
-    if (existingCanvas) {
+    if (existingCanvas) { // Consider adding a more robust check or logging in case multiple canvases are inadvertently added, which could lead to rendering or performance issues.
       console.warn('A canvas already exists in the viewer. Skipping creation.');
       return;
     }
@@ -110,7 +113,7 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
         const previousContent = tempContext.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
         canvas.width = container.clientWidth;
         canvas.height = container.clientHeight;
-        context.putImageData(previousContent, 0, 0);
+        context.putImageData(previousContent, 0, 0); // This approach assumes the entire canvas fits in memory, which might not scale well for very large canvas sizes. Consider adding checks or optimizations for large datasets.
       }
     };
     this.viewer.addHandler('resize', this.resizeHandler);
@@ -122,12 +125,26 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
     gridButton.style.position = 'absolute';
     gridButton.style.top = '10px';
     gridButton.style.right = '10px';
-    gridButton.style.zIndex = '1000';
+    gridButton.style.zIndex = '1000'; // Using hardcoded z-index values can lead to conflicts with other elements. Consider centralizing z-index management in a theme or configuration file.
     gridButton.addEventListener('click', () => {
       this.showGrid = !this.showGrid;
       this.toggleGrid();
     });
     this.osdContainer.nativeElement.appendChild(gridButton);
+  }
+
+  private addCoordinatesToggleButton(): void {
+    const coordinatesButton = document.createElement('button');
+    coordinatesButton.textContent = 'Toggle Coordinates';
+    coordinatesButton.style.position = 'absolute';
+    coordinatesButton.style.top = '50px';
+    coordinatesButton.style.right = '10px';
+    coordinatesButton.style.zIndex = '1000';
+    coordinatesButton.addEventListener('click', () => {
+      this.showCoordinates = !this.showCoordinates;
+      this.toggleCoordinates();
+    });
+    this.osdContainer.nativeElement.appendChild(coordinatesButton);
   }
 
   private toggleGrid(): void {
@@ -152,7 +169,36 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
       context.lineWidth = 1;
       context.stroke();
     } else {
+      context.clearRect(0, 0, canvas.width, canvas.height); // Clearing the canvas removes all content, including the grid and drawings. Ensure you have a strategy to preserve and redraw elements if needed.
+    }
+  }
+
+  private toggleCoordinates(): void {
+    const canvas = this.viewer.canvas.querySelector('canvas');
+    if (!canvas) return;
+
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    if (this.showCoordinates) {
+      canvas.addEventListener('mousemove', this.displayCoordinates);
+    } else {
+      canvas.removeEventListener('mousemove', this.displayCoordinates);
       context.clearRect(0, 0, canvas.width, canvas.height);
     }
+  }
+
+  private displayCoordinates = (e: MouseEvent): void => {
+    const canvas = this.viewer.canvas.querySelector('canvas');
+    if (!canvas) return;
+
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = this.drawingConfig.fillStyle;
+    context.fillRect(e.offsetX, e.offsetY, 100, 50);
+    context.fillStyle = 'black';
+    context.fillText(`X: ${e.offsetX}, Y: ${e.offsetY}`, e.offsetX + 10, e.offsetY + 25);
   }
 }
