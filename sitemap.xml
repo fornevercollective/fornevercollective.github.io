@@ -28,5 +28,47 @@
     <priority>0.5</priority>
   </url>
   
-  <!-- Additional pages can be added similarly -->
+  <!-- Additional pages -->
+  <url>
+    <loc>https://fornevercollective.github.io/ggwave/examples/ggwave-js/index-tmpl.html</loc>
+    <lastmod>2025-01-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fornevercollective.github.io/ggwave/examples/waver/index-tmpl.html</loc>
+    <lastmod>2025-01-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fornevercollective.github.io/ggwave/examples/spectrogram/index-tmpl.html</loc>
+    <lastmod>2025-01-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fornevercollective.github.io/ggwave/examples/ggwave-to-file/</loc>
+    <lastmod>2025-01-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fornevercollective.github.io/ggwave/examples/ggwave-py/</loc>
+    <lastmod>2025-01-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fornevercollective.github.io/ggwave/examples/ggwave-from-file/</loc>
+    <lastmod>2025-01-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fornevercollective.github.io/ggwave/examples/ggwave-cli/</loc>
+    <lastmod>2025-01-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
