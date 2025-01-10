@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { FisherCrawfordComponent } from './fisher-crawford/fisher-crawford.component';
+import { LepageBandetComponent } from './lepage-bandet/lepage-bandet.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
-  },
+  { path: '', redirectTo: 'fisher-crawford', pathMatch: 'full' },
+  { path: 'fisher-crawford', component: FisherCrawfordComponent },
+  { path: 'lepage-bandet', component: LepageBandetComponent },
   {
     path: 'family-tree',
     loadChildren: () => import('./family-tree/family-tree.module').then(m => m.FamilyTreePageModule)
