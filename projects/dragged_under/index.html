@@ -40,6 +40,16 @@
         section {
             margin-bottom: 40px;
         }
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        header.dark-mode {
+            background-color: #1e1e1e;
+        }
+        header a.dark-mode {
+            color: #ffffff;
+        }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
     <script src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic.js"></script>
@@ -52,9 +62,15 @@
         <ion-header>
             <ion-toolbar color="primary">
                 <ion-title>Dragged Under Film Project</ion-title>
+                <ion-buttons slot="end">
+                    <ion-button onclick="toggleDarkMode()">Toggle Dark Mode</ion-button>
+                </ion-buttons>
             </ion-toolbar>
         </ion-header>
         <ion-content>
+            <ion-refresher slot="fixed">
+                <ion-refresher-content></ion-refresher-content>
+            </ion-refresher>
             <ion-tabs>
                 <ion-tab-bar slot="bottom">
                     <ion-tab-button tab="home">
@@ -275,7 +291,36 @@
                     </ion-content>
                 </ion-tab>
             </ion-tabs>
+            <ion-infinite-scroll threshold="100px" id="infinite-scroll">
+                <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Loading more data..."></ion-infinite-scroll-content>
+            </ion-infinite-scroll>
         </ion-content>
+        <ion-footer>
+            <ion-toolbar>
+                <ion-tabs>
+                    <ion-tab-bar slot="bottom">
+                        <ion-tab-button tab="home">
+                            <ion-label>Home</ion-label>
+                        </ion-tab-button>
+                        <ion-tab-button tab="flowchart">
+                            <ion-label>Flowchart</ion-label>
+                        </ion-tab-button>
+                        <ion-tab-button tab="outline">
+                            <ion-label>Outline</ion-label>
+                        </ion-tab-button>
+                        <ion-tab-button tab="plot">
+                            <ion-label>Plot Throughline</ion-label>
+                        </ion-tab-button>
+                        <ion-tab-button tab="script">
+                            <ion-label>Script</ion-label>
+                        </ion-tab-button>
+                        <ion-tab-button tab="imdb">
+                            <ion-label>IMDB Cross Reference</ion-label>
+                        </ion-tab-button>
+                    </ion-tab-bar>
+                </ion-tabs>
+            </ion-toolbar>
+        </ion-footer>
     </ion-app>
     <script>
         async function searchIMDB() {
@@ -334,6 +379,46 @@
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = data.choices[0].text;
         }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            document.querySelector('header').classList.toggle('dark-mode');
+            document.querySelectorAll('header a').forEach(a => a.classList.toggle('dark-mode'));
+        }
+
+        // Example usage of ion-modal
+        const modal = document.createElement('ion-modal');
+        modal.component = 'modal-content';
+        document.body.appendChild(modal);
+
+        // Example usage of ion-popover
+        const popover = document.createElement('ion-popover');
+        popover.component = 'popover-content';
+        document.body.appendChild(popover);
+
+        // Example usage of ion-toast
+        const toast = document.createElement('ion-toast');
+        toast.message = 'This is a toast message';
+        toast.duration = 2000;
+        document.body.appendChild(toast);
+
+        // Example usage of ion-searchbar
+        const searchbar = document.createElement('ion-searchbar');
+        document.body.appendChild(searchbar);
+
+        // Example usage of ion-reorder
+        const reorderGroup = document.createElement('ion-reorder-group');
+        reorderGroup.innerHTML = `
+            <ion-item>
+                <ion-label>Item 1</ion-label>
+                <ion-reorder slot="end"></ion-reorder>
+            </ion-item>
+            <ion-item>
+                <ion-label>Item 2</ion-label>
+                <ion-reorder slot="end"></ion-reorder>
+            </ion-item>
+        `;
+        document.body.appendChild(reorderGroup);
 
         window.onload = function() {
             CKEDITOR.replaceAll('editable');
