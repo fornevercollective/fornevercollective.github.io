@@ -46,5 +46,15 @@
         </div>
         <script src="cordova.js"></script>
         <script src="js/index.js"></script>
+        <script>
+            document.addEventListener('deviceready', function() {
+                const menuData = [
+                    { title: 'Home', url: '/home' },
+                    { title: 'About', url: '/about' },
+                    { title: 'Contact', url: '/contact' }
+                ];
+                console.log('Ionic Menu Data:', menuData);
+            }, false);
+        </script>
     </body>
 </html>
