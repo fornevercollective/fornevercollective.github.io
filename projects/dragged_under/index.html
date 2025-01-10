@@ -237,57 +237,6 @@
                             <div id="autocomplete-results"></div>
                             <div id="results"></div>
                         </section>
-                        <section id="search-results">
-                            <h2>Search Results</h2>
-                            <div id="results"></div>
-                        </section>
-                        <section id="top-grosses">
-                            <h2>Top Lifetime Grosses</h2>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Rank</th>
-                                        <th>Title</th>
-                                        <th>Lifetime Gross</th>
-                                        <th>Year</th>
-                                        <th>Rating MPA</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td colspan="5">Ratings Summary: PG-13 (50), PG (30), R (10), G (10)</td></tr>
-                                    <tr class="genre-scifi"><td>1</td><td>Avatar</td><td>$2,923,706,026</td><td>2009</td><td>PG-13</td></tr>
-                                    <tr class="genre-superhero"><td>2</td><td>Avengers: Endgame</td><td>$2,799,439,100</td><td>2019</td><td>PG-13</td></tr>
-                                    <tr class="genre-scifi"><td>3</td><td>Avatar: The Way of Water</td><td>$2,320,250,281</td><td>2022</td><td>PG-13</td></tr>
-                                    <tr class="genre-drama"><td>4</td><td>Titanic</td><td>$2,264,750,694</td><td>1997</td><td>PG-13</td></tr>
-                                    <tr class="genre-scifi"><td>5</td><td>Star Wars: Episode VII - The Force Awakens</td><td>$2,071,310,218</td><td>2015</td><td>PG-13</td></tr>
-                                    <tr class="genre-superhero"><td>6</td><td>Avengers: Infinity War</td><td>$2,052,415,039</td><td>2018</td><td>PG-13</td></tr>
-                                    <tr class="genre-superhero"><td>7</td><td>Spider-Man: No Way Home</td><td>$1,952,723,719</td><td>2021</td><td>PG-13</td></tr>
-                                    <tr class="genre-animation"><td>8</td><td>Inside Out 2</td><td>$1,698,778,437</td><td>2024</td><td>PG</td></tr>
-                                    <tr class="genre-adventure"><td>9</td><td>Jurassic World</td><td>$1,671,537,444</td><td>2015</td><td>PG-13</td></tr>
-                                    <tr class="genre-animation"><td>10</td><td>The Lion King</td><td>$1,662,020,819</td><td>2019</td><td>PG</td></tr>
-                                    <!-- ...existing table content... -->
-                                </tbody>
-                            </table>
-                        </section>
-                        <section id="genres">
-                            <h2>Genres Based on Top-Grossing Films</h2>
-                            <ul>
-                                <li class="genre-scifi">Science Fiction (e.g., Avatar, Avengers: Endgame, Star Wars)</li>
-                                <li class="genre-superhero">Superhero (e.g., Avengers: Infinity War, Spider-Man: No Way Home, Black Panther)</li>
-                                <li class="genre-fantasy">Fantasy (e.g., Harry Potter, The Lord of the Rings, Frozen)</li>
-                                <li class="genre-animation">Animation (e.g., Inside Out 2, The Lion King, Minions)</li>
-                                <li class="genre-adventure">Adventure (e.g., Jurassic World, Pirates of the Caribbean, The Hunger Games)</li>
-                                <li class="genre-action">Action (e.g., Fast & Furious, Mission: Impossible, Transformers)</li>
-                                <li class="genre-drama">Drama (e.g., Titanic, Bohemian Rhapsody, Oppenheimer)</li>
-                                <li class="genre-comedy">Comedy (e.g., Barbie, The Secret Life of Pets, Shrek 2)</li>
-                                <li class="genre-romance">Romance (e.g., Beauty and the Beast, Twilight Saga: Breaking Dawn, Aladdin)</li>
-                                <li class="genre-musical">Musical (e.g., The Lion King, Frozen II, Mamma Mia!)</li>
-                                <li class="genre-thriller">Thriller (e.g., Joker, The Sixth Sense, Inception)</li>
-                                <li class="genre-horror">Horror (e.g., It, The Twilight Saga: New Moon, The Hunger Games: Catching Fire)</li>
-                                <li class="genre-historical">Historical (e.g., Oppenheimer, The Passion of the Christ)</li>
-                                <li class="genre-family">Family (e.g., Coco, Moana, The Croods)</li>
-                            </ul>
-                        </section>
                     </ion-content>
                 </ion-tab>
             </ion-tabs>
@@ -295,32 +244,6 @@
                 <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Loading more data..."></ion-infinite-scroll-content>
             </ion-infinite-scroll>
         </ion-content>
-        <ion-footer>
-            <ion-toolbar>
-                <ion-tabs>
-                    <ion-tab-bar slot="bottom">
-                        <ion-tab-button tab="home">
-                            <ion-label>Home</ion-label>
-                        </ion-tab-button>
-                        <ion-tab-button tab="flowchart">
-                            <ion-label>Flowchart</ion-label>
-                        </ion-tab-button>
-                        <ion-tab-button tab="outline">
-                            <ion-label>Outline</ion-label>
-                        </ion-tab-button>
-                        <ion-tab-button tab="plot">
-                            <ion-label>Plot Throughline</ion-label>
-                        </ion-tab-button>
-                        <ion-tab-button tab="script">
-                            <ion-label>Script</ion-label>
-                        </ion-tab-button>
-                        <ion-tab-button tab="imdb">
-                            <ion-label>IMDB Cross Reference</ion-label>
-                        </ion-tab-button>
-                    </ion-tab-bar>
-                </ion-tabs>
-            </ion-toolbar>
-        </ion-footer>
     </ion-app>
     <script>
         async function searchIMDB() {
