@@ -26,37 +26,45 @@ export class FisherCrawfordComponent implements OnInit {
     const svg = d3.select("svg"),
           width = +svg.attr("width"),
           height = +svg.attr("height"),
-          margin = 40,
-          treeWidth = width - 2 * margin,
-          treeHeight = height - 2 * margin;
+          radius = Math.min(width, height) / 2 - 40;
 
-    const treeLayout = d3.tree().size([treeHeight, treeWidth]);
+    const g = svg.append("g")
+      .attr("transform", `translate(${width / 2},${height / 2})`);
+
+    const radialTree = d3.tree().size([2 * Math.PI, radius]);
+
     const root = d3.hierarchy(data);
-    treeLayout(root);
+    radialTree(root);
 
-    svg.selectAll(".link")
+    const link = d3.linkRadial()
+      .angle(d => d.x)
+      .radius(d => d.y);
+
+    g.selectAll(".link")
       .data(root.links())
       .enter()
       .append("path")
       .attr("class", "link")
-      .attr("d", d3.linkVertical()
-        .x(d => d.x + margin)
-        .y(d => d.y + margin));
+      .attr("d", link);
 
-    const node = svg.selectAll(".node")
+    const node = g.selectAll(".node")
       .data(root.descendants())
       .enter()
       .append("g")
       .attr("class", "node")
-      .attr("transform", d => `translate(${d.x + margin},${d.y + margin})`);
+      .attr("transform", d => `
+        rotate(${d.x * 180 / Math.PI - 90})
+        translate(${d.y},0)
+      `);
 
     node.append("circle")
       .attr("r", 5);
 
     node.append("text")
-      .attr("dy", 3)
-      .attr("x", d => d.children ? -8 : 8)
-      .style("text-anchor", d => d.children ? "end" : "start")
+      .attr("dy", "0.31em")
+      .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
+      .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
+      .attr("transform", d => d.x >= Math.PI ? "rotate(180)" : null)
       .text(d => d.data.name);
   }
 }
