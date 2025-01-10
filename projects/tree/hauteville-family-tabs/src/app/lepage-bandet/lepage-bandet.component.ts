@@ -1,77 +1,62 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
   selector: 'app-lepage-bandet',
-  template: `<ion-header><ion-toolbar><ion-title>Lepage-Bandet Tree</ion-title></ion-toolbar></ion-header>
-             <ion-content><svg width="100%" height="600"></svg></ion-content>`,
-  styles: [`
-    .node circle { fill: #69b3a2; }
-    .node text { font: 10px sans-serif; }
-    .link { fill: none; stroke: #ccc; stroke-width: 2px; }
-  `]
+  templateUrl: './lepage-bandet.component.html',
+  styleUrls: ['./lepage-bandet.component.scss'],
 })
-export class LepageBandetComponent implements AfterViewInit {
-  ngAfterViewInit() {
+export class LepageBandetComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+    this.createChart();
+  }
+
+  createChart() {
     const data = {
-      name: 'Tancred of Hauteville',
+      name: "Lepage-Bandet",
       children: [
-        { name: 'William Iron Arm' },
-        {
-          name: 'Humphrey of Hauteville',
-          children: [
-            { name: 'Robert Guiscard' },
-            { name: 'Roger I of Sicily' },
-          ],
-        },
-        {
-          name: 'Roger I of Sicily',
-          children: [
-            { name: 'Roger II of Sicily' },
-            { name: 'Simon of Sicily' },
-          ],
-        },
-      ],
+        { name: "Child A" },
+        { name: "Child B" }
+      ]
     };
 
-    const width = 600, height = 600;
+    const svg = d3.select("svg"),
+          width = +svg.attr("width"),
+          height = +svg.attr("height"),
+          margin = 40,
+          treeWidth = width - 2 * margin,
+          treeHeight = height - 2 * margin;
 
-    const svg = d3.select('svg')
-      .attr('viewBox', `0 0 ${width} ${height}`)
-      .append('g')
-      .attr('transform', `translate(${width / 2},${height / 2})`);
-
-    const tree = d3.tree().size([2 * Math.PI, 250]).separation(() => 1);
-
+    const treeLayout = d3.tree().size([treeHeight, treeWidth]);
     const root = d3.hierarchy(data);
-    tree(root);
+    treeLayout(root);
 
-    const link = svg.append('g')
-      .selectAll('path')
+    svg.selectAll(".link")
       .data(root.links())
       .enter()
-      .append('path')
-      .attr('class', 'link')
-      .attr('d', d3.linkRadial()
-        .angle(d => d.x)
-        .radius(d => d.y));
+      .append("path")
+      .attr("class", "link")
+      .attr("d", d3.linkVertical()
+        .x(d => d.x + margin)
+        .y(d => d.y + margin));
 
-    const node = svg.append('g')
-      .selectAll('g')
+    const node = svg.selectAll(".node")
       .data(root.descendants())
       .enter()
-      .append('g')
-      .attr('transform', d => `
-        rotate(${(d.x * 180 / Math.PI - 90)})
-        translate(${d.y},0)`);
+      .append("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.x + margin},${d.y + margin})`);
 
-    node.append('circle').attr('r', 4);
+    node.append("circle")
+      .attr("r", 5);
 
-    node.append('text')
-      .attr('dy', '0.31em')
-      .attr('x', d => d.x < Math.PI === !d.children ? 6 : -6)
-      .style('text-anchor', d => d.x < Math.PI === !d.children ? 'start' : 'end')
-      .attr('transform', d => d.x >= Math.PI ? 'rotate(180)' : null)
+    node.append("text")
+      .attr("dy", 3)
+      .attr("x", d => d.children ? -8 : 8)
+      .style("text-anchor", d => d.children ? "end" : "start")
       .text(d => d.data.name);
   }
 }
