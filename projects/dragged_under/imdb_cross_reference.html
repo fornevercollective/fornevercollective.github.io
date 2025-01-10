@@ -92,6 +92,29 @@
                 // Implement search logic here
             };
         });
+
+        window.onload = function() {
+            var ctx = document.getElementById('topGrossesChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Avatar', 'Avengers: Endgame', 'Avatar: The Way of Water', 'Titanic', 'Star Wars: Episode VII'],
+                    datasets: [{
+                        label: 'Top Lifetime Grosses',
+                        data: [2923706026, 2799439100, 2320250281, 2264750694, 2071310218],
+                        backgroundColor: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
     </script>
 </head>
 <body ng-controller="SearchController">
@@ -125,6 +148,7 @@
         </section>
         <section id="top-grosses">
             <h2>Top Lifetime Grosses</h2>
+            <canvas id="topGrossesChart" width="400" height="200"></canvas>
             <table>
                 <thead>
                     <tr>
