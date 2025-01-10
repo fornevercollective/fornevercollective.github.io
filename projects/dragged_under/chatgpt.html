@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="chatgptApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,8 +46,15 @@
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module('chatgptApp', []);
+        app.controller('ChatGPTController', function($scope) {
+            $scope.transcript = "ChatGPT Transcript will be displayed here.";
+        });
+    </script>
 </head>
-<body>
+<body ng-controller="ChatGPTController">
     <header>
         <a href="index.html">Home</a>
         <a href="flowchart.html">Flowchart</a>
@@ -72,6 +79,7 @@
         </section>
         <section id="transcript">
             <h2>ChatGPT Transcript</h2>
+            <p>{{ transcript }}</p>
             <!-- ...existing transcript content... -->
         </section>
     </main>

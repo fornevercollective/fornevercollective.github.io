@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="indexApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,8 +56,15 @@
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module('indexApp', []);
+        app.controller('IndexController', function($scope) {
+            $scope.message = "Welcome to the Dragged Under Film Project";
+        });
+    </script>
 </head>
-<body>
+<body ng-controller="IndexController">
     <ion-app>
         <ion-header>
             <ion-toolbar color="primary">
@@ -80,8 +87,7 @@
                         <ion-label>Flowchart</ion-label>
                     </ion-tab-button>
                     <ion-tab-button tab="outline">
-                        <ion-label>Outline</ion-label>
-                    </ion-tab-button>
+                        <ion-label>Outline</ion-tab-button>
                     <ion-tab-button tab="plot">
                         <ion-label>Plot Throughline</ion-label>
                     </ion-tab-button>
@@ -97,7 +103,7 @@
                     <ion-content>
                         <section id="home">
                             <h2>Home</h2>
-                            <p>Welcome to the Dragged Under Film Project.</p>
+                            <p>{{ message }}</p>
                         </section>
                     </ion-content>
                 </ion-tab>
@@ -237,6 +243,42 @@
                             <div id="autocomplete-results"></div>
                             <div id="results"></div>
                         </section>
+                        <section id="quick-word-meaning">
+                            <h2>Quick Word Meaning List (Unique Words)</h2>
+                            <p>Dark Stream, Black/Dark, Life, To Breathe, Ruler of the People, Little Fire, Torch/Light, Poet/Fawn, Raven, Sorrowful/Woman, Bitter/Beloved, Dawn, Fury/Inspiration, Monk, Hound, Ascended/High, Like the Sun, Gift of God, Battle-Worthy, Shining Light, Fisherman, Brave Counsel, Grace, Falcon, Guardian/Protector, Night</p>
+                        </section>
+                        <section id="names-previous-script">
+                            <h2>Names from Previous Script (Etymology & Origins)</h2>
+                            <p>Douglas (Scotland): Derived from the Gaelic "Dubhghlas," meaning "dark stream."</p>
+                            <p>Melanie (Greece): From the Greek "Melaina," meaning "black" or "dark."</p>
+                            <p>Zoë (Greece): From the Greek "Zōē," meaning "life."</p>
+                            <p>Eve (Hebrew): From "Chawwah," meaning "to breathe" or "life."</p>
+                            <p>Derek (Germany): Derived from "Theodoric," meaning "ruler of the people."</p>
+                            <p>Aideen (Ireland): From "Aodhnait," meaning "little fire" or "jealousy."</p>
+                            <p>Aileen (Ireland/Scotland): A variation of "Eibhlin," meaning "torch" or "light."</p>
+                            <p>Devin (Ireland): From "Damhan," meaning "poet" or "fawn."</p>
+                            <p>Bran (Wales): From "Brân," meaning "raven."</p>
+                            <p>Deirdre (Ireland): From Irish mythology, meaning "sorrowful" or "woman."</p>
+                            <p>Aidan (Ireland): From "Aodh," meaning "little fire."</p>
+                            <p>Mia (Scandinavia): A short form of "Maria," meaning "bitter" or "beloved."</p>
+                            <p>Aurora (Latin): Meaning "dawn."</p>
+                            <p>Odin (Norse): Derived from Old Norse "Óðinn," meaning "fury" or "inspiration."</p>
+                            <p>Mannix (Ireland): From "Manach," meaning "monk."</p>
+                            <p>Cu (Ireland): Shortened from "Cú Chulainn," meaning "hound of Culann."</p>
+                            <p>Eli (Hebrew): From "ʾĒlī," meaning "ascended" or "high."</p>
+                            <p>Samson (Hebrew): Derived from "Shimshon," meaning "like the sun."</p>
+                            <p>Matthias (Greece): From "Matthias," meaning "gift of God."</p>
+                            <p>Harvey (France): From "Haerviu," meaning "battle-worthy."</p>
+                        </section>
+                        <section id="names-current-script">
+                            <h2>Names from Current Script Outline (Etymology & Origins)</h2>
+                            <p>Elena Fischer (Greece/Germany): "Elena" from "Helene," meaning "shining light"; "Fischer" is German for "fisherman."</p>
+                            <p>Lukas Reinhardt (Greece/Germany): "Lukas" from "Loukas," meaning "from Lucania"; "Reinhardt" means "brave counsel" in German.</p>
+                            <p>Anya Sokolov (Russia): "Anya" is a diminutive of "Anna," meaning "grace"; "Sokolov" derives from "Sokol," meaning "falcon."</p>
+                            <p>The Warden (Generic/English): A title, meaning "guardian" or "protector."</p>
+                            <p>The Shadow Entities (General): Symbolizing darkness and corruption.</p>
+                            <p>The Order of Nyx (Greece): "Nyx" refers to the Greek goddess of the night.</p>
+                        </section>
                     </ion-content>
                 </ion-tab>
             </ion-tabs>
@@ -328,20 +370,6 @@
         // Example usage of ion-searchbar
         const searchbar = document.createElement('ion-searchbar');
         document.body.appendChild(searchbar);
-
-        // Example usage of ion-reorder
-        const reorderGroup = document.createElement('ion-reorder-group');
-        reorderGroup.innerHTML = `
-            <ion-item>
-                <ion-label>Item 1</ion-label>
-                <ion-reorder slot="end"></ion-reorder>
-            </ion-item>
-            <ion-item>
-                <ion-label>Item 2</ion-label>
-                <ion-reorder slot="end"></ion-reorder>
-            </ion-item>
-        `;
-        document.body.appendChild(reorderGroup);
 
         window.onload = function() {
             CKEDITOR.replaceAll('editable');

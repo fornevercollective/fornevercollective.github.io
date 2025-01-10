@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="flowchartApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,8 +50,39 @@
     <script src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module('flowchartApp', []);
+        app.controller('FlowchartController', function($scope) {
+            $scope.flowchartData = {
+                nodes: [
+                    { id: 1, label: "Opening Scene (ZPF - Night)\nOdin's Establishment" },
+                    { id: 2, label: "Cult Basement (17 Years Later)\nReapers and Rituals" },
+                    { id: 3, label: "Flashback (Plane Incident)\nOdin Targets Zoë" },
+                    { id: 4, label: "Aftermath (Interrogation)\nZoë's Disappearance" },
+                    { id: 5, label: "Dormitory & Social Life\nEve Discovers Domino" },
+                    { id: 6, label: "Drive Home\nOdin Encounter" },
+                    { id: 7, label: "Family Dinner\nHistory of Aileen Revealed" },
+                    { id: 8, label: "Water Encounter\nMannix Appears" },
+                    { id: 9, label: "Devin’s Water House\nClues & Conflict with Odin" },
+                    { id: 10, label: "Final Showdown\nLibrary, ZPF, and Cave" }
+                ],
+                links: [
+                    { source: 1, target: 2 },
+                    { source: 2, target: 3 },
+                    { source: 3, target: 4 },
+                    { source: 4, target: 5 },
+                    { source: 5, target: 6 },
+                    { source: 6, target: 7 },
+                    { source: 7, target: 8 },
+                    { source: 8, target: 9 },
+                    { source: 9, target: 10 }
+                ]
+            };
+        });
+    </script>
 </head>
-<body>
+<body ng-controller="FlowchartController">
     <header>
         <a href="index.html">Home</a>
         <a href="chatgpt.html">Outline</a>

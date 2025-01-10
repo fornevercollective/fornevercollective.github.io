@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="imdbApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -82,8 +82,19 @@
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module('imdbApp', []);
+        app.controller('SearchController', function($scope) {
+            $scope.searchQuery = "";
+            $scope.searchResults = [];
+            $scope.searchIMDB = function() {
+                // Implement search logic here
+            };
+        });
+    </script>
 </head>
-<body>
+<body ng-controller="SearchController">
     <header>
         <a href="index.html">Home</a>
         <a href="flowchart.html">Flowchart</a>
@@ -93,7 +104,7 @@
     <main>
         <section id="search">
             <h2>IMDB Cross Reference</h2>
-            <input type="text" id="search-input" placeholder="Search IMDB data..." oninput="autocompleteSearch()">
+            <input type="text" id="search-input" ng-model="searchQuery" placeholder="Search IMDB data...">
             <button onclick="startDictation()">🎤</button>
             <select id="search-type">
                 <option value="basics">Basics</option>
@@ -104,9 +115,9 @@
                 <option value="ratings">Ratings</option>
                 <option value="imbd_pro">IMDB Pro</option>
             </select>
-            <button onclick="searchIMDB()">Search</button>
+            <button ng-click="searchIMDB()">Search</button>
             <div id="autocomplete-results"></div>
-            <div id="results"></div>
+            <div id="results">{{ searchResults }}</div>
         </section>
         <section id="search-results">
             <h2>Search Results</h2>
