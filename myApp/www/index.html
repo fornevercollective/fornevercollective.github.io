@@ -34,16 +34,44 @@
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
         <meta name="color-scheme" content="light dark">
         <link rel="stylesheet" href="css/index.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+        <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
         <title>Hello World</title>
     </head>
     <body>
-        <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
+        <ion-app>
+            <ion-menu side="start" menu-id="first" content-id="main-content">
+                <ion-header>
+                    <ion-toolbar color="primary">
+                        <ion-title>Menu</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content>
+                    <ion-list>
+                        <ion-item href="/home">Home</ion-item>
+                        <ion-item href="/about">About</ion-item>
+                        <ion-item href="/contact">Contact</ion-item>
+                    </ion-list>
+                </ion-content>
+            </ion-menu>
+            <div class="app" id="main-content">
+                <ion-header>
+                    <ion-toolbar color="primary">
+                        <ion-buttons slot="start">
+                            <ion-menu-button></ion-menu-button>
+                        </ion-buttons>
+                        <ion-title>Apache Cordova</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content>
+                    <div id="deviceready" class="blink">
+                        <p class="event listening">Connecting to Device</p>
+                        <p class="event received">Device is Ready</p>
+                    </div>
+                </ion-content>
             </div>
-        </div>
+        </ion-app>
         <script src="cordova.js"></script>
         <script src="js/index.js"></script>
         <script>
