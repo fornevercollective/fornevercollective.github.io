@@ -139,6 +139,7 @@
                 height: 100%;
                 background-color: black; /* Ensure background is black on mobile */
                 z-index: 1000;
+                transform: translateX(0); /* Ensure the left column is viewable on tablets */
             }
             .header {
                 justify-content: space-between;
@@ -201,6 +202,11 @@
     </style>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@latest/dist/ionic/ionic.esm.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@latest/css/ionic.bundle.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body class="__className_3a0388">
     <ion-menu side="bottom" menu-id="bottomMenu" content-id="main-content">
