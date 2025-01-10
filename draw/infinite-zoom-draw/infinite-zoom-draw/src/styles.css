@@ -1,0 +1,42 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+#osdContainer {
+  height: 100vh;
+  width: 100%;
+  border: 2px solid #ddd;
+  background-color: #f8f9fa;
+}
+
+/* Additional styles for customization */
+body {
+  background-color: #f0f0f0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:active {
+  background-color: #003f7f;
+}
