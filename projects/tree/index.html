@@ -7,6 +7,9 @@
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/parse-gedcom"></script> <!-- Added GEDCOM parsing library -->
   <script src="https://unpkg.com/speedscope@1.10.2/dist/speedscope.min.js"></script> <!-- Added Speedscope library -->
+  <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/react-scroll-parallax@2.3.1/dist/react-scroll-parallax.umd.js"></script>
   <style>
     .node circle {
       fill: #69b3a2;
@@ -37,24 +40,40 @@
 </head>
 <body>
   <div id="progress-bar"><div></div></div>
-  <a href="/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf" target="_blank">View PDF</a>
-  <button id="refreshData">Refresh</button>
-  <select id="preloadSelect">
-    <option value="">Select a file to preload</option>
-    <option value="/workspaces/fornevercollective.github.io/projects/tree/Fortner_Ericson-Family-Tree.ged">Fortner Ericson Family Tree</option>
-    <option value="/workspaces/fornevercollective.github.io/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf">M F Gervais House of Hauteville Family Tree</option>
-  </select>
-  <input type="file" id="gedcomFile" accept=".ged">
-  <button id="submitFile">Submit</button>
-  <select id="viewSelect">
-    <option value="speedscope">Flamegraph</option>
-    <option value="fisherCrawford">Fisher-Crawford</option>
-    <option value="lepageBandet">Lepage-Bandet</option>
-  </select>
-  <div id="speedscope-container" style="display: none;"></div>
-  <svg id="d3-container" width="1200" height="800"></svg>
+  <div id="parallax-container">
+    <p>Ancestry</p>
+    <button id="refreshData">Refresh</button>
+    <select id="preloadSelect">
+      <option value="">Select a file to preload</option>
+      <option value="/projects/tree/Fortner_Ericson-Family-Tree.ged">Fortner Ericson Family Tree</option>
+      <option value="/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf">M F Gervais House of Hauteville Family Tree</option>
+    </select>
+    <input type="file" id="gedcomFile" accept=".ged">
+    <button id="submitFile">Submit</button>
+    <select id="viewSelect">
+      <option value="speedscope">Flamegraph</option>
+      <option value="fisherCrawford">Fisher-Crawford</option>
+      <option value="lepageBandet">Lepage-Bandet</option>
+    </select>
+    <div id="speedscope-container" style="display: none;"></div>
+    <svg id="d3-container" width="1200" height="800"></svg>
+  </div>
 
   <script>
+    const { ParallaxProvider, Parallax } = window['react-scroll-parallax'];
+
+    function App() {
+      return (
+        <ParallaxProvider>
+          <Parallax y={[-20, 20]}>
+            <div id="parallax-container">
+              <!-- ...existing code... -->
+            </div>
+          </Parallax>
+        </ParallaxProvider>
+      );
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       const progressBar = document.getElementById('progress-bar').firstElementChild;
 
@@ -101,6 +120,10 @@
             loadSpeedscope(speedscopeData);
             updateProgressBar(100);
             hideProgressBar();
+          })
+          .catch(error => {
+            console.error('Error loading GEDCOM file:', error);
+            hideProgressBar();
           });
       }
 
@@ -142,6 +165,8 @@
           renderLepageBandet(parsedData);
         }
       });
+
+      ReactDOM.render(<App />, document.getElementById('root'));
     });
 
     function convertToTreeData(parsedData) {
