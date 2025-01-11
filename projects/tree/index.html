@@ -19,11 +19,27 @@
       stroke: #ccc;
       stroke-width: 2px;
     }
+    #progress-bar {
+      width: 100%;
+      height: 5px;
+      background-color: #f3f3f3;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+    #progress-bar div {
+      height: 100%;
+      width: 0;
+      background-color: #4caf50;
+    }
   </style>
 </head>
 <body>
+  <div id="progress-bar"><div></div></div>
   <a href="/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf" target="_blank">View PDF</a>
   <input type="file" id="gedcomFile" accept=".ged">
+  <button id="submitFile">Submit</button>
   <select id="viewSelect">
     <option value="speedscope">Flamegraph</option>
     <option value="fisherCrawford">Fisher-Crawford</option>
@@ -34,28 +50,57 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      fetch('/workspaces/fornevercollective.github.io/projects/tree/Fortner_Ericson-Family-Tree.ged')
-        .then(response => response.text())
-        .then(gedcomData => {
+      const progressBar = document.getElementById('progress-bar').firstElementChild;
+
+      function updateProgressBar(percentage) {
+        progressBar.style.width = percentage + '%';
+      }
+
+      function showProgressBar() {
+        progressBar.style.width = '0%';
+        document.getElementById('progress-bar').style.display = 'block';
+      }
+
+      function hideProgressBar() {
+        document.getElementById('progress-bar').style.display = 'none';
+      }
+
+      function loadGedcomFile(file) {
+        showProgressBar();
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const gedcomData = event.target.result;
+          updateProgressBar(50);
           const parsedData = parseGedcom.parse(gedcomData);
           const familyTreeData = convertToTreeData(parsedData);
           renderTree(familyTreeData);
           const speedscopeData = convertToSpeedscopeData(familyTreeData);
           loadSpeedscope(speedscopeData);
+          updateProgressBar(100);
+          hideProgressBar();
+        };
+        reader.readAsText(file);
+      }
 
-          document.getElementById('viewSelect').addEventListener('change', (event) => {
-            const selectedView = event.target.value;
+      document.getElementById('submitFile').addEventListener('click', function() {
+        const fileInput = document.getElementById('gedcomFile');
+        if (fileInput.files.length > 0) {
+          loadGedcomFile(fileInput.files[0]);
+        }
+      });
 
-            document.getElementById('speedscope-container').style.display = selectedView === 'speedscope' ? 'block' : 'none';
-            document.getElementById('d3-container').style.display = selectedView !== 'speedscope' ? 'block' : 'none';
+      document.getElementById('viewSelect').addEventListener('change', (event) => {
+        const selectedView = event.target.value;
 
-            if (selectedView === 'fisherCrawford') {
-              renderFisherCrawford(parsedData);
-            } else if (selectedView === 'lepageBandet') {
-              renderLepageBandet(parsedData);
-            }
-          });
-        });
+        document.getElementById('speedscope-container').style.display = selectedView === 'speedscope' ? 'block' : 'none';
+        document.getElementById('d3-container').style.display = selectedView !== 'speedscope' ? 'block' : 'none';
+
+        if (selectedView === 'fisherCrawford') {
+          renderFisherCrawford(parsedData);
+        } else if (selectedView === 'lepageBandet') {
+          renderLepageBandet(parsedData);
+        }
+      });
     });
 
     function convertToTreeData(parsedData) {
