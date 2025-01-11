@@ -38,6 +38,7 @@
 <body>
   <div id="progress-bar"><div></div></div>
   <a href="/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf" target="_blank">View PDF</a>
+  <button id="refreshData">Refresh</button>
   <select id="preloadSelect">
     <option value="">Select a file to preload</option>
     <option value="/workspaces/fornevercollective.github.io/projects/tree/Fortner_Ericson-Family-Tree.ged">Fortner Ericson Family Tree</option>
@@ -114,6 +115,18 @@
         const selectedFile = this.value;
         if (selectedFile) {
           loadGedcomFromUrl(selectedFile);
+        }
+      });
+
+      document.getElementById('refreshData').addEventListener('click', function() {
+        const selectedFile = document.getElementById('preloadSelect').value;
+        if (selectedFile) {
+          loadGedcomFromUrl(selectedFile);
+        } else {
+          const fileInput = document.getElementById('gedcomFile');
+          if (fileInput.files.length > 0) {
+            loadGedcomFile(fileInput.files[0]);
+          }
         }
       });
 
