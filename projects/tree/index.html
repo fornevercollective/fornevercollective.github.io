@@ -44,13 +44,6 @@
   <div id="progress-bar"><div></div></div>
   <div id="parallax-container">
     <p>Ancestry</p>
-    <select id="gedcomFile">
-      <option value="">No file selected</option>
-      <option value="/workspaces/fornevercollective.github.io/projects/tree/Fortner_Ericson-Family-Tree.ged">Fortner Ericson Family Tree</option>
-      <option value="/workspaces/fornevercollective.github.io/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf">M F Gervais House of Hauteville Family Tree</option>
-    </select>
-    <input type="file" id="fileInput" accept=".ged">
-    <button id="submitFile">Submit</button>
     <label for="viewSelect">Chart Type:</label>
     <select id="viewSelect">
       <option value="speedscope">Flamegraph</option>
@@ -59,6 +52,13 @@
       <option value="pdfViewer">PDF/Image Viewer</option>
       <option value="quillEditor">Quill Text Editor</option>
     </select>
+    <select id="gedcomFile">
+      <option value="">No file selected</option>
+      <option value="/workspaces/fornevercollective.github.io/projects/tree/Fortner_Ericson-Family-Tree.ged">Fortner Ericson Family Tree</option>
+      <option value="/workspaces/fornevercollective.github.io/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf">M F Gervais House of Hauteville Family Tree</option>
+    </select>
+    <input type="file" id="fileInput" accept=".ged">
+    <button id="submitFile">Submit</button>
     <div id="speedscope-container" style="display: none;"></div>
     <div id="pdf-container" style="display: none;">
       <iframe id="pdfViewer" width="100%" height="800px"></iframe>
