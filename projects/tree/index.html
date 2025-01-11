@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hauteville Family Tree</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parse-gedcom"></script> <!-- Added GEDCOM parsing library -->
   <style>
     .node circle {
       fill: #69b3a2;
@@ -21,83 +22,76 @@
 </head>
 <body>
   <a href="/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf" target="_blank">View PDF</a>
+  <input type="file" id="gedcomFile" accept=".ged">
   <svg width="1200" height="800"></svg>
 
   <script>
-    // Hierarchical data representing the Hauteville family
-    const data = {
-      name: "Tancred of Hauteville",
-      children: [
-        { 
-          name: "William Iron Arm",
-          children: [
-            { name: "New Child" } // New child added
-          ]
-        },
-        { 
-          name: "Drogo of Hauteville",
-        },
-        { 
-          name: "Humphrey of Hauteville",
-          children: [
-            { name: "Robert Guiscard" },
-            { name: "Roger I of Sicily" }
-          ]
-        },
-        {
-          name: "Roger I of Sicily",
-          children: [
-            { name: "Roger II of Sicily" },
-            { name: "Simon of Sicily" }
-          ]
-        }
-      ]
-    };
+    document.getElementById('gedcomFile').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const gedcomData = e.target.result;
+        const parsedData = parseGedcom.parse(gedcomData);
+        const familyTreeData = convertToTreeData(parsedData);
+        renderTree(familyTreeData);
+      };
+      reader.readAsText(file);
+    });
 
-    // Set up the SVG canvas
-    const width = 1200;
-    const height = 800;
+    function convertToTreeData(parsedData) {
+      // Convert parsed GEDCOM data to hierarchical data format
+      // This function needs to be implemented based on the structure of parsedData
+      return {
+        name: "Tancred of Hauteville",
+        children: [
+          { name: "William Iron Arm" },
+          { name: "Drogo of Hauteville" },
+          { name: "Humphrey of Hauteville" },
+          { name: "Roger I of Sicily" }
+        ]
+      };
+    }
 
-    const svg = d3.select("svg"),
-          margin = 40,
-          treeWidth = width - 2 * margin,
-          treeHeight = height - 2 * margin;
+    function renderTree(data) {
+      const width = 1200;
+      const height = 800;
 
-    // Create a tree layout
-    const treeLayout = d3.tree().size([treeHeight, treeWidth]); // Updated to vertical layout
+      const svg = d3.select("svg").html(""),
+            margin = 40,
+            treeWidth = width - 2 * margin,
+            treeHeight = height - 2 * margin;
 
-    // Create a hierarchy from the data
-    const root = d3.hierarchy(data);
+      const treeLayout = d3.tree().size([treeHeight, treeWidth]);
 
-    // Generate the tree layout
-    treeLayout(root);
+      const root = d3.hierarchy(data);
 
-    // Create links (lines between nodes)
-    svg.selectAll(".link")
-      .data(root.links())
-      .enter()
-      .append("path")
-      .attr("class", "link")
-      .attr("d", d3.linkVertical() // Updated to vertical links
-        .x(d => d.x + margin)
-        .y(d => d.y + margin));
+      treeLayout(root);
 
-    // Create nodes (circles and labels)
-    const node = svg.selectAll(".node")
-      .data(root.descendants())
-      .enter()
-      .append("g")
-      .attr("class", "node")
-      .attr("transform", d => `translate(${d.x + margin},${d.y + margin})`); // Updated to vertical layout
+      svg.selectAll(".link")
+        .data(root.links())
+        .enter()
+        .append("path")
+        .attr("class", "link")
+        .attr("d", d3.linkVertical()
+          .x(d => d.x + margin)
+          .y(d => d.y + margin));
 
-    node.append("circle")
-      .attr("r", 5);
+      const node = svg.selectAll(".node")
+        .data(root.descendants())
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.x + margin},${d.y + margin})`);
 
-    node.append("text")
-      .attr("dy", 3)
-      .attr("x", d => d.children ? -8 : 8)
-      .style("text-anchor", d => d.children ? "end" : "start")
-      .text(d => d.data.name);
+      node.append("circle")
+        .attr("r", 5);
+
+      node.append("text")
+        .attr("dy", 3)
+        .attr("x", d => d.children ? -8 : 8)
+        .style("text-anchor", d => d.children ? "end" : "start")
+        .text(d => d.data.name);
+    }
   </script>
 </body>
 </html>
