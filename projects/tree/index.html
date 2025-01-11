@@ -6,6 +6,7 @@
   <title>Hauteville Family Tree</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/parse-gedcom"></script> <!-- Added GEDCOM parsing library -->
+  <script src="https://unpkg.com/speedscope@1.10.2/dist/speedscope.min.js"></script> <!-- Added Speedscope library -->
   <style>
     .node circle {
       fill: #69b3a2;
@@ -24,18 +25,19 @@
   <a href="/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf" target="_blank">View PDF</a>
   <input type="file" id="gedcomFile" accept=".ged">
   <svg width="1200" height="800"></svg>
+  <div id="speedscope-container"></div> <!-- Added container for Speedscope -->
 
   <script>
-    document.getElementById('gedcomFile').addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const gedcomData = e.target.result;
-        const parsedData = parseGedcom.parse(gedcomData);
-        const familyTreeData = convertToTreeData(parsedData);
-        renderTree(familyTreeData);
-      };
-      reader.readAsText(file);
+    document.addEventListener('DOMContentLoaded', function() {
+      fetch('/workspaces/fornevercollective.github.io/projects/tree/Fortner_Ericson-Family-Tree.ged')
+        .then(response => response.text())
+        .then(gedcomData => {
+          const parsedData = parseGedcom.parse(gedcomData);
+          const familyTreeData = convertToTreeData(parsedData);
+          renderTree(familyTreeData);
+          const speedscopeData = convertToSpeedscopeData(familyTreeData);
+          loadSpeedscope(speedscopeData);
+        });
     });
 
     function convertToTreeData(parsedData) {
@@ -50,6 +52,48 @@
           { name: "Roger I of Sicily" }
         ]
       };
+    }
+
+    function convertToSpeedscopeData(treeData) {
+      // Convert hierarchical data to Speedscope format
+      const speedscopeData = {
+        version: "0.0.1",
+        profiles: [
+          {
+            type: "evented",
+            name: "Family Tree",
+            unit: "milliseconds",
+            events: []
+          }
+        ]
+      };
+
+      function traverse(node, startTime) {
+        const endTime = startTime + 1; // Example duration
+        speedscopeData.profiles[0].events.push({
+          type: "O",
+          at: startTime,
+          frame: { name: node.name }
+        });
+        if (node.children) {
+          node.children.forEach(child => traverse(child, endTime));
+        }
+        speedscopeData.profiles[0].events.push({
+          type: "C",
+          at: endTime,
+          frame: { name: node.name }
+        });
+      }
+
+      traverse(treeData, 0);
+      return speedscopeData;
+    }
+
+    function loadSpeedscope(data) {
+      const container = document.getElementById('speedscope-container');
+      const speedscope = new speedscope.Speedscope();
+      speedscope.load(data);
+      container.appendChild(speedscope.getElement());
     }
 
     function renderTree(data) {
