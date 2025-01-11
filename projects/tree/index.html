@@ -42,14 +42,15 @@
   <div id="progress-bar"><div></div></div>
   <div id="parallax-container">
     <p>Ancestry</p>
-    <button id="refreshData">Refresh</button>
     <select id="preloadSelect">
       <option value="">Select a file to preload</option>
-      <option value="/projects/tree/Fortner_Ericson-Family-Tree.ged">Fortner Ericson Family Tree</option>
-      <option value="/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf">M F Gervais House of Hauteville Family Tree</option>
+      <option value="/workspaces/fornevercollective.github.io/projects/tree/Fortner_Ericson-Family-Tree.ged">Fortner Ericson Family Tree</option>
+      <option value="/workspaces/fornevercollective.github.io/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf">M F Gervais House of Hauteville Family Tree</option>
     </select>
+    <button id="refreshData">Refresh</button>
     <input type="file" id="gedcomFile" accept=".ged">
     <button id="submitFile">Submit</button>
+    <label for="viewSelect">Chart Type:</label>
     <select id="viewSelect">
       <option value="speedscope">Flamegraph</option>
       <option value="fisherCrawford">Fisher-Crawford</option>
