@@ -151,6 +151,20 @@
         loadSpeedscope(testSpeedscopeData);
       }
 
+      function parseCountryData(parsedData) {
+        const countryData = {};
+        parsedData.forEach(person => {
+          if (person.PLAC && person.PLAC.value) {
+            const country = person.PLAC.value.split(',').pop().trim();
+            if (!countryData[country]) {
+              countryData[country] = [];
+            }
+            countryData[country].push(person);
+          }
+        });
+        return countryData;
+      }
+
       document.getElementById('submitFile').addEventListener('click', function() {
         const fileInput = document.getElementById('fileInput');
         const selectedFile = document.getElementById('gedcomFile').value;
