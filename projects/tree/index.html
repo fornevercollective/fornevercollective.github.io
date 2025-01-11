@@ -63,7 +63,7 @@
     <div id="pdf-container" style="display: none;">
       <iframe id="pdfViewer" width="100%" height="800px"></iframe>
     </div>
-    <div id="quill-container" style="display: none;">
+    <div id="quill-container">
       <div id="editor"></div>
     </div>
     <svg id="d3-container" width="1200" height="800"></svg>
@@ -177,6 +177,9 @@
           document.getElementById('pdfViewer').src = '/path/to/sample.pdf'; // Update with actual PDF path
         }
       });
+
+      document.getElementById('viewSelect').value = 'quillEditor';
+      document.getElementById('quill-container').style.display = 'block';
 
       loadTestSpeedscopeData();
       ReactDOM.render(<App />, document.getElementById('root'));
