@@ -42,19 +42,20 @@
           renderTree(familyTreeData);
           const speedscopeData = convertToSpeedscopeData(familyTreeData);
           loadSpeedscope(speedscopeData);
-        });
 
-      document.getElementById('viewSelect').addEventListener('change', function() {
-        const selectedView = this.value;
-        if (selectedView === 'speedscope') {
-          document.getElementById('speedscope-container').style.display = 'block';
-          document.getElementById('d3-container').style.display = 'none';
-        } else {
-          document.getElementById('speedscope-container').style.display = 'none';
-          document.getElementById('d3-container').style.display = 'block';
-          // Add logic to render the selected tree view
-        }
-      });
+          document.getElementById('viewSelect').addEventListener('change', (event) => {
+            const selectedView = event.target.value;
+
+            document.getElementById('speedscope-container').style.display = selectedView === 'speedscope' ? 'block' : 'none';
+            document.getElementById('d3-container').style.display = selectedView !== 'speedscope' ? 'block' : 'none';
+
+            if (selectedView === 'fisherCrawford') {
+              renderFisherCrawford(parsedData);
+            } else if (selectedView === 'lepageBandet') {
+              renderLepageBandet(parsedData);
+            }
+          });
+        });
     });
 
     function convertToTreeData(parsedData) {
@@ -117,6 +118,14 @@
     function loadSpeedscope(data) {
       const container = document.getElementById('speedscope-container');
       speedscope.load(data, container);
+    }
+
+    function renderFisherCrawford(parsedData) {
+      // Add logic to render Fisher-Crawford view
+    }
+
+    function renderLepageBandet(parsedData) {
+      // Add logic to render Lepage-Bandet view
     }
   </script>
 </body>
