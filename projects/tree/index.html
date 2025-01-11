@@ -42,13 +42,12 @@
   <div id="progress-bar"><div></div></div>
   <div id="parallax-container">
     <p>Ancestry</p>
-    <select id="preloadSelect">
-      <option value="">Select a file to preload</option>
+    <select id="gedcomFile">
+      <option value="">No file selected</option>
       <option value="/workspaces/fornevercollective.github.io/projects/tree/Fortner_Ericson-Family-Tree.ged">Fortner Ericson Family Tree</option>
       <option value="/workspaces/fornevercollective.github.io/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf">M F Gervais House of Hauteville Family Tree</option>
     </select>
-    <button id="refreshData">Refresh</button>
-    <input type="file" id="gedcomFile" accept=".ged">
+    <input type="file" id="fileInput" accept=".ged">
     <button id="submitFile">Submit</button>
     <label for="viewSelect">Chart Type:</label>
     <select id="viewSelect">
@@ -128,29 +127,24 @@
           });
       }
 
+      function loadTestSpeedscopeData() {
+        const testSpeedscopeData = {
+          name: "Test Speedscope Data",
+          children: [
+            { name: "Child 1", value: 1 },
+            { name: "Child 2", value: 1 }
+          ]
+        };
+        loadSpeedscope(testSpeedscopeData);
+      }
+
       document.getElementById('submitFile').addEventListener('click', function() {
-        const fileInput = document.getElementById('gedcomFile');
+        const fileInput = document.getElementById('fileInput');
+        const selectedFile = document.getElementById('gedcomFile').value;
         if (fileInput.files.length > 0) {
           loadGedcomFile(fileInput.files[0]);
-        }
-      });
-
-      document.getElementById('preloadSelect').addEventListener('change', function() {
-        const selectedFile = this.value;
-        if (selectedFile) {
+        } else if (selectedFile) {
           loadGedcomFromUrl(selectedFile);
-        }
-      });
-
-      document.getElementById('refreshData').addEventListener('click', function() {
-        const selectedFile = document.getElementById('preloadSelect').value;
-        if (selectedFile) {
-          loadGedcomFromUrl(selectedFile);
-        } else {
-          const fileInput = document.getElementById('gedcomFile');
-          if (fileInput.files.length > 0) {
-            loadGedcomFile(fileInput.files[0]);
-          }
         }
       });
 
@@ -167,6 +161,7 @@
         }
       });
 
+      loadTestSpeedscopeData();
       ReactDOM.render(<App />, document.getElementById('root'));
     });
 
