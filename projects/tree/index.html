@@ -52,7 +52,7 @@
       <option value="pdfViewer">PDF/Image Viewer</option>
       <option value="quillEditor">Quill Text Editor</option>
     </select>
-    <select id="gedcomFile">
+    <select id="fileSelect">
       <option value="">No file selected</option>
       <option value="/workspaces/fornevercollective.github.io/projects/tree/Fortner_Ericson-Family-Tree.ged">Fortner Ericson Family Tree</option>
       <option value="/workspaces/fornevercollective.github.io/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf">M F Gervais House of Hauteville Family Tree</option>
@@ -167,7 +167,7 @@
 
       document.getElementById('submitFile').addEventListener('click', function() {
         const fileInput = document.getElementById('fileInput');
-        const selectedFile = document.getElementById('gedcomFile').value;
+        const selectedFile = document.getElementById('fileSelect').value;
         if (fileInput.files.length > 0) {
           loadGedcomFile(fileInput.files[0]);
         } else if (selectedFile) {
@@ -188,7 +188,7 @@
         } else if (selectedView === 'lepageBandet') {
           renderLepageBandet(parsedData);
         } else if (selectedView === 'pdfViewer') {
-          document.getElementById('pdfViewer').src = '/path/to/sample.pdf'; // Update with actual PDF path
+          document.getElementById('pdfViewer').src = '/workspaces/fornevercollective.github.io/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf'; // Update with actual PDF path
         }
       });
 
