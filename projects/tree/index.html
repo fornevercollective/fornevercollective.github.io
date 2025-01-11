@@ -38,6 +38,11 @@
 <body>
   <div id="progress-bar"><div></div></div>
   <a href="/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf" target="_blank">View PDF</a>
+  <select id="preloadSelect">
+    <option value="">Select a file to preload</option>
+    <option value="/workspaces/fornevercollective.github.io/projects/tree/Fortner_Ericson-Family-Tree.ged">Fortner Ericson Family Tree</option>
+    <option value="/workspaces/fornevercollective.github.io/projects/tree/M_F_Gervais_House_of_Hauteville_family_tree.pdf">M F Gervais House of Hauteville Family Tree</option>
+  </select>
   <input type="file" id="gedcomFile" accept=".ged">
   <button id="submitFile">Submit</button>
   <select id="viewSelect">
@@ -82,10 +87,33 @@
         reader.readAsText(file);
       }
 
+      function loadGedcomFromUrl(url) {
+        showProgressBar();
+        fetch(url)
+          .then(response => response.text())
+          .then(gedcomData => {
+            updateProgressBar(50);
+            const parsedData = parseGedcom.parse(gedcomData);
+            const familyTreeData = convertToTreeData(parsedData);
+            renderTree(familyTreeData);
+            const speedscopeData = convertToSpeedscopeData(familyTreeData);
+            loadSpeedscope(speedscopeData);
+            updateProgressBar(100);
+            hideProgressBar();
+          });
+      }
+
       document.getElementById('submitFile').addEventListener('click', function() {
         const fileInput = document.getElementById('gedcomFile');
         if (fileInput.files.length > 0) {
           loadGedcomFile(fileInput.files[0]);
+        }
+      });
+
+      document.getElementById('preloadSelect').addEventListener('change', function() {
+        const selectedFile = this.value;
+        if (selectedFile) {
+          loadGedcomFromUrl(selectedFile);
         }
       });
 
