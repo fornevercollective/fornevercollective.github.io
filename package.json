@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "tensorflow": "^2.8.0"
+    "tensorflow": "^2.8.0",
+    "@ionic-enterprise/camera": "^5.0.0",
+    "react-native-camera-kit": "^11.0.0"
   }
 }
