@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/css/ionicons.min.css" />
         <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
         <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
@@ -11,24 +12,11 @@
         <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@hoshihoshi/hoshihoshi.js"></script>
-        <title>My App</title>
+        <title>.fornver</title>
     </head>
     <body>
         <ion-app>
-            <ion-menu side="start" menu-id="first" content-id="main-content">
-                <ion-header>
-                    <ion-toolbar color="primary">
-                        <ion-title>Menu</ion-title>
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content>
-                    <ion-list>
-                        <ion-item href="/home">Home</ion-item>
-                        <ion-item href="/about">About</ion-item>
-                        <ion-item href="/contact">Contact</ion-item>
-                    </ion-list>
-                </ion-content>
-            </ion-menu>
+            #
             <div class="app" id="main-content">
                 <ion-header>
                     <ion-toolbar color="primary">
@@ -36,10 +24,18 @@
                             <ion-menu-button></ion-menu-button>
                         </ion-buttons>
                         <ion-title>My App</ion-title>
-                        <ion-searchbar slot="end" disabled></ion-searchbar>
+                        <ion-searchbar value="Value"></ion-searchbar>
+                    </ion-toolbar>
+                    <ion-toolbar color="primary">
+                        <ion-title>.projects</ion-title>
                     </ion-toolbar>
                 </ion-header>
                 <ion-content>
+                    <ion-list>
+                        <ion-item href="/camera">.camera</ion-item>
+                        <ion-item href="/chat">.chat</ion-item>
+                        <ion-item href="/stream">.stream</ion-item>
+                    </ion-list>
                     <ion-progress-bar type="indeterminate" reversed="true"></ion-progress-bar>
                     <ion-segment value="default">
                         <ion-segment-button value="default">
@@ -85,14 +81,24 @@
                             </ion-col>
                         </ion-row>
                     </ion-grid>
-                    <ion-reorder-group disabled>
+                    <ion-reorder-group enable>
                         <ion-item>
-                            <ion-label>Item 1</ion-label>
-                            <ion-reorder slot="end"></ion-reorder>
+                            <ion-label>camera</ion-label>
+                            <ion-reorder slot="end"><ion-icon name="camera"></ion-icon></ion-reorder>
                         </ion-item>
                         <ion-item>
-                            <ion-label>Item 2</ion-label>
-                            <ion-reorder slot="end"></ion-reorder>
+                            <ion-label>camera reverse</ion-label>
+                            <ion-reorder slot="end"><ion-icon name="camera-reverse"></ion-icon></ion-reorder>
+                        </ion-item>
+                    <ion-list>
+                            <ion-label>attach</ion-label>
+                            <ion-reorder slot="end"><ion-icon name="attach"></ion-icon></ion-reorder>
+                        </ion-item>
+                            <ion-label>car sport</ion-label>
+                            <ion-reorder slot="end"><ion-icon name="car-sport"></ion-icon></ion-reorder>
+                        </ion-item>
+                            <ion-label>chatbox</ion-label>
+                            <ion-reorder slot="end"><ion-icon name="chatbox-ellipses"></ion-icon></ion-reorder>
                         </ion-item>
                     </ion-reorder-group>
                     <ion-infinite-scroll threshold="100px" id="infinite-scroll">
@@ -117,14 +123,23 @@
                     </ion-list>
                     <ion-fab slot="fixed" vertical="bottom" horizontal="end">
                         <ion-fab-button>
-                            <ion-icon name="chevron-up-circle"></ion-icon>
+                            <ion-icon name="skull-sharp"></ion-icon>
+                        </ion-fab-button>
+                        <ion-fab-button>
+                            <ion-icon name="skull-sharp"></ion-icon>
                         </ion-fab-button>
                         <ion-fab-list side="top">
                             <ion-fab-button>
                                 <ion-icon name="document"></ion-icon>
                             </ion-fab-button>
                             <ion-fab-button>
-                                <ion-icon name="color-palette"></ion-icon>
+                                <ion-icon name="camera"></ion-icon>
+                            </ion-fab-button>
+                            <ion-fab-button>
+                                <ion-icon name="chatbox-ellipses"></ion-icon>
+                            </ion-fab-button>
+                            <ion-fab-button>
+                               <ion-icon name="terminal"></ion-icon>
                             </ion-fab-button>
                             <ion-fab-button>
                                 <ion-icon name="globe"></ion-icon>
