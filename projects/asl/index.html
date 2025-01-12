@@ -1,171 +1,174 @@
 <!-- ...existing code... -->
-<section id="install-pytorch">
-  <h2>Install PyTorch</h2>
-  <p>To install PyTorch, follow these steps:</p>
-  <ol>
-    <li>Visit the <a href="https://pytorch.org/get-started/locally/">official PyTorch website</a>.</li>
-    <li>Select your preferences for the PyTorch build, your operating system, package, language, and compute platform.</li>
-    <li>Copy the provided installation command.</li>
-    <li>Open your terminal or command prompt and paste the command.</li>
-    <li>Press Enter to execute the command and install PyTorch.</li>
-  </ol>
-</section>
+<body>
+  <ion-progress-bar [buffer]="buffer" [value]="progress"></ion-progress-bar>
+  <!-- ...existing code... -->
+  <section id="install-pytorch">
+    <h2>Install PyTorch</h2>
+    <p>To install PyTorch, follow these steps:</p>
+    <ol>
+      <li>Visit the <a href="https://pytorch.org/get-started/locally/">official PyTorch website</a>.</li>
+      <li>Select your preferences for the PyTorch build, your operating system, package, language, and compute platform.</li>
+      <li>Copy the provided installation command.</li>
+      <li>Open your terminal or command prompt and paste the command.</li>
+      <li>Press Enter to execute the command and install PyTorch.</li>
+    </ol>
+  </section>
 
-<section id="install-tensorflow">
-  <h2>Install TensorFlow</h2>
-  <p>To install TensorFlow, follow these steps:</p>
-  <ol>
-    <li>Visit the <a href="https://www.tensorflow.org/install">official TensorFlow website</a>.</li>
-    <li>Select your preferences for the TensorFlow build, your operating system, and package.</li>
-    <li>Copy the provided installation command.</li>
-    <li>Open your terminal or command prompt and paste the command.</li>
-    <li>Press Enter to execute the command and install TensorFlow.</li>
-  </ol>
-</section>
+  <section id="install-tensorflow">
+    <h2>Install TensorFlow</h2>
+    <p>To install TensorFlow, follow these steps:</p>
+    <ol>
+      <li>Visit the <a href="https://www.tensorflow.org/install">official TensorFlow website</a>.</li>
+      <li>Select your preferences for the TensorFlow build, your operating system, and package.</li>
+      <li>Copy the provided installation command.</li>
+      <li>Open your terminal or command prompt and paste the command.</li>
+      <li>Press Enter to execute the command and install TensorFlow.</li>
+    </ol>
+  </section>
 
-<section id="tensorflow-catalog">
-  <h2>Leverage TensorFlow Catalog Resources</h2>
-  <p>To leverage all TensorFlow catalog resources, follow these steps:</p>
-  <ol>
-    <li>Visit the <a href="https://github.com/tensorflow/datasets/tree/master/docs/catalog">TensorFlow Datasets Catalog</a>.</li>
-    <li>Browse through the available datasets and select the ones that are relevant to your project.</li>
-    <li>Follow the instructions provided in the catalog to load and use the datasets in your TensorFlow projects.</li>
-    <li>Use the <code>tensorflow_datasets</code> library to easily access and manage the datasets. For example:</li>
-    <pre><code>import tensorflow_datasets as tfds
+  <section id="tensorflow-catalog">
+    <h2>Leverage TensorFlow Catalog Resources</h2>
+    <p>To leverage all TensorFlow catalog resources, follow these steps:</p>
+    <ol>
+      <li>Visit the <a href="https://github.com/tensorflow/datasets/tree/master/docs/catalog">TensorFlow Datasets Catalog</a>.</li>
+      <li>Browse through the available datasets and select the ones that are relevant to your project.</li>
+      <li>Follow the instructions provided in the catalog to load and use the datasets in your TensorFlow projects.</li>
+      <li>Use the <code>tensorflow_datasets</code> library to easily access and manage the datasets. For example:</li>
+      <pre><code>import tensorflow_datasets as tfds
 
 # Load a dataset
 dataset, info = tfds.load('mnist', with_info=True)
 
 # Explore the dataset
 print(info)</code></pre>
-  </ol>
-</section>
+    </ol>
+  </section>
 
-<section id="install-llama-stack-client-python">
-  <h2>Install llama-stack-client-python</h2>
-  <p>To install llama-stack-client-python, follow these steps:</p>
-  <ol>
-    <li>Visit the <a href="https://pypi.org/project/llama-stack-client-python/">official PyPI page</a>.</li>
-    <li>Copy the provided installation command: <code>pip install llama-stack-client-python</code>.</li>
-    <li>Open your terminal or command prompt and paste the command.</li>
-    <li>Press Enter to execute the command and install llama-stack-client-python.</li>
-  </ol>
-</section>
+  <section id="install-llama-stack-client-python">
+    <h2>Install llama-stack-client-python</h2>
+    <p>To install llama-stack-client-python, follow these steps:</p>
+    <ol>
+      <li>Visit the <a href="https://pypi.org/project/llama-stack-client-python/">official PyPI page</a>.</li>
+      <li>Copy the provided installation command: <code>pip install llama-stack-client-python</code>.</li>
+      <li>Open your terminal or command prompt and paste the command.</li>
+      <li>Press Enter to execute the command and install llama-stack-client-python.</li>
+    </ol>
+  </section>
 
-<section id="install-openpilot">
-  <h2>Install openpilot</h2>
-  <p>To install openpilot, follow these steps:</p>
-  <ol>
-    <li>Visit the <a href="https://github.com/commaai/openpilot">openpilot GitHub repository</a>.</li>
-    <li>Review the README file and other documentation to understand the installation requirements and steps.</li>
-    <li>Clone the repository using the command: <code>git clone https://github.com/commaai/openpilot.git</code>.</li>
-    <li>Navigate to the cloned directory: <code>cd openpilot</code>.</li>
-    <li>Follow the setup and installation instructions provided in the documentation to complete the installation.</li>
-  </ol>
-</section>
+  <section id="install-openpilot">
+    <h2>Install openpilot</h2>
+    <p>To install openpilot, follow these steps:</p>
+    <ol>
+      <li>Visit the <a href="https://github.com/commaai/openpilot">openpilot GitHub repository</a>.</li>
+      <li>Review the README file and other documentation to understand the installation requirements and steps.</li>
+      <li>Clone the repository using the command: <code>git clone https://github.com/commaai/openpilot.git</code>.</li>
+      <li>Navigate to the cloned directory: <code>cd openpilot</code>.</li>
+      <li>Follow the setup and installation instructions provided in the documentation to complete the installation.</li>
+    </ol>
+  </section>
 
-<section id="compare-tinygrad">
-  <h2>Compare Against tinygrad</h2>
-  <p>To compare against tinygrad and install extra components, follow these steps:</p>
-  <ol>
-    <li>Visit the <a href="https://github.com/tinygrad/tinygrad/tree/master?tab=readme-ov-file">tinygrad GitHub repository</a>.</li>
-    <li>Review the README file and other documentation to understand the features and components of tinygrad.</li>
-    <li>Identify any extra components you need to install for your project.</li>
-    <li>Follow the installation instructions provided in the tinygrad documentation to install these components.</li>
-  </ol>
-</section>
+  <section id="compare-tinygrad">
+    <h2>Compare Against tinygrad</h2>
+    <p>To compare against tinygrad and install extra components, follow these steps:</p>
+    <ol>
+      <li>Visit the <a href="https://github.com/tinygrad/tinygrad/tree/master?tab=readme-ov-file">tinygrad GitHub repository</a>.</li>
+      <li>Review the README file and other documentation to understand the features and components of tinygrad.</li>
+      <li>Identify any extra components you need to install for your project.</li>
+      <li>Follow the installation instructions provided in the tinygrad documentation to install these components.</li>
+    </ol>
+  </section>
 
-<section id="protocol-comparison">
-  <h2>Streaming Protocol Comparison</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Protocol</th>
-        <th>Latency</th>
-        <th>Video Quality</th>
-        <th>Scalability</th>
-        <th>Security</th>
-        <th>Bandwidth Efficiency</th>
-        <th>Delivery Method</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>RTMP</td>
-        <td>3-5s</td>
-        <td>Medium</td>
-        <td>Medium</td>
-        <td>Medium</td>
-        <td>Medium</td>
-        <td>TCP</td>
-      </tr>
-      <tr>
-        <td>HLS</td>
-        <td>6-30s</td>
-        <td>High</td>
-        <td>High</td>
-        <td>Medium</td>
-        <td>Medium</td>
-        <td>TCP</td>
-      </tr>
-      <tr>
-        <td>LL-HLS</td>
-        <td>Less than 3s</td>
-        <td>High</td>
-        <td>High</td>
-        <td>Medium</td>
-        <td>Medium</td>
-        <td>TCP</td>
-      </tr>
-      <tr>
-        <td>SRT</td>
-        <td>Less than 2s</td>
-        <td>High</td>
-        <td>Medium</td>
-        <td>High</td>
-        <td>High</td>
-        <td>UDP</td>
-      </tr>
-      <tr>
-        <td>RTSP</td>
-        <td>2s</td>
-        <td>High</td>
-        <td>Low</td>
-        <td>High</td>
-        <td>Medium</td>
-        <td>TCP</td>
-      </tr>
-      <tr>
-        <td>WebRTC</td>
-        <td>Less than 1s</td>
-        <td>Medium</td>
-        <td>Low</td>
-        <td>High</td>
-        <td>Medium</td>
-        <td>UDP</td>
-      </tr>
-    </tbody>
-  </table>
-</section>
+  <section id="protocol-comparison">
+    <h2>Streaming Protocol Comparison</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Protocol</th>
+          <th>Latency</th>
+          <th>Video Quality</th>
+          <th>Scalability</th>
+          <th>Security</th>
+          <th>Bandwidth Efficiency</th>
+          <th>Delivery Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>RTMP</td>
+          <td>3-5s</td>
+          <td>Medium</td>
+          <td>Medium</td>
+          <td>Medium</td>
+          <td>Medium</td>
+          <td>TCP</td>
+        </tr>
+        <tr>
+          <td>HLS</td>
+          <td>6-30s</td>
+          <td>High</td>
+          <td>High</td>
+          <td>Medium</td>
+          <td>Medium</td>
+          <td>TCP</td>
+        </tr>
+        <tr>
+          <td>LL-HLS</td>
+          <td>Less than 3s</td>
+          <td>High</td>
+          <td>High</td>
+          <td>Medium</td>
+          <td>Medium</td>
+          <td>TCP</td>
+        </tr>
+        <tr>
+          <td>SRT</td>
+          <td>Less than 2s</td>
+          <td>High</td>
+          <td>Medium</td>
+          <td>High</td>
+          <td>High</td>
+          <td>UDP</td>
+        </tr>
+        <tr>
+          <td>RTSP</td>
+          <td>2s</td>
+          <td>High</td>
+          <td>Low</td>
+          <td>High</td>
+          <td>Medium</td>
+          <td>TCP</td>
+        </tr>
+        <tr>
+          <td>WebRTC</td>
+          <td>Less than 1s</td>
+          <td>Medium</td>
+          <td>Low</td>
+          <td>High</td>
+          <td>Medium</td>
+          <td>UDP</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 
-<section id="install-ionic-camera">
-  <h2>Install @ionic-enterprise/camera</h2>
-  <p>To install @ionic-enterprise/camera, follow these steps:</p>
-  <ol>
-    <li>Open your terminal or command prompt.</li>
-    <li>Run the command: <code>npm install @ionic-enterprise/camera</code>.</li>
-    <li>After the installation is complete, run the command: <code>npx cap sync</code> to sync with Capacitor.</li>
-  </ol>
-</section>
+  <section id="install-ionic-camera">
+    <h2>Install @ionic-enterprise/camera</h2>
+    <p>To install @ionic-enterprise/camera, follow these steps:</p>
+    <ol>
+      <li>Open your terminal or command prompt.</li>
+      <li>Run the command: <code>npm install @ionic-enterprise/camera</code>.</li>
+      <li>After the installation is complete, run the command: <code>npx cap sync</code> to sync with Capacitor.</li>
+    </ol>
+  </section>
 
-<section id="compile-ionic-media-cards">
-  <h2>Compile Ionic Media Cards</h2>
-  <p>To compile Ionic media cards with 80% opacity, dark mode background, and bottom tabs navigation, follow these steps:</p>
-  <ol>
-    <li>Ensure you have Ionic CLI installed. If not, install it using: <code>npm install -g @ionic/cli</code>.</li>
-    <li>Create a new Ionic project or navigate to your existing project directory.</li>
-    <li>Open your project's <code>src/global.scss</code> file and add the following styles:</li>
-    <pre><code>body {
+  <section id="compile-ionic-media-cards">
+    <h2>Compile Ionic Media Cards</h2>
+    <p>To compile Ionic media cards with 80% opacity, dark mode background, and bottom tabs navigation, follow these steps:</p>
+    <ol>
+      <li>Ensure you have Ionic CLI installed. If not, install it using: <code>npm install -g @ionic/cli</code>.</li>
+      <li>Create a new Ionic project or navigate to your existing project directory.</li>
+      <li>Open your project's <code>src/global.scss</code> file and add the following styles:</li>
+      <pre><code>body {
   --ion-background-color: #121212;
   --ion-text-color: #ffffff;
 }
@@ -173,8 +176,8 @@ print(info)</code></pre>
 .ion-card {
   opacity: 0.8;
 }</code></pre>
-    <li>To add bottom tabs navigation, update your <code>src/app/app.component.html</code> file:</li>
-    <pre><code>&lt;ion-tabs&gt;
+      <li>To add bottom tabs navigation, update your <code>src/app/app.component.html</code> file:</li>
+      <pre><code>&lt;ion-tabs&gt;
   &lt;ion-tab-bar slot="bottom"&gt;
     &lt;ion-tab-button tab="home"&gt;
       &lt;ion-icon name="home"&gt;&lt;/ion-icon&gt;
@@ -186,18 +189,42 @@ print(info)</code></pre>
     &lt;/ion-tab-button&gt;
   &lt;/ion-tab-bar&gt;
 &lt;/ion-tabs&gt;</code></pre>
-    <li>Run your Ionic project using: <code>ionic serve</code>.</li>
-  </ol>
-</section>
+      <li>Run your Ionic project using: <code>ionic serve</code>.</li>
+    </ol>
+  </section>
 
-<section id="install-react-native-camera-kit">
-  <h2>Install react-native-camera-kit</h2>
-  <p>To install react-native-camera-kit, follow these steps:</p>
-  <ol>
-    <li>Open your terminal or command prompt.</li>
-    <li>Run the command: <code>npm install react-native-camera-kit</code>.</li>
-    <li>Link the library to your project using: <code>react-native link react-native-camera-kit</code>.</li>
-    <li>Follow any additional setup instructions provided in the <a href="https://github.com/teslamotors/react-native-camera-kit">official repository</a>.</li>
-  </ol>
-</section>
+  <section id="install-react-native-camera-kit">
+    <h2>Install react-native-camera-kit</h2>
+    <p>To install react-native-camera-kit, follow these steps:</p>
+    <ol>
+      <li>Open your terminal or command prompt.</li>
+      <li>Run the command: <code>npm install react-native-camera-kit</code>.</li>
+      <li>Link the library to your project using: <code>react-native link react-native-camera-kit</code>.</li>
+      <li>Follow any additional setup instructions provided in the <a href="https://github.com/teslamotors/react-native-camera-kit">official repository</a>.</li>
+    </ol>
+  </section>
+
+  <section id="import-react-native-camera-kit">
+    <h2>Import Camera from react-native-camera-kit</h2>
+    <p>To import Camera and CameraType from react-native-camera-kit, add the following code to your React Native project:</p>
+    <pre><code>import { Camera, CameraType } from 'react-native-camera-kit';</code></pre>
+  </section>
+
+  <section id="use-react-native-camera-kit">
+    <h2>Use Camera from react-native-camera-kit</h2>
+    <p>To use the Camera component from react-native-camera-kit, add the following code to your React Native project:</p>
+    <pre><code>&lt;Camera
+  ref={(ref) =&gt; (this.camera = ref)}
+  cameraType={CameraType.Back} // front/back(default)
+  flashMode="auto"
+  // Barcode props
+  scanBarcode={true}
+  onReadCode={(event) =&gt; Alert.alert('QR code found')} // optional
+  showFrame={true} // (default false) optional, show frame with transparent layer (qr code or barcode will be read on this area ONLY), start animation for scanner, that stops when a code has been found. Frame always at center of the screen
+  laserColor='red' // (default red) optional, color of laser in scanner frame
+  frameColor='white' // (default white) optional, color of border of scanner frame
+/&gt;</code></pre>
+  </section>
+  <!-- ...existing code... -->
+</body>
 <!-- ...existing code... -->
