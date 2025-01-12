@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/css/ionicons.min.css" />
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+        <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@hoshihoshi/hoshihoshi.js"></script>
+        <title>.fornver</title>
+    </head>
+    <body>
+        <ion-app>#
+            <div class="app" id="main-content">
+                <ion-header><ion-progress-bar type="indeterminate" reversed="true"></ion-progress-bar>
+                    <ion-toolbar color="primary">
+                        <ion-buttons slot="start">
+                            <ion-menu-button></ion-menu-button>
+                        </ion-buttons>
+                        <ion-title>.fornever</ion-title>
+                        <ion-searchbar value="Value"></ion-searchbar>
+                    </ion-toolbar>
+                    <ion-toolbar color="primary">
+                        <ion-title>.projects</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content>
+                    <ion-list>
+                        <ion-item href="/camera">.camera</ion-item>
+                        <ion-item href="/chat">.chat</ion-item>
+                        <ion-item href="/stream">.stream</ion-item>
+                    </ion-list>
+                    <ion-progress-bar type="indeterminate" reversed="true"></ion-progress-bar>
+                    <ion-segment value="default">
+                        <ion-segment-button value="default">
+                            <ion-label>Default</ion-label>
+                        </ion-segment-button>
+                        <ion-segment-button value="segment1">
+                            <ion-label>Segment 1</ion-label>
+                        </ion-segment-button>
+                        <ion-segment-button value="segment2">
+                            <ion-label>Segment 2</ion-label>
+                        </ion-segment-button>
+                    </ion-segment>
+                    <ion-toolbar>
+                        <ion-title>Segmented Content</ion-title>
+                    </ion-toolbar>
+                    <ion-grid fixed>
+                        <ion-row>
+                            <ion-col size="12" size-sm="6" size-md="4" size-lg="3">
+                                <ion-card>
+                                    <ion-card-header>
+                                        <ion-card-title>Card Title 1</ion-card-title>
+                                        <ion-card-subtitle>Card Subtitle 1</ion-card-subtitle>
+                                    </ion-card-header>
+                                    <ion-card-content>
+                                        This is the content of card 1.
+                                    </ion-card-content>
+                                    <ion-button expand="full" color="primary">Action 1</ion-button>
+                                    <ion-button expand="full" color="secondary">Action 2</ion-button>
+                                </ion-card>
+                            </ion-col>
+                            <ion-col size="12" size-sm="6" size-md="4" size-lg="3">
+                                <ion-card>
+                                    <ion-card-header>
+                                        <ion-card-title>Card Title 2</ion-card-title>
+                                        <ion-card-subtitle>Card Subtitle 2</ion-card-subtitle>
+                                    </ion-card-header>
+                                    <ion-card-content>
+                                        This is the content of card 2.
+                                    </ion-card-content>
+                                    <ion-button expand="full" color="primary">Action 1</ion-button>
+                                    <ion-button expand="full" color="secondary">Action 2</ion-button>
+                                </ion-card>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                    <ion-reorder-group enable>
+                        <ion-item>
+                            <ion-label>camera</ion-label>
+                            <ion-reorder slot="end"><ion-icon name="camera"></ion-icon></ion-reorder>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>camera reverse</ion-label>
+                            <ion-reorder slot="end"><ion-icon name="camera-reverse"></ion-icon></ion-reorder>
+                        </ion-item>
+                    <ion-list>
+                            <ion-label>attach</ion-label>
+                            <ion-reorder slot="end"><ion-icon name="attach"></ion-icon></ion-reorder>
+                        </ion-item>
+                            <ion-label>car sport</ion-label>
+                            <ion-reorder slot="end"><ion-icon name="car-sport"></ion-icon></ion-reorder>
+                        </ion-item>
+                            <ion-label>chatbox</ion-label>
+                            <ion-reorder slot="end"><ion-icon name="chatbox-ellipses"></ion-icon></ion-reorder>
+                        </ion-item>
+                    </ion-reorder-group>
+                    <ion-infinite-scroll threshold="100px" id="infinite-scroll">
+                        <ion-infinite-scroll-content
+                            loading-spinner="bubbles"
+                            loading-text="Loading more data...">
+                        </ion-infinite-scroll-content>
+                    </ion-infinite-scroll>
+                    <div id="deviceready" class="blink">
+                        <p class="event listening">Connecting to Device</p>
+                        <p class="event received">Device is Ready</p>
+                    </div>
+                </ion-content>
+                <ion-footer>
+                    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+                        <ion-fab-button>
+                            <ion-icon name="skull-sharp"></ion-icon>
+                        </ion-fab-button>
+                        <ion-fab-button>
+                            <ion-icon name="skull-sharp"></ion-icon>
+                        </ion-fab-button>
+                        <ion-fab-list side="top">
+                            <ion-fab-button>
+                                <ion-icon name="document"></ion-icon>
+                            </ion-fab-button>
+                            <ion-fab-button>
+                                <ion-icon name="camera"></ion-icon>
+                            </ion-fab-button>
+                            <ion-fab-button>
+                                <ion-icon name="chatbox-ellipses"></ion-icon>
+                            </ion-fab-button>
+                            <ion-fab-button>
+                               <ion-icon name="terminal"></ion-icon>
+                            </ion-fab-button>
+                            <ion-fab-button>
+                                <ion-icon name="globe"></ion-icon>
+                            </ion-fab-button>
+                        </ion-fab-list>
+                    </ion-fab>
+                </ion-footer>
+            </div>
+        </ion-app>
+        <script>
+            document.addEventListener('deviceready', function() {
+                const menuData = [
+                    { title: 'Home', url: '/home' },
+                    { title: 'About', url: '/about' },
+                    { title: 'Contact', url: '/contact' }
+                ];
+                console.log('Ionic Menu Data:', menuData);
+
+                // Initialize MediaPipe and Hoshihoshi camera
+                const videoElement = document.createElement('video');
+                document.body.appendChild(videoElement);
+
+                const camera = new Camera(videoElement, {
+                    onFrame: async () => {
+                        await faceMesh.send({image: videoElement});
+                    },
+                    width: 640,
+                    height: 480
+                });
+                camera.start();
+
+                const faceMesh = new FaceMesh({
+                    locateFile: (file) => {
+                        return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+                    }
+                });
+                faceMesh.setOptions({
+                    maxNumFaces: 1,
+                    refineLandmarks: true,
+                    minDetectionConfidence: 0.5,
+                    minTrackingConfidence: 0.5
+                });
+                faceMesh.onResults((results) => {
+                    console.log('FaceMesh results:', results);
+                });
+            }, false);
+        </script>
+    </body>
+</html>
