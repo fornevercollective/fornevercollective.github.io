@@ -1,0 +1,97 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<div class="cards-container">
+    <!-- Placeholder for 54 playing cards -->
+    <div data-suit="hearts">
+        <div class="flip-container" data-number="1">
+            <div class="flipper">
+                <div class="front">
+                    <p>1 of Hearts</p>
+                </div>
+                <div class="back">
+                    <p>Card Back</p>
+                </div>
+            </div>
+        </div>
+        <div class="flip-container" data-number="2">
+            <div class="flipper">
+                <div class="front">
+                    <p>2 of Hearts</p>
+                </div>
+                <div class="back">
+                    <p>Card Back</p>
+                </div>
+            </div>
+        </div>
+        <!-- Repeat the above block for each card, changing data-number accordingly -->
+        <div class="flip-container" data-number="3">
+            <div class="flipper">
+                <div class="front">
+                    <p>3 of Hearts</p>
+                </div>
+                <div class="back">
+                    <p>Card Back</p>
+                </div>
+            </div>
+        </div>
+        <!-- ...continue for all hearts cards up to King... -->
+    </div>
+    <!-- Repeat the above block for each card, changing data-suit and data-number accordingly -->
+</div>
+<style>
+    .flip-container {
+        perspective: 800px;
+    }
+
+    .flip-container,
+    .front,
+    .back {
+        width: 250px;
+        height: 250px;
+    }
+
+    /* flip speed */
+    .flipper {
+        transition: 0.8s;
+        transform-style: preserve-3d;
+        position: relative;
+    }
+
+    /* hide back of pane during swap */
+    .front,
+    .back {
+        backface-visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    /* front pane, placed above back */
+    .front {
+        z-index: 2;
+    }
+
+    /* back, initially hidden pane */
+    .back {
+        background-color: #ff0000;
+        transform: rotateY(180deg);
+    }
+
+    .cards-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .flip-container {
+        margin: 10px;
+    }
+</style>
+<script>
+    $('.flip-container').each(function(i) {
+        var thisFlipper = $(this).find('.flipper');
+        var rotate = 0;
+        thisFlipper.on('click', function(e) {
+            rotate += 180;
+            thisFlipper.css({'transform': 'rotateY('+rotate+'deg)'});
+        });
+    });
+</script>
