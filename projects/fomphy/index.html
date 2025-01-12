@@ -132,6 +132,28 @@
         await setMaxPages();
         loadMorePages();
     })();
+
+    async function fetchRSSFeed() {
+        const response = await fetch('https://rss-feed-url.com/rss'); // Replace with actual RSS feed URL
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, 'application/xml');
+        const items = xml.querySelectorAll('item');
+        let content = '';
+
+        items.forEach(item => {
+            const title = item.querySelector('title').textContent;
+            const description = item.querySelector('description').textContent;
+            content += `<div class="rss-item">
+                            <h3>${title}</h3>
+                            <p>${description}</p>
+                        </div>`;
+        });
+
+        document.getElementById('loader').innerHTML = content;
+    }
+
+    fetchRSSFeed();
 </script>
 
 
