@@ -1,1 +1,35 @@
-<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://embed.figma.com/design/FeDpx4c22yhDjeTfTAamXG/Moder-Witch-%5B-educational-tarot-reading-mobile-app-%5D-by-Yasha-Anina-(Community)?node-id=0-1&embed-host=share" allowfullscreen></iframe>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarot Cards</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+</head>
+<body>
+  <ion-app>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Tarot Cards</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <!-- Generate 36 cards -->
+        ${Array.from({ length: 36 }, (_, i) => `
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Card Title ${i + 1}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p>This is the content of card ${i + 1}.</p>
+            </ion-card-content>
+          </ion-card>
+        `).join('')}
+      </ion-list>
+    </ion-content>
+  </ion-app>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+</body>
+</html>
