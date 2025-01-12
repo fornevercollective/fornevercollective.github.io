@@ -1,3 +1,4 @@
-
 # ...existing dependencies...
 torch
+tensorflow
+tensorflow-datasets
