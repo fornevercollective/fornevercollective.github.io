@@ -23,6 +23,24 @@
   </ol>
 </section>
 
+<section id="tensorflow-catalog">
+  <h2>Leverage TensorFlow Catalog Resources</h2>
+  <p>To leverage all TensorFlow catalog resources, follow these steps:</p>
+  <ol>
+    <li>Visit the <a href="https://github.com/tensorflow/datasets/tree/master/docs/catalog">TensorFlow Datasets Catalog</a>.</li>
+    <li>Browse through the available datasets and select the ones that are relevant to your project.</li>
+    <li>Follow the instructions provided in the catalog to load and use the datasets in your TensorFlow projects.</li>
+    <li>Use the <code>tensorflow_datasets</code> library to easily access and manage the datasets. For example:</li>
+    <pre><code>import tensorflow_datasets as tfds
+
+# Load a dataset
+dataset, info = tfds.load('mnist', with_info=True)
+
+# Explore the dataset
+print(info)</code></pre>
+  </ol>
+</section>
+
 <section id="install-llama-stack-client-python">
   <h2>Install llama-stack-client-python</h2>
   <p>To install llama-stack-client-python, follow these steps:</p>
@@ -128,5 +146,58 @@
       </tr>
     </tbody>
   </table>
+</section>
+
+<section id="install-ionic-camera">
+  <h2>Install @ionic-enterprise/camera</h2>
+  <p>To install @ionic-enterprise/camera, follow these steps:</p>
+  <ol>
+    <li>Open your terminal or command prompt.</li>
+    <li>Run the command: <code>npm install @ionic-enterprise/camera</code>.</li>
+    <li>After the installation is complete, run the command: <code>npx cap sync</code> to sync with Capacitor.</li>
+  </ol>
+</section>
+
+<section id="compile-ionic-media-cards">
+  <h2>Compile Ionic Media Cards</h2>
+  <p>To compile Ionic media cards with 80% opacity, dark mode background, and bottom tabs navigation, follow these steps:</p>
+  <ol>
+    <li>Ensure you have Ionic CLI installed. If not, install it using: <code>npm install -g @ionic/cli</code>.</li>
+    <li>Create a new Ionic project or navigate to your existing project directory.</li>
+    <li>Open your project's <code>src/global.scss</code> file and add the following styles:</li>
+    <pre><code>body {
+  --ion-background-color: #121212;
+  --ion-text-color: #ffffff;
+}
+
+.ion-card {
+  opacity: 0.8;
+}</code></pre>
+    <li>To add bottom tabs navigation, update your <code>src/app/app.component.html</code> file:</li>
+    <pre><code>&lt;ion-tabs&gt;
+  &lt;ion-tab-bar slot="bottom"&gt;
+    &lt;ion-tab-button tab="home"&gt;
+      &lt;ion-icon name="home"&gt;&lt;/ion-icon&gt;
+      &lt;ion-label&gt;Home&lt;/ion-label&gt;
+    &lt;/ion-tab-button&gt;
+    &lt;ion-tab-button tab="settings"&gt;
+      &lt;ion-icon name="settings"&gt;&lt;/ion-icon&gt;
+      &lt;ion-label&gt;Settings&lt;/ion-label&gt;
+    &lt;/ion-tab-button&gt;
+  &lt;/ion-tab-bar&gt;
+&lt;/ion-tabs&gt;</code></pre>
+    <li>Run your Ionic project using: <code>ionic serve</code>.</li>
+  </ol>
+</section>
+
+<section id="install-react-native-camera-kit">
+  <h2>Install react-native-camera-kit</h2>
+  <p>To install react-native-camera-kit, follow these steps:</p>
+  <ol>
+    <li>Open your terminal or command prompt.</li>
+    <li>Run the command: <code>npm install react-native-camera-kit</code>.</li>
+    <li>Link the library to your project using: <code>react-native link react-native-camera-kit</code>.</li>
+    <li>Follow any additional setup instructions provided in the <a href="https://github.com/teslamotors/react-native-camera-kit">official repository</a>.</li>
+  </ol>
 </section>
 <!-- ...existing code... -->
