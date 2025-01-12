@@ -134,7 +134,7 @@
     })();
 
     async function fetchRSSFeed() {
-        const response = await fetch('https://rss-feed-url.com/rss'); // Replace with actual RSS feed URL
+        const response = await fetch('/workspaces/fornevercollective.github.io/projects/fomphy/cgptlog.html); // Replace with actual RSS feed URL
         const text = await response.text();
         const parser = new DOMParser();
         const xml = parser.parseFromString(text, 'application/xml');
