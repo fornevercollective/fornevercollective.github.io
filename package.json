@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "tensorflow": "^2.8.0"
+  }
+}
