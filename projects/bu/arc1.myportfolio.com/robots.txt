@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://arc1.myportfolio.com/sitemap.xml
