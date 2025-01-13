@@ -51,18 +51,47 @@
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@lexical/react/umd/lexical-react.production.min.js"></script>
     <script>
         var app = angular.module('draggedUnderApp', []);
         app.controller('MainController', function($scope) {
             $scope.message = "Welcome to the Dragged Under Film Project";
         });
-    </script>
-    <script>
+
+        function initializeLexical() {
+            const { LexicalComposer, RichTextPlugin, ContentEditable, HistoryPlugin, OnChangePlugin } = lexicalReact;
+            const root = ReactDOM.createRoot(document.getElementById('editor1'));
+            root.render(
+                React.createElement(LexicalComposer, {
+                    initialConfig: {
+                        namespace: 'MyEditor',
+                        nodes: [],
+                        onError: (error) => console.error(error),
+                    },
+                    children: [
+                        React.createElement(RichTextPlugin, {
+                            contentEditable: React.createElement(ContentEditable, { className: 'editor-input' }),
+                            placeholder: React.createElement('div', { className: 'editor-placeholder' }, 'Enter text...'),
+                        }),
+                        React.createElement(HistoryPlugin, null),
+                        React.createElement(OnChangePlugin, {
+                            onChange: (editorState) => {
+                                editorState.read(() => {
+                                    const root = editorState.getRoot();
+                                    console.log(root.getTextContent());
+                                });
+                            },
+                        }),
+                    ],
+                })
+            );
+        }
+
         window.onload = function() {
-            CKEDITOR.replaceAll('editable');
-            CKEDITOR.replace('editor1');
+            initializeLexical();
         };
     </script>
 </head>
@@ -94,7 +123,7 @@
             <h2>Script</h2>
             <p>{{ message }}</p>
             <!-- ...existing script content... -->
-            <textarea name="editor1"></textarea>
+            <div id="editor1" style="border: 1px solid #ccc; padding: 10px;"></div>
         </section>
     </main>
     <footer>
