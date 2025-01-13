@@ -4,493 +4,136 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>fornever</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        @font-face {
-            font-family: __GeistSans_3a0388;
-            src: url(/_next/static/media/e11418ac562b8ac1-s.p.woff2) format("woff2");
-            font-display: swap;
-            font-weight: 100 900;
-        }
-        @font-face {
-            font-family: __GeistSans_Fallback_3a0388;
-            src: local("Arial");
-            ascent-override: 85.83%;
-            descent-override: 20.52%;
-            line-gap-override: 9.33%;
-            size-adjust: 107.19%;
-        }
-        .__className_3a0388 {
-            font-family: __GeistSans_3a0388, __GeistSans_Fallback_3a0388;
-        }
-        .__variable_3a0388 {
-            --font-geist-sans: "__GeistSans_3a0388", "__GeistSans_Fallback_3a0388";
-        }
-        /* Tailwind CSS and Custom Styles */
-        * {
-            box-sizing: border-box;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
             margin: 0;
             padding: 0;
         }
-        html, body {
-            font-family: 'Roboto', var(--font-geist-sans), sans-serif;
-            background-color: #222;
+        header {
+            background: #333;
             color: #fff;
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+            padding: 10px 0;
+            text-align: center;
         }
         .container {
-            display: flex;
-            flex-direction: column;
+            width: 80%;
+            margin: auto;
             overflow: hidden;
         }
-        .column {
-            flex: 1;
-            background-color: #000;
-            color: #fff;
-            padding: 10px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow-y: auto;
-        }
-        .section {
-            margin-bottom: 20px;
-            border-bottom: 2px solid #fff;
-        }
-        .accordion-title {
-            padding: 15px;
-            cursor: pointer;
-            border: none;
-            text-align: left;
-            outline: none;
-            transition: 0.4s;
-            background-color: #000;
-        }
-        .accordion-title:hover {
-            background-color: #222;
-        }
-        .accordion-content {
-            background-color: #000;
-            display: none;
-            overflow: hidden;
-            padding: 0 15px;
-        }
-        .accordion-content a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            padding: 10px 0;
-        }
-        .accordion-content a:hover {
-            background-color: #000;
-        }
-        .main-content {
-            flex-grow: 1;
+        .content {
             padding: 20px;
-            background: #000;
+            background: #fff;
             margin-top: 20px;
         }
-        .feed {
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-        .header-buttons {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header-buttons .left, .header-buttons .right {
-            display: flex;
-            align-items: center;
-        }
-        .header-buttons .right button {
-            margin-left: 10px;
-        }
-        /* New styles for hamburger menu and left column */
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            font-size: 24px;
-            margin-right: 10px;
-        }
-        .left-column {
-            width: 250px;
-            transition: transform 0.3s ease;
-            background-color: black; /* Change background to black */
-        }
-        .left-column.hidden {
-            transform: translateX(-100%);
-        }
-        .left-column .menu-item {
-            padding-left: 5px; /* Add 5px left side padding */
-            color: white; /* Ensure text is visible on black background */
-        }
-        @media (max-width: 768px) {
-            .hamburger {
-                display: block;
-            }
-            .left-column {
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 100%;
-                background-color: black; /* Ensure background is black on mobile */
-                z-index: 1000;
-                transform: translateX(0); /* Ensure the left column is viewable on tablets */
-            }
-            .header {
-                justify-content: space-between;
-            }
-            .main-content {
-                display: flex;
-                flex-direction: column;
-            }
-            .column-3 {
-                order: -1;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-        }
-        @media (min-width: 768px) {
-            .container {
-                flex-direction: row;
-            }
-            .left-column {
-                width: 250px;
-                transition: transform 0.3s ease;
-                background-color: black;
-            }
-            .left-column.hidden {
-                transform: translateX(-100%);
-            }
-            .left-column .menu-item {
-                padding-left: 5px;
-                color: white;
-            }
-        }
-        @media (min-width: 1920px) {
-            .container {
-                flex-direction: row;
-            }
-            .left-column {
-                width: 250px;
-                transition: transform 0.3s ease;
-                background-color: black;
-            }
-            .left-column.hidden {
-                transform: translateX(-100%);
-            }
-            .left-column .menu-item {
-                padding-left: 5px;
-                color: white;
-            }
-        }
-        .bottom-menu {
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
             position: fixed;
             bottom: 0;
             width: 100%;
-            background-color: #000;
-            z-index: 1000;
         }
-        .bottom-menu ion-menu-button {
-            color: white;
+        .hamburger-menu {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .menu {
+            display: none;
+            position: fixed;
+            bottom: 50px;
+            right: 10px;
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .menu a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            margin: 5px 0;
         }
     </style>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@latest/dist/ionic/ionic.esm.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@latest/css/ionic.bundle.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script type="module">
-        import { IonicModule } from '@ionic/angular';
-
-        type PlatformConfig = {
-            android?: ((win: Window) => boolean) | undefined;
-            capacitor?: ((win: Window) => boolean) | undefined;
-            cordova?: ((win: Window) => boolean) | undefined;
-            desktop?: ((win: Window) => boolean) | undefined;
-            electron?: ((win: Window) => boolean) | undefined;
-            hybrid?: ((win: Window) => boolean) | undefined;
-            ios?: ((win: Window) => boolean) | undefined;
-            ipad?: ((win: Window) => boolean) | undefined;
-            iphone?: ((win: Window) => boolean) | undefined;
-            mobile?: ((win: Window) => boolean) | undefined;
-            mobileweb?: ((win: Window) => boolean) | undefined;
-            phablet?: ((win: Window) => boolean) | undefined;
-            pwa?: ((win: Window) => boolean) | undefined;
-            tablet?: ((win: Window) => boolean) | undefined;
-        };
-
-        @NgModule({
-            // ...existing code...
-            imports: [
-                BrowserModule,
-                IonicModule.forRoot({
-                    platform: {
-                        'desktop': (win) => {
-                            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(win.navigator.userAgent);
-                            return !isMobile;
-                        }
-                    },
-                }),
-                AppRoutingModule
-            ],
-            // ...existing code...
-        })
-    </script>
 </head>
-<body class="__className_3a0388">
-    <ion-menu side="bottom" menu-id="bottomMenu" content-id="main-content">
-        <ion-header>
-            <ion-toolbar color="dark">
-                <ion-title>Menu</ion-title>
-            </ion-toolbar>
-        </ion-header>
-        <ion-content>
-            <ion-list>
-                <ion-item button>Item 1</ion-item>
-                <ion-item button>Item 2</ion-item>
-                <ion-item button>Item 3</ion-item>
-            </ion-list>
-        </ion-content>
-    </ion-menu>
-    <div class="bottom-menu">
-        <ion-menu-button menu="bottomMenu"></ion-menu-button>
-        <button class="hamburger" onclick="toggleLeftColumn()">☰</button> <!-- Add hamburger button -->
-    </div>
-    <div class="container" id="main-content">
-        <div class="left-column hidden" id="leftColumn"> <!-- Add id to left column -->
-            <div class="section">
-                <header>
-                    <h1>fornever</h1>
-                </header>
-            </div>
-            <div class="section">
-                <menu>
-                    <button class="accordion-title">.projects</button>
-                    <div class="accordion-content">
-                        <nav>
-                            <ul>
-                                <li><a href="#" id="idea1">Idea 1: Simple Drag and Drop</a></li>
-                                <li><a href="#" id="idea2">Idea 2: Enhanced Drag and Drop</a></li>
-                                <li><a href="#" id="idea3">Idea 3: Interactive To-Do List</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                </menu>
-            </div>
-            <div class="section">
-                <links>
-                    <h2>.links</h2>
-                    <ul>
-                        <li><a href="#">Link 1</a></li>
-                        <li><a href="#">Link 2</a></li>
-                        <li><a href="#">Link 3</a></li>
-                    </ul>
-                </links>
-            </div>
-            <div class="section">
-                <social>
-                    <h2>.social</h2>
-                    <ul>
-                        <li><a href="#">Twitter</a></li>
-                        <li><a href="#">Facebook</a></li>
-                        <li><a href="#">Instagram</a></li>
-                    </ul>
-                </social>
-            </div>
+<body>
+    <header>
+        <div class="container">
+            <h1>Single Page App</h1>
         </div>
-        <div class="column">
-            <header>
-                <h1>.feed</h1>
-            </header>
-            <div class="feed" id="feed">
-                <div class="content-section">
-                    <h2>Content Section 1</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
-                </div>
-                <div class="content-section">
-                    <h2>Content Section 2</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
-                </div>
-                <div class="content-section">
-                    <h2>Content Section 3</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
-                </div>
-                <div class="content-section">
-                    <h2>Content Section 4</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
-                </div>
-                <div class="content-section">
-                    <h2>Content Section 5</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula ex eu quam faucibus, at convallis nulla dignissim.</p>
-                </div>
-            </div>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h2>Welcome</h2>
+            <p>This is a simple single-page application boilerplate using HTML5, CSS, and jQuery.</p>
         </div>
-        <div class="column">
-            <header>
-                <div class="header-buttons">
-                    <div class="left">
-                        <button id="backButton">back</button>
-                        <button id="nextButton">next</button> <!-- Add next button here -->
-                    </div>
-                    <div class="right">
-                        <button id="shareButton">share</button>
-                        <button id="bookmarkButton">save</button>
-                    </div>
-                </div>
-            </header>
-            <div class="content" id="content">
-                <h2>Content Heading</h2>
-                <p>https://fornevercollective.github.io/ggwave/examples/ggwave-js/index-tmpl.html</p>
-                <p>https://fornevercollective.github.io/ggwave/examples/waver/index-tmpl.html</p>
-                <p>https://fornevercollective.github.io/ggwave/examples/spectrogram/index-tmpl.html</p>
-                <p>https://fornevercollective.github.io/ggwave/examples/ggwave-to-file/</p>
-                <p>https://fornevercollective.github.io/ggwave/examples/ggwave-py/</p>
-                <p>https://fornevercollective.github.io/ggwave/examples/ggwave-from-file/</p>
-                <p>https://fornevercollective.github.io/ggwave/examples/ggwave-cli/</p>
-            </div>
+        <div class="content" id="tv">
+            <h2>TV</h2>
+            <p>Content for TV section.</p>
+        </div>
+        <div class="content" id="film">
+            <h2>FILM</h2>
+            <p>Content for FILM section.</p>
+        </div>
+        <div class="content" id="vevo">
+            <h2>VEVO</h2>
+            <p>Content for VEVO section.</p>
+        </div>
+        <div class="content" id="info">
+            <h2>INFO</h2>
+            <p>Content for INFO section.</p>
+        </div>
+        <div class="content" id="3d">
+            <h2>3D</h2>
+            <p>Content for 3D section.</p>
+        </div>
+        <div class="content" id="2d">
+            <h2>2D</h2>
+            <p>Content for 2D section.</p>
+        </div>
+        <div class="content" id="tree">
+            <h2>TREE</h2>
+            <p>Content for TREE section.</p>
+        </div>
+        <div class="content" id="games">
+            <h2>GAMES</h2>
+            <p>Content for GAMES section.</p>
         </div>
     </div>
-    <img id="image" alt="Captured Image" />
-    <ion-tabs>
-        <ion-tab-bar slot="bottom">
-            <ion-tab-button tab="home">
-                <ion-icon name="home"></ion-icon>
-                <ion-label>Home</ion-label>
-            </ion-tab-button>
-            <ion-tab-button tab="settings">
-                <ion-icon name="settings"></ion-icon>
-                <ion-label>Settings</ion-label>
-            </ion-tab-button>
-        </ion-tab-bar>
-    </ion-tabs>
-    <ion-modal id="modal">
-        <ion-header>
-            <ion-toolbar>
-                <ion-title>Modal Title</ion-title>
-                <ion-buttons slot="end">
-                    <ion-button onclick="dismissModal()">Close</ion-button>
-                </ion-buttons>
-            </ion-toolbar>
-        </ion-header>
-        <ion-content>
-            <div id="modal-content"></div>
-        </ion-content>
-    </ion-modal>
-  <script>
-    async function fetchProjectData() {
-        const response = await fetch('https://api.github.com/repos/fornevercollective/fornevercollective.github.io/projects/3/columns', {
-            headers: {
-                'Accept': 'application/vnd.github.inertia-preview+json'
-            }
+    <footer>
+        <p>Single Page App &copy; 2023</p>
+        <button class="hamburger-menu" onclick="toggleMenu()">☰</button>
+        <div class="menu" id="menu">
+            <a href="#tv">TV</a>
+            <a href="#film">FILM</a>
+            <a href="#vevo">VEVO</a>
+            <a href="#info">INFO</a>
+            <a href="#3d">3D</a>
+            <a href="#2d">2D</a>
+            <a href="#tree">TREE</a>
+            <a href="#games">GAMES</a>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // jQuery code goes here
         });
-        const columns = await response.json();
-        return columns;
-    }
 
-    let currentPage = 1;
-    const itemsPerPage = 5;
-
-    async function displayProjectData(page = 1) {
-        const columns = await fetchProjectData();
-        const feed = document.getElementById('feed');
-        const startIndex = (page - 1) * itemsPerPage;
-        const endIndex = page * itemsPerPage;
-        const paginatedColumns = columns.slice(startIndex, endIndex);
-
-        paginatedColumns.forEach(column => {
-            const columnDiv = document.createElement('div');
-            columnDiv.classList.add('column');
-
-            const columnTitle = document.createElement('h2');
-            columnTitle.textContent = column.name;
-            columnDiv.appendChild(columnTitle);
-
-            columnDiv.addEventListener('click', () => {
-                displayContent(column);
-            });
-
-            feed.appendChild(columnDiv);
-        });
-    }
-
-    async function displayContent(column) {
-        const modal = document.querySelector('ion-modal');
-        const modalContent = document.getElementById('modal-content');
-        modalContent.innerHTML = `<h2>${column.name}</h2><p>${column.body}</p>`;
-        await modal.present();
-    }
-
-    function dismissModal() {
-        const modal = document.querySelector('ion-modal');
-        modal.dismiss();
-    }
-
-    function handleScroll() {
-        const feed = document.getElementById('feed');
-        if (feed.scrollTop + feed.clientHeight >= feed.scrollHeight) {
-            currentPage++;
-            displayProjectData(currentPage);
+        function toggleMenu() {
+            $('#menu').toggle();
         }
-    }
-
-    function debounce(func, wait) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
-
-    let currentContentIndex = 0;
-
-    function updateContent() {
-        const contentSections = document.querySelectorAll('.feed .content-section');
-        contentSections.forEach((section, index) => {
-            section.style.display = index === currentContentIndex ? 'block' : 'none';
-        });
-    }
-
-    document.getElementById('backButton').addEventListener('click', () => {
-        if (currentContentIndex > 0) {
-            currentContentIndex--;
-            updateContent();
-        }
-    });
-
-    document.getElementById('nextButton').addEventListener('click', () => {
-        const contentSections = document.querySelectorAll('.feed .content-section');
-        if (currentContentIndex < contentSections.length - 1) {
-            currentContentIndex++;
-            updateContent();
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        displayProjectData();
-        document.getElementById('feed').addEventListener('scroll', debounce(handleScroll, 100));
-        updateContent(); // Initialize content display
-    });
-
-    function toggleMenu() {
-        const menu = document.querySelector('ion-menu[menu-id="bottomMenu"]');
-        menu.open();
-    }
-
-    function toggleLeftColumn() {
-        const leftColumn = document.getElementById('leftColumn');
-        leftColumn.classList.toggle('hidden');
-    }
-</script>
+    </script>
 </body>
 </html>
