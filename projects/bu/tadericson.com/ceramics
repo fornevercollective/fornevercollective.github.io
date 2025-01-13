@@ -1,0 +1,546 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="twitter:card"  content="summary_large_image" />
+      <meta name="twitter:site"  content="@AdobePortfolio" />
+      <meta  property="og:title" content="Tad Ericson - Ceramics" />
+      <meta  property="og:image" content="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/f8fab10a-1cb0-4940-96ad-52134fe491e2_car_202x158.jpg?h=d075eac4e34e1ff5d84ee7d594608130" />
+      <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAADUExURUxpcU3H2DoAAAABdFJOUwBA5thmAAAADElEQVQI12NgIA0AAAAwAAHHqoWOAAAAAElFTkSuQmCC"  />
+      <link rel="stylesheet" href="dist/css/main.css" type="text/css" />
+      <link rel="stylesheet" href="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1623e033e3ab1f4923e976ba21bf989d1690574380.css?h=e3ff2e56d25c5864ada0cf016d385d4c" type="text/css" />
+    <link rel="canonical" href="ceramics" />
+      <title>Tad Ericson - Ceramics</title>
+    <script type="text/javascript" src="https://use.typekit.net/ik/pmjhKlpPSEtcwpcF37iaz8wpP1Tw9mrOaVNaHggbsAwfeGIffHYEBsJzwD9oFDIDWhbuFD63FQ8KZQ9hwhZcFQmcZebU5QbXjRq3Zes8wAbu5Q9kFAFqFQI-K6I7OcuoSeNkieZzde8zOcFzdP37O1gkdDJlic88ikolpWgzS1scdhUTdkoRdhXCHKoXjAs8Sc8RShN0OcFzdPUlpWgzS1scdhUTdkoRdhXCSY4zwKuh-AmaOcuoSeNkieZzde8zOcFzdPUXjAs8Sc8RShN0OcFzdPUaiaS0ieBqZW4TjaFzdKoRdhXKgeilShGKgYZRShX7fbRs2UMMeMS6MPG4fHvgIMIjgfMgH6qJnbIbMs6eJMI7fbKOMsMgeMS6MZMgop5SR3j.js?cb=f55b45a3e8ad93d0a224939951d8339444a0d5cb" async onload="
+    try {
+      window.Typekit.load();
+    } catch (e) {
+      console.warn('Typekit not loaded.');
+    }
+    "></script>
+</head>
+  <body class="transition-enabled">  <div class='page-background-video page-background-video-with-panel'>
+  </div>
+  <div class="js-responsive-nav">
+    <div class="responsive-nav has-social">
+      <div class="close-responsive-click-area js-close-responsive-nav">
+        <div class="close-responsive-button"></div>
+      </div>
+          <div class="nav-container">
+            <nav data-hover-hint="nav">
+                <div class="gallery-title"><a href="tv" >TV</a></div>
+                <div class="gallery-title"><a href="film" >FILM</a></div>
+                <div class="gallery-title"><a href="vevo" >VEVO</a></div>
+      <div class="page-title">
+        <a href="info" >INFO</a>
+      </div>
+                <div class="gallery-title"><a href="3d" >3D</a></div>
+                <div class="gallery-title"><a href="2d" >2D</a></div>
+                <div class="gallery-title"><a href="tree" >TREE</a></div>
+                <div class="gallery-title"><a href="projects" >/</a></div>
+                <div class="social pf-nav-social" data-hover-hint="navSocialIcons">
+                  <ul>
+                          <li>
+                            <a href="https://www.linkedin.com/in/tadericson/" target="_blank">
+                              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
+                              <path id="path-1_24_" d="M19.6,19v-5.8c0-1.4-0.5-2.4-1.7-2.4c-1,0-1.5,0.7-1.8,1.3C16,12.3,16,12.6,16,13v6h-3.4
+                                c0,0,0.1-9.8,0-10.8H16v1.5c0,0,0,0,0,0h0v0C16.4,9,17.2,7.9,19,7.9c2.3,0,4,1.5,4,4.9V19H19.6z M8.9,6.7L8.9,6.7
+                                C7.7,6.7,7,5.9,7,4.9C7,3.8,7.8,3,8.9,3s1.9,0.8,1.9,1.9C10.9,5.9,10.1,6.7,8.9,6.7z M10.6,19H7.2V8.2h3.4V19z"/>
+                              </svg>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://facebook.com/tadericson" target="_blank">
+                              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 30 24" xml:space="preserve" class="icon"><path d="M16.21 20h-3.26v-8h-1.63V9.24h1.63V7.59c0-2.25 0.92-3.59 3.53-3.59h2.17v2.76H17.3 c-1.02 0-1.08 0.39-1.08 1.11l0 1.38h2.46L18.38 12h-2.17V20z"/></svg>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://instagram.com/tadericson/" target="_blank">
+                              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
+                              <g>
+                                <path d="M15,5.4c2.1,0,2.4,0,3.2,0c0.8,0,1.2,0.2,1.5,0.3c0.4,0.1,0.6,0.3,0.9,0.6c0.3,0.3,0.5,0.5,0.6,0.9
+                                  c0.1,0.3,0.2,0.7,0.3,1.5c0,0.8,0,1.1,0,3.2s0,2.4,0,3.2c0,0.8-0.2,1.2-0.3,1.5c-0.1,0.4-0.3,0.6-0.6,0.9c-0.3,0.3-0.5,0.5-0.9,0.6
+                                  c-0.3,0.1-0.7,0.2-1.5,0.3c-0.8,0-1.1,0-3.2,0s-2.4,0-3.2,0c-0.8,0-1.2-0.2-1.5-0.3c-0.4-0.1-0.6-0.3-0.9-0.6
+                                  c-0.3-0.3-0.5-0.5-0.6-0.9c-0.1-0.3-0.2-0.7-0.3-1.5c0-0.8,0-1.1,0-3.2s0-2.4,0-3.2c0-0.8,0.2-1.2,0.3-1.5c0.1-0.4,0.3-0.6,0.6-0.9
+                                  c0.3-0.3,0.5-0.5,0.9-0.6c0.3-0.1,0.7-0.2,1.5-0.3C12.6,5.4,12.9,5.4,15,5.4 M15,4c-2.2,0-2.4,0-3.3,0c-0.9,0-1.4,0.2-1.9,0.4
+                                  c-0.5,0.2-1,0.5-1.4,0.9C7.9,5.8,7.6,6.2,7.4,6.8C7.2,7.3,7.1,7.9,7,8.7C7,9.6,7,9.8,7,12s0,2.4,0,3.3c0,0.9,0.2,1.4,0.4,1.9
+                                  c0.2,0.5,0.5,1,0.9,1.4c0.4,0.4,0.9,0.7,1.4,0.9c0.5,0.2,1.1,0.3,1.9,0.4c0.9,0,1.1,0,3.3,0s2.4,0,3.3,0c0.9,0,1.4-0.2,1.9-0.4
+                                  c0.5-0.2,1-0.5,1.4-0.9c0.4-0.4,0.7-0.9,0.9-1.4c0.2-0.5,0.3-1.1,0.4-1.9c0-0.9,0-1.1,0-3.3s0-2.4,0-3.3c0-0.9-0.2-1.4-0.4-1.9
+                                  c-0.2-0.5-0.5-1-0.9-1.4c-0.4-0.4-0.9-0.7-1.4-0.9c-0.5-0.2-1.1-0.3-1.9-0.4C17.4,4,17.2,4,15,4L15,4L15,4z"/>
+                                <path d="M15,7.9c-2.3,0-4.1,1.8-4.1,4.1s1.8,4.1,4.1,4.1s4.1-1.8,4.1-4.1S17.3,7.9,15,7.9L15,7.9z M15,14.7c-1.5,0-2.7-1.2-2.7-2.7
+                                  c0-1.5,1.2-2.7,2.7-2.7s2.7,1.2,2.7,2.7C17.7,13.5,16.5,14.7,15,14.7L15,14.7z"/>
+                                <path d="M20.2,7.7c0,0.5-0.4,1-1,1s-1-0.4-1-1s0.4-1,1-1S20.2,7.2,20.2,7.7L20.2,7.7z"/>
+                              </g>
+                              </svg>
+                            </a>
+                          </li>
+                  </ul>
+                </div>
+            </nav>
+          </div>
+    </div>
+  </div>
+  <div class="site-wrap cfix js-site-wrap">
+    <div class="site-container">
+      <div class="site-content e2e-site-content">
+        <header class="site-header">
+          <div class="logo-container">
+              <div class="logo-wrap" data-hover-hint="logo">
+                    <div class="logo e2e-site-logo-text logo-text  ">
+    <a href="info" class="preserve-whitespace">Tad Ericson</a>
+
+</div>
+              </div>
+  <div class="hamburger-click-area js-hamburger">
+    <div class="hamburger">
+      <i></i>
+      <i></i>
+      <i></i>
+    </div>
+  </div>
+          </div>
+              <div class="nav-container">
+                <nav data-hover-hint="nav">
+                <div class="gallery-title"><a href="tv" >TV</a></div>
+                <div class="gallery-title"><a href="film" >FILM</a></div>
+                <div class="gallery-title"><a href="vevo" >VEVO</a></div>
+      <div class="page-title">
+        <a href="info" >INFO</a>
+      </div>
+                <div class="gallery-title"><a href="3d" >3D</a></div>
+                <div class="gallery-title"><a href="2d" >2D</a></div>
+                <div class="gallery-title"><a href="tree" >TREE</a></div>
+                <div class="gallery-title"><a href="projects" >/</a></div>
+                    <div class="social pf-nav-social" data-hover-hint="navSocialIcons">
+                      <ul>
+                              <li>
+                                <a href="https://www.linkedin.com/in/tadericson/" target="_blank">
+                                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
+                                  <path id="path-1_24_" d="M19.6,19v-5.8c0-1.4-0.5-2.4-1.7-2.4c-1,0-1.5,0.7-1.8,1.3C16,12.3,16,12.6,16,13v6h-3.4
+                                    c0,0,0.1-9.8,0-10.8H16v1.5c0,0,0,0,0,0h0v0C16.4,9,17.2,7.9,19,7.9c2.3,0,4,1.5,4,4.9V19H19.6z M8.9,6.7L8.9,6.7
+                                    C7.7,6.7,7,5.9,7,4.9C7,3.8,7.8,3,8.9,3s1.9,0.8,1.9,1.9C10.9,5.9,10.1,6.7,8.9,6.7z M10.6,19H7.2V8.2h3.4V19z"/>
+                                  </svg>
+                                </a>
+                              </li>
+                              <li>
+                                <a href="https://facebook.com/tadericson" target="_blank">
+                                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 30 24" xml:space="preserve" class="icon"><path d="M16.21 20h-3.26v-8h-1.63V9.24h1.63V7.59c0-2.25 0.92-3.59 3.53-3.59h2.17v2.76H17.3 c-1.02 0-1.08 0.39-1.08 1.11l0 1.38h2.46L18.38 12h-2.17V20z"/></svg>
+                                </a>
+                              </li>
+                              <li>
+                                <a href="https://instagram.com/tadericson/" target="_blank">
+                                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
+                                  <g>
+                                    <path d="M15,5.4c2.1,0,2.4,0,3.2,0c0.8,0,1.2,0.2,1.5,0.3c0.4,0.1,0.6,0.3,0.9,0.6c0.3,0.3,0.5,0.5,0.6,0.9
+                                      c0.1,0.3,0.2,0.7,0.3,1.5c0,0.8,0,1.1,0,3.2s0,2.4,0,3.2c0,0.8-0.2,1.2-0.3,1.5c-0.1,0.4-0.3,0.6-0.6,0.9c-0.3,0.3-0.5,0.5-0.9,0.6
+                                      c-0.3,0.1-0.7,0.2-1.5,0.3c-0.8,0-1.1,0-3.2,0s-2.4,0-3.2,0c-0.8,0-1.2-0.2-1.5-0.3c-0.4-0.1-0.6-0.3-0.9-0.6
+                                      c-0.3-0.3-0.5-0.5-0.6-0.9c-0.1-0.3-0.2-0.7-0.3-1.5c0-0.8,0-1.1,0-3.2s0-2.4,0-3.2c0-0.8,0.2-1.2,0.3-1.5c0.1-0.4,0.3-0.6,0.6-0.9
+                                      c0.3-0.3,0.5-0.5,0.9-0.6c0.3-0.1,0.7-0.2,1.5-0.3C12.6,5.4,12.9,5.4,15,5.4 M15,4c-2.2,0-2.4,0-3.3,0c-0.9,0-1.4,0.2-1.9,0.4
+                                      c-0.5,0.2-1,0.5-1.4,0.9C7.9,5.8,7.6,6.2,7.4,6.8C7.2,7.3,7.1,7.9,7,8.7C7,9.6,7,9.8,7,12s0,2.4,0,3.3c0,0.9,0.2,1.4,0.4,1.9
+                                      c0.2,0.5,0.5,1,0.9,1.4c0.4,0.4,0.9,0.7,1.4,0.9c0.5,0.2,1.1,0.3,1.9,0.4c0.9,0,1.1,0,3.3,0s2.4,0,3.3,0c0.9,0,1.4-0.2,1.9-0.4
+                                      c0.5-0.2,1-0.5,1.4-0.9c0.4-0.4,0.7-0.9,0.9-1.4c0.2-0.5,0.3-1.1,0.4-1.9c0-0.9,0-1.1,0-3.3s0-2.4,0-3.3c0-0.9-0.2-1.4-0.4-1.9
+                                      c-0.2-0.5-0.5-1-0.9-1.4c-0.4-0.4-0.9-0.7-1.4-0.9c-0.5-0.2-1.1-0.3-1.9-0.4C17.4,4,17.2,4,15,4L15,4L15,4z"/>
+                                    <path d="M15,7.9c-2.3,0-4.1,1.8-4.1,4.1s1.8,4.1,4.1,4.1s4.1-1.8,4.1-4.1S17.3,7.9,15,7.9L15,7.9z M15,14.7c-1.5,0-2.7-1.2-2.7-2.7
+                                      c0-1.5,1.2-2.7,2.7-2.7s2.7,1.2,2.7,2.7C17.7,13.5,16.5,14.7,15,14.7L15,14.7z"/>
+                                    <path d="M20.2,7.7c0,0.5-0.4,1-1,1s-1-0.4-1-1s0.4-1,1-1S20.2,7.2,20.2,7.7L20.2,7.7z"/>
+                                  </g>
+                                  </svg>
+                                </a>
+                              </li>
+                      </ul>
+                    </div>
+                </nav>
+              </div>
+        </header>
+        <main>
+  <div class="page-container" data-context="page.page.container" data-hover-hint="pageContainer">
+    <section class="page standard-modules">
+        <header class="page-header content" data-context="pages" data-identity="id:p631e942c2231e85649493a6b5b8aab54599d8385a0566b7bf05e2" data-hover-hint="pageHeader" data-hover-hint-id="p631e942c2231e85649493a6b5b8aab54599d8385a0566b7bf05e2">
+            <h1 class="title preserve-whitespace e2e-site-logo-text">Ceramics</h1>
+            <p class="description"></p>
+        </header>
+      <div class="page-content js-page-content" data-context="pages" data-identity="id:p631e942c2231e85649493a6b5b8aab54599d8385a0566b7bf05e2">
+        <div id="project-canvas" class="js-project-modules modules content">
+          <div id="project-modules">
+              
+              
+              
+              
+              
+              
+              
+              <div class="project-module module media_collection project-module-media_collection" data-id="m631e962336b715a778b134d733046ac41809918176119a5a24a45"  style="padding-top: px;
+padding-bottom: px;
+">
+  <div class="grid--main js-grid-main" data-grid-max-images="
+  ">
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96518478843" style="width:194.96518478843px; flex-grow:194.96518478843;" data-width="1400" data-height="1867">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/39dc3a2d-1c73-4843-93e0-812f9ef3bd79_rw_1920.jpg?h=939a3fefb62c0d79f6606543d6884f52" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/39dc3a2d-1c73-4843-93e0-812f9ef3bd79_rw_600.jpg?h=2c6a723000fefdef2b9b23ebdbb35e90 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/39dc3a2d-1c73-4843-93e0-812f9ef3bd79_rw_1200.jpg?h=f1abcb25798550910a5389bb58e91d2c 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/39dc3a2d-1c73-4843-93e0-812f9ef3bd79_rw_1920.jpg?h=939a3fefb62c0d79f6606543d6884f52 1400w,"  sizes="(max-width: 1400px) 100vw, 1400px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/39dc3a2d-1c73-4843-93e0-812f9ef3bd79_rw_1920.jpg?h=939a3fefb62c0d79f6606543d6884f52"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/39dc3a2d-1c73-4843-93e0-812f9ef3bd79_rw_600.jpg?h=2c6a723000fefdef2b9b23ebdbb35e90 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/39dc3a2d-1c73-4843-93e0-812f9ef3bd79_rw_1200.jpg?h=f1abcb25798550910a5389bb58e91d2c 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/39dc3a2d-1c73-4843-93e0-812f9ef3bd79_rw_1920.jpg?h=939a3fefb62c0d79f6606543d6884f52 1400w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35714285714%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.94858950699" style="width:194.94858950699px; flex-grow:194.94858950699;" data-width="1920" data-height="2560">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/413001c4-53d6-4d44-b4f3-900a1ed081ac_rw_1920.jpg?h=a46c2fba3f3d8f4bdb04d0ae41b00481" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/413001c4-53d6-4d44-b4f3-900a1ed081ac_rw_600.jpg?h=5911973b7bbe84f3198840a941eb09d6 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/413001c4-53d6-4d44-b4f3-900a1ed081ac_rw_1200.jpg?h=9437cb3157d6f087128c29f2cae293e0 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/413001c4-53d6-4d44-b4f3-900a1ed081ac_rw_1920.jpg?h=a46c2fba3f3d8f4bdb04d0ae41b00481 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/413001c4-53d6-4d44-b4f3-900a1ed081ac_rw_1920.jpg?h=a46c2fba3f3d8f4bdb04d0ae41b00481"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/413001c4-53d6-4d44-b4f3-900a1ed081ac_rw_600.jpg?h=5911973b7bbe84f3198840a941eb09d6 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/413001c4-53d6-4d44-b4f3-900a1ed081ac_rw_1200.jpg?h=9437cb3157d6f087128c29f2cae293e0 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/413001c4-53d6-4d44-b4f3-900a1ed081ac_rw_1920.jpg?h=a46c2fba3f3d8f4bdb04d0ae41b00481 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.36849507736%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="195" style="width:195px; flex-grow:195;" data-width="1920" data-height="2560">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/43c196aa-f474-4cf6-ab2c-8ad480e9d72d_rw_1920.jpg?h=523bf3557d78a02e48d9bf1a1272a7e1" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/43c196aa-f474-4cf6-ab2c-8ad480e9d72d_rw_600.jpg?h=18798c2e738820d0890c1720d62622b1 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/43c196aa-f474-4cf6-ab2c-8ad480e9d72d_rw_1200.jpg?h=a1133eb165267173e43c4bbfb651a9a7 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/43c196aa-f474-4cf6-ab2c-8ad480e9d72d_rw_1920.jpg?h=523bf3557d78a02e48d9bf1a1272a7e1 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/43c196aa-f474-4cf6-ab2c-8ad480e9d72d_rw_1920.jpg?h=523bf3557d78a02e48d9bf1a1272a7e1"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/43c196aa-f474-4cf6-ab2c-8ad480e9d72d_rw_600.jpg?h=18798c2e738820d0890c1720d62622b1 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/43c196aa-f474-4cf6-ab2c-8ad480e9d72d_rw_1200.jpg?h=a1133eb165267173e43c4bbfb651a9a7 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/43c196aa-f474-4cf6-ab2c-8ad480e9d72d_rw_1920.jpg?h=523bf3557d78a02e48d9bf1a1272a7e1 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.33333333333%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="195.01769670569" style="width:195.01769670569px; flex-grow:195.01769670569;" data-width="1920" data-height="2559">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/919d418b-dd39-4e92-a597-9d683d9aec1b_rw_1920.jpg?h=aaf80777a057e91e93ff7601b530a7b2" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/919d418b-dd39-4e92-a597-9d683d9aec1b_rw_600.jpg?h=f341d75c21ca116d3d3567404ba381cd 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/919d418b-dd39-4e92-a597-9d683d9aec1b_rw_1200.jpg?h=7376feb5006b3b089061153543c1387c 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/919d418b-dd39-4e92-a597-9d683d9aec1b_rw_1920.jpg?h=aaf80777a057e91e93ff7601b530a7b2 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/919d418b-dd39-4e92-a597-9d683d9aec1b_rw_1920.jpg?h=aaf80777a057e91e93ff7601b530a7b2"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/919d418b-dd39-4e92-a597-9d683d9aec1b_rw_600.jpg?h=f341d75c21ca116d3d3567404ba381cd 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/919d418b-dd39-4e92-a597-9d683d9aec1b_rw_1200.jpg?h=7376feb5006b3b089061153543c1387c 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/919d418b-dd39-4e92-a597-9d683d9aec1b_rw_1920.jpg?h=aaf80777a057e91e93ff7601b530a7b2 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.32123411978%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96619864795" style="width:194.96619864795px; flex-grow:194.96619864795;" data-width="1920" data-height="2560">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/93156664-35f7-4c5d-a730-d783d35d72cd_rw_1920.jpg?h=3d79a525b0b1f8452d01cd75cb497394" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/93156664-35f7-4c5d-a730-d783d35d72cd_rw_600.jpg?h=c233f25db81a0489f6552dd005848f80 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/93156664-35f7-4c5d-a730-d783d35d72cd_rw_1200.jpg?h=2749b9bda829ea7cf01f64da19b2bb55 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/93156664-35f7-4c5d-a730-d783d35d72cd_rw_1920.jpg?h=3d79a525b0b1f8452d01cd75cb497394 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/93156664-35f7-4c5d-a730-d783d35d72cd_rw_1920.jpg?h=3d79a525b0b1f8452d01cd75cb497394"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/93156664-35f7-4c5d-a730-d783d35d72cd_rw_600.jpg?h=c233f25db81a0489f6552dd005848f80 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/93156664-35f7-4c5d-a730-d783d35d72cd_rw_1200.jpg?h=2749b9bda829ea7cf01f64da19b2bb55 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/93156664-35f7-4c5d-a730-d783d35d72cd_rw_1920.jpg?h=3d79a525b0b1f8452d01cd75cb497394 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35644937587%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.98246560561" style="width:194.98246560561px; flex-grow:194.98246560561;" data-width="1920" data-height="2560">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/640f761d-c07b-435d-8b51-001bb0417bbd_rw_1920.jpg?h=ceb161aa94f8caec926d156f2955c93b" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/640f761d-c07b-435d-8b51-001bb0417bbd_rw_600.jpg?h=e01bf89a936349f4868daa83b73649ed 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/640f761d-c07b-435d-8b51-001bb0417bbd_rw_1200.jpg?h=c62213dfec581d004518dfaad3be23cf 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/640f761d-c07b-435d-8b51-001bb0417bbd_rw_1920.jpg?h=ceb161aa94f8caec926d156f2955c93b 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/640f761d-c07b-435d-8b51-001bb0417bbd_rw_1920.jpg?h=ceb161aa94f8caec926d156f2955c93b"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/640f761d-c07b-435d-8b51-001bb0417bbd_rw_600.jpg?h=e01bf89a936349f4868daa83b73649ed 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/640f761d-c07b-435d-8b51-001bb0417bbd_rw_1200.jpg?h=c62213dfec581d004518dfaad3be23cf 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/640f761d-c07b-435d-8b51-001bb0417bbd_rw_1920.jpg?h=ceb161aa94f8caec926d156f2955c93b 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.34532374101%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96317280453" style="width:194.96317280453px; flex-grow:194.96317280453;" data-width="1920" data-height="2560">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1ed5fc67-0e7a-4417-b81f-08ae723c09e7_rw_1920.jpg?h=ba50f27798a419aa1492e1168db4d402" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1ed5fc67-0e7a-4417-b81f-08ae723c09e7_rw_600.jpg?h=cf7c2da3bbc32a5a355f3bc89024883b 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1ed5fc67-0e7a-4417-b81f-08ae723c09e7_rw_1200.jpg?h=c1c5280f739b9b8d5c20efb9a4010c8f 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1ed5fc67-0e7a-4417-b81f-08ae723c09e7_rw_1920.jpg?h=ba50f27798a419aa1492e1168db4d402 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1ed5fc67-0e7a-4417-b81f-08ae723c09e7_rw_1920.jpg?h=ba50f27798a419aa1492e1168db4d402"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1ed5fc67-0e7a-4417-b81f-08ae723c09e7_rw_600.jpg?h=cf7c2da3bbc32a5a355f3bc89024883b 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1ed5fc67-0e7a-4417-b81f-08ae723c09e7_rw_1200.jpg?h=c1c5280f739b9b8d5c20efb9a4010c8f 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1ed5fc67-0e7a-4417-b81f-08ae723c09e7_rw_1920.jpg?h=ba50f27798a419aa1492e1168db4d402 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.3585190782%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96514745308" style="width:194.96514745308px; flex-grow:194.96514745308;" data-width="1920" data-height="2560">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8425ca0c-89b9-4895-a4c7-a3ab24c39f52_rw_1920.jpg?h=4eb0cd0c26bb8af9bcd28e3003604365" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8425ca0c-89b9-4895-a4c7-a3ab24c39f52_rw_600.jpg?h=abaadcf8f770eb07c286323592a770f2 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8425ca0c-89b9-4895-a4c7-a3ab24c39f52_rw_1200.jpg?h=03a00eee6c7c48da70cf8c06b60addb8 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8425ca0c-89b9-4895-a4c7-a3ab24c39f52_rw_1920.jpg?h=4eb0cd0c26bb8af9bcd28e3003604365 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8425ca0c-89b9-4895-a4c7-a3ab24c39f52_rw_1920.jpg?h=4eb0cd0c26bb8af9bcd28e3003604365"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8425ca0c-89b9-4895-a4c7-a3ab24c39f52_rw_600.jpg?h=abaadcf8f770eb07c286323592a770f2 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8425ca0c-89b9-4895-a4c7-a3ab24c39f52_rw_1200.jpg?h=03a00eee6c7c48da70cf8c06b60addb8 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8425ca0c-89b9-4895-a4c7-a3ab24c39f52_rw_1920.jpg?h=4eb0cd0c26bb8af9bcd28e3003604365 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35716839471%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96514745308" style="width:194.96514745308px; flex-grow:194.96514745308;" data-width="1920" data-height="2560">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1e97bbfe-3939-4f40-8b1c-e0c2d97afa4c_rw_1920.jpg?h=6f3f992381ec8da3860f4c11230d2c0b" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1e97bbfe-3939-4f40-8b1c-e0c2d97afa4c_rw_600.jpg?h=29092a8524531c93eedec94a61046ded 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1e97bbfe-3939-4f40-8b1c-e0c2d97afa4c_rw_1200.jpg?h=8b8caa8c572f0d081e7c71b88630b223 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1e97bbfe-3939-4f40-8b1c-e0c2d97afa4c_rw_1920.jpg?h=6f3f992381ec8da3860f4c11230d2c0b 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1e97bbfe-3939-4f40-8b1c-e0c2d97afa4c_rw_1920.jpg?h=6f3f992381ec8da3860f4c11230d2c0b"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1e97bbfe-3939-4f40-8b1c-e0c2d97afa4c_rw_600.jpg?h=29092a8524531c93eedec94a61046ded 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1e97bbfe-3939-4f40-8b1c-e0c2d97afa4c_rw_1200.jpg?h=8b8caa8c572f0d081e7c71b88630b223 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1e97bbfe-3939-4f40-8b1c-e0c2d97afa4c_rw_1920.jpg?h=6f3f992381ec8da3860f4c11230d2c0b 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35716839471%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="195" style="width:195px; flex-grow:195;" data-width="1920" data-height="2560">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/5ed76634-8fb6-40a0-8539-5fb7508897fd_rw_1920.jpg?h=0ff2be5f5847442859429fc2e3713af4" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/5ed76634-8fb6-40a0-8539-5fb7508897fd_rw_600.jpg?h=a345b3263c8ef675ff14e93f268b93b8 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/5ed76634-8fb6-40a0-8539-5fb7508897fd_rw_1200.jpg?h=3d7bef3565e89beae0ff9bc27a6f40f6 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/5ed76634-8fb6-40a0-8539-5fb7508897fd_rw_1920.jpg?h=0ff2be5f5847442859429fc2e3713af4 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/5ed76634-8fb6-40a0-8539-5fb7508897fd_rw_1920.jpg?h=0ff2be5f5847442859429fc2e3713af4"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/5ed76634-8fb6-40a0-8539-5fb7508897fd_rw_600.jpg?h=a345b3263c8ef675ff14e93f268b93b8 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/5ed76634-8fb6-40a0-8539-5fb7508897fd_rw_1200.jpg?h=3d7bef3565e89beae0ff9bc27a6f40f6 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/5ed76634-8fb6-40a0-8539-5fb7508897fd_rw_1920.jpg?h=0ff2be5f5847442859429fc2e3713af4 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.33333333333%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96654657746" style="width:194.96654657746px; flex-grow:194.96654657746;" data-width="1920" data-height="2560">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/dae11930-32c2-4771-8e52-1c2a2b419b40_rw_1920.jpg?h=e3c5d8385464f9fc290af06d0b7df902" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/dae11930-32c2-4771-8e52-1c2a2b419b40_rw_600.jpg?h=7ac64589dbcdf41b62692e1c7907735e 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/dae11930-32c2-4771-8e52-1c2a2b419b40_rw_1200.jpg?h=e0a890648dc7d5b18eb500bdb0fbe8a3 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/dae11930-32c2-4771-8e52-1c2a2b419b40_rw_1920.jpg?h=e3c5d8385464f9fc290af06d0b7df902 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/dae11930-32c2-4771-8e52-1c2a2b419b40_rw_1920.jpg?h=e3c5d8385464f9fc290af06d0b7df902"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/dae11930-32c2-4771-8e52-1c2a2b419b40_rw_600.jpg?h=7ac64589dbcdf41b62692e1c7907735e 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/dae11930-32c2-4771-8e52-1c2a2b419b40_rw_1200.jpg?h=e0a890648dc7d5b18eb500bdb0fbe8a3 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/dae11930-32c2-4771-8e52-1c2a2b419b40_rw_1920.jpg?h=e3c5d8385464f9fc290af06d0b7df902 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35621139327%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="195" style="width:195px; flex-grow:195;" data-width="1920" data-height="2560">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8f774fc1-d522-4b78-aa7c-993441fc40e5_rw_1920.jpg?h=4ce1a5c7f2cb8fc198d5e937ef528de5" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8f774fc1-d522-4b78-aa7c-993441fc40e5_rw_600.jpg?h=040cc5d51832c893fec0dbd80ee67773 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8f774fc1-d522-4b78-aa7c-993441fc40e5_rw_1200.jpg?h=5e6f598660aa29acf2278ace1cdc8e05 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8f774fc1-d522-4b78-aa7c-993441fc40e5_rw_1920.jpg?h=4ce1a5c7f2cb8fc198d5e937ef528de5 1920w,"  sizes="(max-width: 1920px) 100vw, 1920px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8f774fc1-d522-4b78-aa7c-993441fc40e5_rw_1920.jpg?h=4ce1a5c7f2cb8fc198d5e937ef528de5"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8f774fc1-d522-4b78-aa7c-993441fc40e5_rw_600.jpg?h=040cc5d51832c893fec0dbd80ee67773 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8f774fc1-d522-4b78-aa7c-993441fc40e5_rw_1200.jpg?h=5e6f598660aa29acf2278ace1cdc8e05 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8f774fc1-d522-4b78-aa7c-993441fc40e5_rw_1920.jpg?h=4ce1a5c7f2cb8fc198d5e937ef528de5 1920w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.33333333333%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96518478843" style="width:194.96518478843px; flex-grow:194.96518478843;" data-width="1400" data-height="1867">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/0766a493-f75a-47d8-8117-7dfe2a5951d3_rw_1920.jpg?h=512dde5c5fe053b1ae7ec5221404e7c1" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/0766a493-f75a-47d8-8117-7dfe2a5951d3_rw_600.jpg?h=1c71064c3b2325877d43cca307999975 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/0766a493-f75a-47d8-8117-7dfe2a5951d3_rw_1200.jpg?h=411be4a0f76d1efc3047a4782941dc3a 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/0766a493-f75a-47d8-8117-7dfe2a5951d3_rw_1920.jpg?h=512dde5c5fe053b1ae7ec5221404e7c1 1400w,"  sizes="(max-width: 1400px) 100vw, 1400px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/0766a493-f75a-47d8-8117-7dfe2a5951d3_rw_1920.jpg?h=512dde5c5fe053b1ae7ec5221404e7c1"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/0766a493-f75a-47d8-8117-7dfe2a5951d3_rw_600.jpg?h=1c71064c3b2325877d43cca307999975 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/0766a493-f75a-47d8-8117-7dfe2a5951d3_rw_1200.jpg?h=411be4a0f76d1efc3047a4782941dc3a 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/0766a493-f75a-47d8-8117-7dfe2a5951d3_rw_1920.jpg?h=512dde5c5fe053b1ae7ec5221404e7c1 1400w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35714285714%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96518478843" style="width:194.96518478843px; flex-grow:194.96518478843;" data-width="1400" data-height="1867">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/236d53c5-a52e-4908-bcf9-617401b9e29b_rw_1920.jpg?h=95b4f7279df23411bd5a6eb035a68169" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/236d53c5-a52e-4908-bcf9-617401b9e29b_rw_600.jpg?h=27bec7c539711a19ee6dd91cc64d12d3 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/236d53c5-a52e-4908-bcf9-617401b9e29b_rw_1200.jpg?h=6efaccccc6df3431852a045a933da0fc 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/236d53c5-a52e-4908-bcf9-617401b9e29b_rw_1920.jpg?h=95b4f7279df23411bd5a6eb035a68169 1400w,"  sizes="(max-width: 1400px) 100vw, 1400px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/236d53c5-a52e-4908-bcf9-617401b9e29b_rw_1920.jpg?h=95b4f7279df23411bd5a6eb035a68169"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/236d53c5-a52e-4908-bcf9-617401b9e29b_rw_600.jpg?h=27bec7c539711a19ee6dd91cc64d12d3 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/236d53c5-a52e-4908-bcf9-617401b9e29b_rw_1200.jpg?h=6efaccccc6df3431852a045a933da0fc 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/236d53c5-a52e-4908-bcf9-617401b9e29b_rw_1920.jpg?h=95b4f7279df23411bd5a6eb035a68169 1400w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35714285714%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96518478843" style="width:194.96518478843px; flex-grow:194.96518478843;" data-width="1400" data-height="1867">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/a9e8648c-4c76-476d-ae35-ed8aedad15dd_rw_1920.jpg?h=79c3f350a00fe6436122d6eb7db6048e" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/a9e8648c-4c76-476d-ae35-ed8aedad15dd_rw_600.jpg?h=02daaf31b6610c3caf1c859fb26b35da 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/a9e8648c-4c76-476d-ae35-ed8aedad15dd_rw_1200.jpg?h=27b30ce46b050df65447823097f70cd5 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/a9e8648c-4c76-476d-ae35-ed8aedad15dd_rw_1920.jpg?h=79c3f350a00fe6436122d6eb7db6048e 1400w,"  sizes="(max-width: 1400px) 100vw, 1400px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/a9e8648c-4c76-476d-ae35-ed8aedad15dd_rw_1920.jpg?h=79c3f350a00fe6436122d6eb7db6048e"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/a9e8648c-4c76-476d-ae35-ed8aedad15dd_rw_600.jpg?h=02daaf31b6610c3caf1c859fb26b35da 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/a9e8648c-4c76-476d-ae35-ed8aedad15dd_rw_1200.jpg?h=27b30ce46b050df65447823097f70cd5 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/a9e8648c-4c76-476d-ae35-ed8aedad15dd_rw_1920.jpg?h=79c3f350a00fe6436122d6eb7db6048e 1400w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35714285714%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96518478843" style="width:194.96518478843px; flex-grow:194.96518478843;" data-width="1400" data-height="1867">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1dcd5e56-5078-4b8a-ac03-419489a36c84_rw_1920.jpg?h=11114e9792c39ce6b1436e4205edff39" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1dcd5e56-5078-4b8a-ac03-419489a36c84_rw_600.jpg?h=af51484d5ce22bdf1924a432f304b5ca 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1dcd5e56-5078-4b8a-ac03-419489a36c84_rw_1200.jpg?h=f1405020162fc1262311b667322f0cc0 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1dcd5e56-5078-4b8a-ac03-419489a36c84_rw_1920.jpg?h=11114e9792c39ce6b1436e4205edff39 1400w,"  sizes="(max-width: 1400px) 100vw, 1400px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1dcd5e56-5078-4b8a-ac03-419489a36c84_rw_1920.jpg?h=11114e9792c39ce6b1436e4205edff39"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1dcd5e56-5078-4b8a-ac03-419489a36c84_rw_600.jpg?h=af51484d5ce22bdf1924a432f304b5ca 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1dcd5e56-5078-4b8a-ac03-419489a36c84_rw_1200.jpg?h=f1405020162fc1262311b667322f0cc0 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/1dcd5e56-5078-4b8a-ac03-419489a36c84_rw_1920.jpg?h=11114e9792c39ce6b1436e4205edff39 1400w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35714285714%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96518478843" style="width:194.96518478843px; flex-grow:194.96518478843;" data-width="1400" data-height="1867">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/c93e4db4-5c82-47f5-b349-63f26334cf64_rw_1920.jpg?h=79d95231d9c87d03ca5beb460fa4b76b" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/c93e4db4-5c82-47f5-b349-63f26334cf64_rw_600.jpg?h=9aeaf734f53838c9ce37bbaef96ce4cb 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/c93e4db4-5c82-47f5-b349-63f26334cf64_rw_1200.jpg?h=ae2ece2704dfbb21d0150406e453151d 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/c93e4db4-5c82-47f5-b349-63f26334cf64_rw_1920.jpg?h=79d95231d9c87d03ca5beb460fa4b76b 1400w,"  sizes="(max-width: 1400px) 100vw, 1400px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/c93e4db4-5c82-47f5-b349-63f26334cf64_rw_1920.jpg?h=79d95231d9c87d03ca5beb460fa4b76b"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/c93e4db4-5c82-47f5-b349-63f26334cf64_rw_600.jpg?h=9aeaf734f53838c9ce37bbaef96ce4cb 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/c93e4db4-5c82-47f5-b349-63f26334cf64_rw_1200.jpg?h=ae2ece2704dfbb21d0150406e453151d 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/c93e4db4-5c82-47f5-b349-63f26334cf64_rw_1920.jpg?h=79d95231d9c87d03ca5beb460fa4b76b 1400w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35714285714%;"></span>
+    </div>
+    <div class="grid__item-container js-grid-item-container" data-flex-grow="194.96518478843" style="width:194.96518478843px; flex-grow:194.96518478843;" data-width="1400" data-height="1867">
+      <script type="text/html" class="js-lightbox-slide-content">
+        <div class="grid__image-wrapper">
+          <img src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8992555a-bfc3-4052-983f-694194884ebe_rw_1920.jpg?h=acc49f14089f97b3495de81ef22e95cc" srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8992555a-bfc3-4052-983f-694194884ebe_rw_600.jpg?h=e52f93929d90d705442d8c3b4d482c34 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8992555a-bfc3-4052-983f-694194884ebe_rw_1200.jpg?h=465ddc8189f253dfa7536b475f75c505 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8992555a-bfc3-4052-983f-694194884ebe_rw_1920.jpg?h=acc49f14089f97b3495de81ef22e95cc 1400w,"  sizes="(max-width: 1400px) 100vw, 1400px">
+        <div>
+      </script>
+      <img
+        class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        
+        data-src="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8992555a-bfc3-4052-983f-694194884ebe_rw_1920.jpg?h=acc49f14089f97b3495de81ef22e95cc"
+        data-srcset="https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8992555a-bfc3-4052-983f-694194884ebe_rw_600.jpg?h=e52f93929d90d705442d8c3b4d482c34 600w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8992555a-bfc3-4052-983f-694194884ebe_rw_1200.jpg?h=465ddc8189f253dfa7536b475f75c505 1200w,https://cdn.myportfolio.com/a0bfb375047485c1e2494453e8c793bc/8992555a-bfc3-4052-983f-694194884ebe_rw_1920.jpg?h=acc49f14089f97b3495de81ef22e95cc 1400w,"
+      >
+      <span class="grid__item-filler" style="padding-bottom:133.35714285714%;"></span>
+    </div>
+    <div class="js-grid-spacer"></div>
+  </div>
+</div>
+
+              
+              
+              
+              
+              
+              
+              
+              <div class="project-module module text project-module-text align- js-project-module e2e-site-project-module-text">
+  <div class="rich-text js-text-editable module-text"><div>Below you'll find our growing list of Brick &amp; Mortar Stockists.<br></div><div><br></div><div>:: ONLINE ONLY :: US AND INTERNATIONAL<br></div><div>Witch and Reign -<a href="https://www.witchandreign.com/"> https://www.witchandreign.com</a> - USA</div><div>Ritual Care Company - <a href="https://ritualcarecompany.com/">https://ritualcarecompany.com </a>- USA online and Puyallup Night Market, WA<br></div><div>The Conjuring Moon (Subscription Box) - <a href="https://theconjuringmoonbox.com/">https://theconjuringmoonbox.com/</a> - USA<br></div><div>-------<br></div><div>:: EAST COAST ::</div><div>Soulbury Cultural Gifts Store -<a href="https://www.instagram.com/soulburyct/"> </a><a href="https://www.instagram.com/soulburyct/">Soulbury Cultural Gifts Store</a> - Woodbury, CT<br></div><div>Evergreen - <a href="http://www.evergreencrafts.com/">http://www.evergreencrafts.com</a> - Great Barington, MA</div><div>Ritual -<a href="https://ritualcapecod.com/"> </a><a href="https://ritualcapecod.com/">https://</a><a href="https://ritualcapecod.com/">ritualcapecod.com</a> - Yarmouth Port, MA<br></div><div>Poppy Seed Studio - <a href="https://www.instagram.com/poppyseedstudio/">https://www.instagram.com/poppyseedstudio/</a> - Somersworth, NH<br></div><div> -------</div><div>:: SOUTHEAST ::</div><div>The Eclectic Charge - <a href="https://eclecticcharge.com/">https://eclecticcharge.com</a> - Fort Walton Beach, FL<br></div><div>Oracle Natural Science  <a href="https://oraclekc.com/">https://oraclekc.com/</a> - Kansas City, OK</div><div>-------<br></div><div>:: SOUTHWEST ::</div><div>La Henna Boheme - <a href="https://lahennaboheme0.godaddysites.com/">https://lahennaboheme0.godaddysites.com</a> - Manitou Springs, CO<br></div><div> -------</div><div>:: NORTH/MIDWEST ::<br></div><div>Duffey &amp; Co. - <a href="https://www.duffeyandco.com/" target="_blank">https://www.duffeyandco.com</a> - Grosse Point, MI</div><div>The Conjure Shop - <a href="https://theconjureshop.com/">https://theconjureshop.com</a> - Omaha, NB</div><div>Brewing Intuition - <a href="https://www.brewingintuition.com/">https://www.brewingintuition.com</a> - Hillard, OH<br></div><div>The Dreaming Tree <a href="https://www.herprimitiveways.com/">https://www.herprimitiveways.com</a> -  - Youngstown, OH</div><div>Misty Mountain Jewelry an Gifts - <a href="https://www.facebook.com/Misty-Mountain-Jewelry-and-Gifts-104804955296782" target="_blank">https://www.facebook.com/Misty-Mountain-Jewelry-and-Gifts-104804955296782</a> - Bedford, WY</div><div>-------<br></div><div>:: PNW / WEST COAST ::<br></div><div>Paxton Gate <a href="https://paxtongate.com/" target="_blank">https://paxtongate.com</a> - San Francisco, CA</div><div>Mystic Flora Apothecary - <a href="https://www.thefloralcraft.com/">https://www.thefloralcraft.com</a> - San Mateo, CA</div><div>Pura Luna Apothecary - <a href="https://puralunaapothecary.com/">https://puralunaapothecary.com</a> - Santa Barbara, CA</div><div>The Floral Craft - https://www.thefloralcraft.com - La Mesa, CA</div><div>Palace Market - <a href="https://www.instagram.com/blossoms_sm/">http://www.instagram.com/blossoms_sm/</a> Point Reyes Station, CA</div><div>L.E.A.F - Live, Enlightened and Free <a href="https://www.liveenlightenedandfree.com/">https://www.liveenlightenedandfree.com</a> - Vista, CA<br></div><div>HEX - <a href="https://www.hexbrownsville.com/">https://www.hexbrownsville.com</a> - Brownsville, OR<br></div><div>Shop Lyko - <a href="https://shoplyko.com/">https://shoplyko.com</a><br></div><div>Forest, Stone and Sea <a href="https://foreststoneandsea.com/">https://foreststoneandsea.com</a> - Longview, WA</div><div>Radiance Herbs &amp; Massage - <a href="https://www.radianceherbs.com/">https://www.radianceherbs.com</a> -  Olympia, WA<br></div><div>Still and Sacred (formerly Temple Goods) - <a href="http://www.templegoods.com/">http://www.templegoods.com</a> -  Seattle, WA<br></div><div>  -------</div><div>:: CANADA ::</div><div>The Divine Mine -  <a href="https://divinemine.com/">https://divinemine.com</a> - Calgary, Alberta<br></div><div>Wild Craft Mercantile - <a href="https://wildcraftshop.ca/">https://wildcraftshop.ca</a> - Salmon Arm, British Columbia<br></div><div>Elemental Witchery and Conjure Boutique -<a href="http://www.elementalbooks.ca/index.html">http://www.elementalbooks.ca/index.html</a> - Winnipeg, Manitoba</div><div>Ritual Metaphysical - <a href="https://www.ritualmetaphysical.com/">https://www.ritualmetaphysical.com</a> - Fredericton, New Brunswick</div></div>
+</div>
+
+              
+              
+              
+              
+          </div>
+        </div>
+      </div>
+    </section>
+        <section class="back-to-top" data-hover-hint="backToTop">
+          <a href="ceramics#"><span class="arrow">&uarr;</span><span class="preserve-whitespace">Back to Top</span></a>
+        </section>
+        <a class="back-to-top-fixed js-back-to-top back-to-top-fixed-with-panel" data-hover-hint="backToTop" data-hover-hint-placement="top-start" href="ceramics#">
+          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+           viewBox="0 0 26 26" style="enable-background:new 0 0 26 26;" xml:space="preserve" class="icon icon-back-to-top">
+          <g>
+            <path d="M13.8,1.3L21.6,9c0.1,0.1,0.1,0.3,0.2,0.4c0.1,0.1,0.1,0.3,0.1,0.4s0,0.3-0.1,0.4c-0.1,0.1-0.1,0.3-0.3,0.4
+              c-0.1,0.1-0.2,0.2-0.4,0.3c-0.2,0.1-0.3,0.1-0.4,0.1c-0.1,0-0.3,0-0.4-0.1c-0.2-0.1-0.3-0.2-0.4-0.3L14.2,5l0,19.1
+              c0,0.2-0.1,0.3-0.1,0.5c0,0.1-0.1,0.3-0.3,0.4c-0.1,0.1-0.2,0.2-0.4,0.3c-0.1,0.1-0.3,0.1-0.5,0.1c-0.1,0-0.3,0-0.4-0.1
+              c-0.1-0.1-0.3-0.1-0.4-0.3c-0.1-0.1-0.2-0.2-0.3-0.4c-0.1-0.1-0.1-0.3-0.1-0.5l0-19.1l-5.7,5.7C6,10.8,5.8,10.9,5.7,11
+              c-0.1,0.1-0.3,0.1-0.4,0.1c-0.2,0-0.3,0-0.4-0.1c-0.1-0.1-0.3-0.2-0.4-0.3c-0.1-0.1-0.1-0.2-0.2-0.4C4.1,10.2,4,10.1,4.1,9.9
+              c0-0.1,0-0.3,0.1-0.4c0-0.1,0.1-0.3,0.3-0.4l7.7-7.8c0.1,0,0.2-0.1,0.2-0.1c0,0,0.1-0.1,0.2-0.1c0.1,0,0.2,0,0.2-0.1
+              c0.1,0,0.1,0,0.2,0c0,0,0.1,0,0.2,0c0.1,0,0.2,0,0.2,0.1c0.1,0,0.1,0.1,0.2,0.1C13.7,1.2,13.8,1.2,13.8,1.3z"/>
+          </g>
+          </svg>
+        </a>
+  </div>
+              <footer class="site-footer" data-hover-hint="footer">
+                  <div class="social pf-footer-social" data-context="theme.footer" data-hover-hint="footerSocialIcons">
+                    <ul>
+                            <li>
+                              <a href="https://www.linkedin.com/in/tadericson/" target="_blank">
+                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
+                                <path id="path-1_24_" d="M19.6,19v-5.8c0-1.4-0.5-2.4-1.7-2.4c-1,0-1.5,0.7-1.8,1.3C16,12.3,16,12.6,16,13v6h-3.4
+                                  c0,0,0.1-9.8,0-10.8H16v1.5c0,0,0,0,0,0h0v0C16.4,9,17.2,7.9,19,7.9c2.3,0,4,1.5,4,4.9V19H19.6z M8.9,6.7L8.9,6.7
+                                  C7.7,6.7,7,5.9,7,4.9C7,3.8,7.8,3,8.9,3s1.9,0.8,1.9,1.9C10.9,5.9,10.1,6.7,8.9,6.7z M10.6,19H7.2V8.2h3.4V19z"/>
+                                </svg>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="https://facebook.com/tadericson" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 30 24" xml:space="preserve" class="icon"><path d="M16.21 20h-3.26v-8h-1.63V9.24h1.63V7.59c0-2.25 0.92-3.59 3.53-3.59h2.17v2.76H17.3 c-1.02 0-1.08 0.39-1.08 1.11l0 1.38h2.46L18.38 12h-2.17V20z"/></svg>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="https://instagram.com/tadericson/" target="_blank">
+                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
+                                <g>
+                                  <path d="M15,5.4c2.1,0,2.4,0,3.2,0c0.8,0,1.2,0.2,1.5,0.3c0.4,0.1,0.6,0.3,0.9,0.6c0.3,0.3,0.5,0.5,0.6,0.9
+                                    c0.1,0.3,0.2,0.7,0.3,1.5c0,0.8,0,1.1,0,3.2s0,2.4,0,3.2c0,0.8-0.2,1.2-0.3,1.5c-0.1,0.4-0.3,0.6-0.6,0.9c-0.3,0.3-0.5,0.5-0.9,0.6
+                                    c-0.3,0.1-0.7,0.2-1.5,0.3c-0.8,0-1.1,0-3.2,0s-2.4,0-3.2,0c-0.8,0-1.2-0.2-1.5-0.3c-0.4-0.1-0.6-0.3-0.9-0.6
+                                    c-0.3-0.3-0.5-0.5-0.6-0.9c-0.1-0.3-0.2-0.7-0.3-1.5c0-0.8,0-1.1,0-3.2s0-2.4,0-3.2c0-0.8,0.2-1.2,0.3-1.5c0.1-0.4,0.3-0.6,0.6-0.9
+                                    c0.3-0.3,0.5-0.5,0.9-0.6c0.3-0.1,0.7-0.2,1.5-0.3C12.6,5.4,12.9,5.4,15,5.4 M15,4c-2.2,0-2.4,0-3.3,0c-0.9,0-1.4,0.2-1.9,0.4
+                                    c-0.5,0.2-1,0.5-1.4,0.9C7.9,5.8,7.6,6.2,7.4,6.8C7.2,7.3,7.1,7.9,7,8.7C7,9.6,7,9.8,7,12s0,2.4,0,3.3c0,0.9,0.2,1.4,0.4,1.9
+                                    c0.2,0.5,0.5,1,0.9,1.4c0.4,0.4,0.9,0.7,1.4,0.9c0.5,0.2,1.1,0.3,1.9,0.4c0.9,0,1.1,0,3.3,0s2.4,0,3.3,0c0.9,0,1.4-0.2,1.9-0.4
+                                    c0.5-0.2,1-0.5,1.4-0.9c0.4-0.4,0.7-0.9,0.9-1.4c0.2-0.5,0.3-1.1,0.4-1.9c0-0.9,0-1.1,0-3.3s0-2.4,0-3.3c0-0.9-0.2-1.4-0.4-1.9
+                                    c-0.2-0.5-0.5-1-0.9-1.4c-0.4-0.4-0.9-0.7-1.4-0.9c-0.5-0.2-1.1-0.3-1.9-0.4C17.4,4,17.2,4,15,4L15,4L15,4z"/>
+                                  <path d="M15,7.9c-2.3,0-4.1,1.8-4.1,4.1s1.8,4.1,4.1,4.1s4.1-1.8,4.1-4.1S17.3,7.9,15,7.9L15,7.9z M15,14.7c-1.5,0-2.7-1.2-2.7-2.7
+                                    c0-1.5,1.2-2.7,2.7-2.7s2.7,1.2,2.7,2.7C17.7,13.5,16.5,14.7,15,14.7L15,14.7z"/>
+                                  <path d="M20.2,7.7c0,0.5-0.4,1-1,1s-1-0.4-1-1s0.4-1,1-1S20.2,7.2,20.2,7.7L20.2,7.7z"/>
+                                </g>
+                                </svg>
+                              </a>
+                            </li>
+                    </ul>
+                  </div>
+                <div class="footer-text">
+                  All images on this site are Copyright © 2018 Fornever Collective, Inc. or their respective copyright holders. Do not use without permission.
+                </div>
+              </footer>
+        </main>
+      </div>
+    </div>
+  </div>
+</body>
+<script type="text/javascript">
+  // fix for Safari's back/forward cache
+  window.onpageshow = function(e) {
+    if (e.persisted) { window.location.reload(); }
+  };
+</script>
+  <script type="text/javascript">var __config__ = {"page_id":"p631e942c2231e85649493a6b5b8aab54599d8385a0566b7bf05e2","theme":{"name":"geometric"},"pageTransition":true,"linkTransition":true,"disableDownload":true,"localizedValidationMessages":{"required":"This field is required","Email":"This field must be a valid email address"},"lightbox":{"enabled":false},"cookie_banner":{"enabled":false}};</script>
+  <script type="text/javascript" src="site/translations?cb=f55b45a3e8ad93d0a224939951d8339444a0d5cb"></script>
+  <script type="text/javascript" src="dist/js/main.js?cb=f55b45a3e8ad93d0a224939951d8339444a0d5cb"></script>
+</html>

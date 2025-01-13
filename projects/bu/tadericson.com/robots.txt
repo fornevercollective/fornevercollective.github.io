@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://tadericson.com/sitemap.xml
