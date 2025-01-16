@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>.camera.</title>
+    <title>CameraDev</title>
     <style>
         body {
             display: flex;
@@ -13,333 +13,34 @@
             height: 100vh;
             margin: 0;
         }
-        video, canvas {
+        video {
             width: 100%;
             max-width: 600px;
             height: auto;
         }
-        footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            display: flex;
-            justify-content: center; /* Change to center to align middle */
-        }
-        .hamburger-menu {
-            position: relative;
-            display: inline-block;
-            margin: 0 20px; /* Adjust margin to center */
-        }
-        .hamburger-menu input {
-            display: none;
-        }
-        .hamburger-menu label {
-            cursor: pointer;
-            display: block;
-            padding: 10px;
-            background-color: #444;
-            border-radius: 5px;
-        }
-        .menu-content {
-            position: absolute;
-            bottom: 100%;
-            right: 0;
-            background-color: #555;
-            border-radius: 5px;
-            overflow: hidden;
-            max-height: 0;
-            transition: max-height 0.3s ease-out;
-            white-space: nowrap;
-            overflow-y: auto; /* Make the menu scrollable */
-        }
-        .hamburger-menu input:checked ~ .menu-content {
-            max-height: 500px; /* Adjust as needed */
-        }
-        .menu-content button, .menu-content input, .menu-content select {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #666;
-            border: none;
-            color: white;
-            cursor: pointer;
-        }
-        .menu-content input, .menu-content select {
-            background-color: #555;
-            color: white;
-        }
-        .webcam-light {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: red;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: none;
-        }
-        .webcam-light.active {
-            display: block;
-        }
-        .chatroom {
-            position: fixed;
-            top: 0; /* Change from 10px to 0 */
-            right: 0;
-            left: 0; /* Extend across the entire top */
-            width: auto; /* Adjust width */
-            max-height: 400px;
-            background-color: #333;
-            border-radius: 0 0 5px 5px; /* Adjust border-radius */
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        .header-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #333;
-            padding: 10px;
-            color: white; /* Change font color to white */
-            font-family: monospace;
-        }
-        .chatroom-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            color: #ff69b4; /* Colorful font color */
-        }
-        .chatroom-input {
-            display: flex;
-            border-top: 1px solid #444;
-        }
-        .chatroom-input input {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background-color: #444;
-            color: white;
-        }
-        .chatroom-input button {
-            padding: 10px;
-            background-color: #555;
-            border: none;
-            color: white;
-            cursor: pointer;
-        }
-        .chatroom-input img {
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        .hex-code {
-            margin-left: 10px;
-            background-color: #222;
-            padding: 10px;
-            border-radius: 5px;
-            color: white; /* Change font color to white */
-            font-family: monospace;
-        }
-        .timestamp {
-            text-align: center;
-            margin-bottom: 10px;
-            color: white; /* Change font color to white */
-            font-family: monospace;
-        }
-        .ip-address {
-            text-align: center;
-            margin-bottom: 10px;
-            color: white; /* Change font color to white */
-            font-family: monospace;
-        }
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-        .vectorscope {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 200px;
-            height: 200px;
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 5px;
-        }
-        .connection-speed {
-            text-align: center;
-            margin-bottom: 10px;
-            color: white; /* Change font color to white */
-            font-family: monospace;
-        }
     </style>
 </head>
 <body>
-    <div class="chatroom" id="chatroom">
-        <div class="header-info">
-            <div class="connection-speed" id="connectionSpeed">
-                <a href="#" style="color: white; text-decoration: none;">Video Connection Speed: Link</a>
-            </div>
-            <div class="ip-address" id="ipAddress">IP: --.--.--.--</div>
-            <div class="timestamp" id="timestamp">UTC: --:--:--</div>
-            <div>
-                <button id="shareButton">Share Stream</button>
-                <button id="joinButton">Join Stream</button>
-            </div>
-            <div class="connection-speed-meter">
-                <label for="connectionSpeedMeter">Connection Speed:</label>
-                <meter id="connectionSpeedMeter" min="0" max="100" value="0"></meter>
-            </div>
-        </div>
-        <div class="chatroom-messages" id="chatroomMessages"></div>
-        <div class="chatroom-output" id="chatroomOutput"></div> <!-- Added chatroom output -->
-    </div>
-
     <h1>Webcam Capture</h1>
-    <!-- Removed pantone containers -->
     <video id="videoElement" autoplay playsinline controls></video>
-    <canvas id="canvasElement" style="display: none;"></canvas>
-    <img id="photoElement" style="display: none;">
-    <canvas class="overlay" id="overlayCanvas"></canvas>
-    <canvas class="vectorscope" id="vectorscopeCanvas"></canvas>
-
-    <footer>
-        <div class="chatroom-input">
-            <button id="captureToChat" style="padding: 10px; background-color: #555; border: none; color: white; cursor: pointer;">Snap</button>
-            <input type="text" id="chatInput" placeholder="Type a message...">
-            <button id="sendButton">Send</button>
-        </div>
-        <div class="hamburger-menu">
-            <input type="checkbox" id="menu-toggle">
-            <label for="menu-toggle">Menu</label>
-            <div class="menu-content">
-                <button id="toggleButton">Start</button> <!-- Added start/stop button -->
-                <button id="fullscreenButton">Fullscreen</button> <!-- Added fullscreen button -->
-                <button id="captureButton">Capture</button> <!-- Added capture button -->
-                <select id="fpsControl">
-                    <option value="30">30 FPS</option>
-                    <option value="60">60 FPS</option>
-                    <option value="120">120 FPS</option>
-                </select>
-                <label for="isoControl">ISO:</label>
-                <select id="isoControl">
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                    <option value="400">400</option>
-                    <option value="800">800</option>
-                    <option value="1600">1600</option>
-                    <option value="3200">3200</option>
-                </select>
-                <button id="lidarButton">Toggle LiDAR</button>
-                <label for="lutControl">LUT Presets:</label>
-                <select id="lutControl">
-                    <option value="none">None</option>
-                    <option value="preset1">Preset 1</option>
-                    <option value="preset2">Preset 2</option>
-                    <option value="preset3">Preset 3</option>
-                </select>
-                <label for="hdriControl">HDRI:</label>
-                <select id="hdriControl">
-                    <option value="none">None</option>
-                    <option value="hdri1">HDRI 1</option>
-                    <option value="hdri2">HDRI 2</option>
-                    <option value="hdri3">HDRI 3</option>
-                </select>
-                <label for="codecControl">Codec:</label>
-                <select id="codecControl">
-                    <option value="vp8">VP8</option>
-                    <option value="vp9">VP9</option>
-                    <option value="h264">H.264</option>
-                    <option value="av1">AV1</option>
-                </select>
-                <label for="resolutionControl">Resolution:</label>
-                <select id="resolutionControl">
-                    <option value="640x480">640x480</option>
-                    <option value="1280x720">1280x720</option>
-                    <option value="1920x1080">1920x1080</option>
-                    <option value="3840x2160">3840x2160</option>
-                </select>
-                <label for="cameraSelect">Camera:</label>
-                <select id="cameraSelect"></select>
-            </div>
-        </div>
-    </footer>
+    <button id="toggleButton">Start</button>
 
     <script>
         const videoElement = document.getElementById('videoElement');
         const toggleButton = document.getElementById('toggleButton');
-        const captureButton = document.getElementById('captureButton');
-        const muteToggleButton = document.getElementById('muteToggleButton');
-        const fullscreenButton = document.getElementById('fullscreenButton');
-        const fpsControl = document.getElementById('fpsControl');
-        const isoControl = document.getElementById('isoControl');
-        const lidarButton = document.getElementById('lidarButton');
-        const lutControl = document.getElementById('lutControl');
-        const hdriControl = document.getElementById('hdriControl');
-        const codecControl = document.getElementById('codecControl');
-        const resolutionControl = document.getElementById('resolutionControl');
-        const shareButton = document.getElementById('shareButton');
-        const joinButton = document.getElementById('joinButton');
-        const webcamLight = document.getElementById('webcamLight');
-        const chatroomMessages = document.getElementById('chatroomMessages');
-        const chatInput = document.getElementById('chatInput');
-        const sendButton = document.getElementById('sendButton');
-        const captureToChat = document.getElementById('captureToChat');
-        const timestamp = document.getElementById('timestamp');
-        const ipAddress = document.getElementById('ipAddress');
-        const overlayCanvas = document.getElementById('overlayCanvas');
-        const vectorscopeCanvas = document.getElementById('vectorscopeCanvas');
-        const connectionSpeed = document.getElementById('connectionSpeed');
-        const cameraSelect = document.getElementById('cameraSelect');
-
         let stream;
-        let lidarEnabled = false;
         let isWebcamActive = false;
-        let isMuted = false;
-
-        async function getCameras() {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            const videoDevices = devices.filter(device => device.kind === 'videoinput');
-            cameraSelect.innerHTML = '';
-            videoDevices.forEach(device => {
-                const option = document.createElement('option');
-                option.value = device.deviceId;
-                option.text = device.label || `Camera ${cameraSelect.length + 1}`;
-                cameraSelect.appendChild(option);
-            });
-        }
 
         async function startWebcam() {
             try {
-                const resolution = resolutionControl.value.split('x');
                 const constraints = {
                     video: {
-                        deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined,
-                        facingMode: 'user',
-                        frameRate: { ideal: fpsControl.value },
-                        width: { ideal: parseInt(resolution[0]) },
-                        height: { ideal: parseInt(resolution[1]) },
-                        advanced: [{ iso: isoControl.value }]
+                        facingMode: 'user'
                     }
                 };
                 stream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = stream;
                 toggleButton.textContent = 'Stop';
-                captureButton.disabled = false;
-                muteToggleButton.disabled = false;
-                fullscreenButton.disabled = false;
-                webcamLight.classList.add('active');
-                updateTimestamp();
-                updateOverlay();
-                updateVectorscope();
                 isWebcamActive = true;
             } catch (error) {
                 console.error('Error accessing webcam:', error);
@@ -350,10 +51,6 @@
             stream.getTracks().forEach(track => track.stop());
             videoElement.srcObject = null;
             toggleButton.textContent = 'Start';
-            captureButton.disabled = true;
-            muteToggleButton.disabled = true;
-            fullscreenButton.disabled = true;
-            webcamLight.classList.remove('active');
             isWebcamActive = false;
         }
 
@@ -365,118 +62,7 @@
             }
         }
 
-        function capturePhoto() {
-            const canvas = document.getElementById('canvasElement');
-            const context = canvas.getContext('2d');
-            canvas.width = videoElement.videoWidth;
-            canvas.height = videoElement.videoHeight;
-            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-            const photo = document.getElementById('photoElement');
-            photo.src = canvas.toDataURL('image/png');
-            photo.style.display = 'block';
-            return photo.src;
-        }
-
-        function toggleMute() {
-            isMuted = !isMuted;
-            videoElement.muted = isMuted;
-            muteToggleButton.textContent = isMuted ? 'Unmute' : 'Mute';
-        }
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                videoElement.requestFullscreen().catch(err => {
-                    alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        function toggleLiDAR() {
-            lidarEnabled = !lidarEnabled;
-            if (lidarEnabled) {
-                alert('LiDAR enabled');
-                // Implement LiDAR functionality here
-            } else {
-                alert('LiDAR disabled');
-                // Disable LiDAR functionality here
-            }
-        }
-
-        function applyLUT() {
-            const selectedLUT = lutControl.value;
-            // Implement LUT application logic here
-            alert(`LUT applied: ${selectedLUT}`);
-        }
-
-        function applyHDRI() {
-            const selectedHDRI = hdriControl.value;
-            // Implement HDRI application logic here
-            alert(`HDRI applied: ${selectedHDRI}`);
-        }
-
-        function shareStream() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Webcam Stream',
-                    text: 'Check out my webcam stream!',
-                    url: window.location.href
-                }).then(() => {
-                    console.log('Stream shared successfully');
-                }).catch((error) => {
-                    console.error('Error sharing stream:', error);
-                });
-            } else {
-                alert('Web Share API is not supported in your browser.');
-            }
-        }
-
-        function joinStream() {
-            const streamUrl = prompt('Enter the stream URL:');
-            if (streamUrl) {
-                videoElement.src = streamUrl;
-                videoElement.play();
-            }
-        }
-
-        function sendMessage() {
-            const message = chatInput.value;
-            if (message.trim()) {
-                const messageElement = document.createElement('div');
-                const shortTimestamp = new Date().toISOString().slice(11, 19);
-                messageElement.textContent = `${message} [${shortTimestamp}]`;
-                chatroomMessages.appendChild(messageElement);
-                chatInput.value = '';
-                chatroomMessages.scrollTop = chatroomMessages.scrollHeight;
-            }
-        }
-
-        function sendCaptureToChat() {
-            const captureSrc = capturePhoto();
-            const messageElement = document.createElement('div');
-            const imgElement = document.createElement('img');
-            const shortTimestamp = new Date().toISOString().slice(11, 19);
-            imgElement.src = captureSrc;
-            imgElement.style.width = '100px';
-            imgElement.style.height = 'auto';
-            messageElement.appendChild(imgElement);
-            messageElement.appendChild(document.createTextNode(` [${shortTimestamp}]`));
-            chatroomMessages.appendChild(messageElement);
-            chatroomMessages.scrollTop = chatroomMessages.scrollHeight;
-        }
-
-        function updateOverlay() {
-            const canvas = document.getElementById('overlayCanvas');
-            const context = canvas.getContext('2d');
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-            // Implement color correction overlay logic here
-            requestAnimationFrame(updateOverlay);
-        }
-
-        function updateVectorscope() {
-            const canvas = document.getElementById('vectorscopeCanvas');
-            const context = canvas.getContext('2d');
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        toggleButton.addEventListener('click', toggleWebcam);
+    </script>
+</body>
+</html>
