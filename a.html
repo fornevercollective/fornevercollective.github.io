@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fornever Collective</title>
+    <link href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" rel="stylesheet">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+</head>
+<body>
+    <ion-app>
+        <ion-header>
+            <ion-toolbar>
+                <ion-title>Fornever Collective</ion-title>
+            </ion-toolbar>
+        </ion-header>
+
+        <ion-content class="ion-padding">
+            <ion-button id="cameraBtn">Open Camera</ion-button>
+            <ion-button id="uploadBtn">Upload File</ion-button>
+            <div id="chatroom"></div>
+        </ion-content>
+    </ion-app>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
+
+
+import { Camera, CameraResultType } from '@capacitor/camera';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+
+document.getElementById('cameraBtn').addEventListener('click', async () => {
+    const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: true,
+        resultType: CameraResultType.Uri
+    });
+    // Here you would handle the image data, perhaps sending to server or displaying
+});
+
+document.getElementById('uploadBtn').addEventListener('click', async () => {
+    const file = await Filesystem.pickFile();
+    // Similarly, handle the file data
+});
+
+// Chatroom simulation
+const chatRoom = document.getElementById('chatroom');
+function addMessage(message) {
+    const msgElement = document.createElement('p');
+    msgElement.textContent = message;
+    chatRoom.appendChild(msgElement);
+}
+
+// Simulate receiving messages
+setInterval(() => {
+    addMessage('New message from IP: ' + Math.random().toString(36).substr(2, 5));
+}, 5000);
+
+import torch
+from flask import Flask, request, jsonify
+import os
+
+app = Flask(__name__)
+
+@app.route('/process_image', methods=['POST'])
+def process_image():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    
+    # Here, you would process the image with PyTorch model, e.g., for object detection
+    # model = torch.load('path_to_your_model.pth')
+    # result = model(file)  # Pseudo code for model inference
+
+    # Placeholder for image processing feedback
+    return jsonify({'message': 'Image processed'}), 200
+
+@app.route('/chat_message', methods=['POST'])
+def receive_chat_message():
+    data = request.json
+    # Simulate logging and syncing message with timecode
+    print(f"Message: {data['message']} from IP: {data['ip']} at {data['timestamp']}")
+    return jsonify({'status': 'received'}), 200
+
+if __name__ == '__main__':
+    app.run(debug=True)
+    
+    
