@@ -34,6 +34,11 @@
         #chatroom {
             margin-top: 20px;
         }
+        video {
+            display: none;
+            width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -47,12 +52,15 @@
         <button class="button" id="cameraBtn">Open Camera</button>
         <button class="button" id="uploadBtn">Upload File</button>
         <div id="chatroom"></div>
+        <video id="video" autoplay></video>
     </div>
 
     <script>
         document.getElementById('cameraBtn').addEventListener('click', async () => {
-            // Replace with your camera logic
-            console.log('Camera button clicked');
+            const video = document.getElementById('video');
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            video.style.display = 'block';
         });
 
         document.getElementById('uploadBtn').addEventListener('click', async () => {
