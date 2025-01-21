@@ -4,38 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fornever Collective</title>
-    <link href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" rel="stylesheet">
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .header, .toolbar {
+            background-color: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .content {
+            padding: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        #chatroom {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <ion-app>
-        <ion-header>
-            <ion-toolbar>
-                <ion-title>Fornever Collective</ion-title>
-            </ion-toolbar>
-        </ion-header>
+    <div class="header">
+        <div class="toolbar">
+            <h1>Fornever Collective</h1>
+        </div>
+    </div>
 
-        <ion-content class="ion-padding">
-            <ion-button id="cameraBtn">Open Camera</ion-button>
-            <ion-button id="uploadBtn">Upload File</ion-button>
-            <div id="chatroom"></div>
-        </ion-content>
-    </ion-app>
+    <div class="content">
+        <button class="button" id="cameraBtn">Open Camera</button>
+        <button class="button" id="uploadBtn">Upload File</button>
+        <div id="chatroom"></div>
+    </div>
 
     <script>
         document.getElementById('cameraBtn').addEventListener('click', async () => {
-            const image = await Camera.getPhoto({
-                quality: 90,
-                allowEditing: true,
-                resultType: CameraResultType.Uri
-            });
-            // Handle the image data
+            // Replace with your camera logic
+            console.log('Camera button clicked');
         });
 
         document.getElementById('uploadBtn').addEventListener('click', async () => {
-            const file = await Filesystem.pickFile();
-            // Handle the file data
+            // Replace with your file upload logic
+            console.log('Upload button clicked');
         });
 
         const chatRoom = document.getElementById('chatroom');
