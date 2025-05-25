@@ -1,142 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Search App</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background: #333;
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-        }
-        .content {
-            padding: 20px;
-            background: #fff;
-            margin-top: 20px;
-        }
-        footer {
-            background: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        .hamburger-menu {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        .menu {
-            display: none;
-            position: fixed;
-            bottom: 50px;
-            right: 10px;
-            background: #333;
-            color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .menu a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            margin: 5px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Media Search App</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>Welcome to the Media Search App</h1>
-            <nav>
-                <a href="search/search.html">Go to Search</a>
-            </nav>
-        </div>
-    </header>
-    <div class="container">
-        <div class="content">
-            <h2>Welcome</h2>
-            <p>This is a simple single-page application boilerplate using HTML5, CSS, and jQuery.</p>
-        </div>
-        <div class="content" id="tv">
-            <h2>TV</h2>
-            <p>Content for TV section.</p>
-        </div>
-        <div class="content" id="film">
-            <h2>FILM</h2>
-            <p>Content for FILM section.</p>
-        </div>
-        <div class="content" id="vevo">
-            <h2>VEVO</h2>
-            <p>Content for VEVO section.</p>
-        </div>
-        <div class="content" id="info">
-            <h2>INFO</h2>
-            <p>Content for INFO section.</p>
-        </div>
-        <div class="content" id="3d">
-            <h2>3D</h2>
-            <p>Content for 3D section.</p>
-        </div>
-        <div class="content" id="2d">
-            <h2>2D</h2>
-            <p>Content for 2D section.</p>
-        </div>
-        <div class="content" id="tree">
-            <h2>TREE</h2>
-            <p>Content for TREE section.</p>
-        </div>
-        <div class="content" id="games">
-            <h2>GAMES</h2>
-            <p>Content for GAMES section.</p>
-        </div>
-    </div>
-    <footer>
-        <p>&copy; 2025 Fornever Collective</p>
-        <button class="hamburger-menu" onclick="toggleMenu()">☰</button>
-        <div class="menu" id="menu">
-            <a href="#tv">TV</a>
-            <a href="#film">FILM</a>
-            <a href="#vevo">VEVO</a>
-            <a href="#info">INFO</a>
-            <a href="#3d">3D</a>
-            <a href="#2d">2D</a>
-            <a href="#tree">TREE</a>
-            <a href="#games">GAMES</a>
-        </div>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // jQuery code goes here
-        });
-
-        function toggleMenu() {
-            $('#menu').toggle();
-        }
-    </script>
+  <header>
+    <h1>Welcome to the Media Search App</h1>
+    <nav>
+      <a href="search/search.html">Advanced Search</a>
+    </nav>
+  </header>
+  <main>
+    <form id="searchForm">
+      <input type="text" id="searchInput" placeholder="Search images, GIFs, videos..." required>
+      <button type="submit">Search</button>
+    </form>
+    <section id="resultsGrid" class="grid"></section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Fornever Collective</p>
+  </footer>
+  <script src="js/main.js"></script>
 </body>
 </html>
