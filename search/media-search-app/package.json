@@ -1,0 +1,37 @@
+{
+  "name": "media-search-app",
+  "version": "1.0.0",
+  "description": "A mobile app that implements a search feature to pull image, GIF, and video data from all major providers in a thumbnail format.",
+  "main": "src/App.tsx",
+  "scripts": {
+    "start": "react-native start",
+    "build": "react-native build",
+    "test": "jest",
+    "eject": "react-native eject"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-native": "^0.64.2",
+    "react-navigation": "^4.4.4",
+    "axios": "^0.21.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.2",
+    "@types/react": "^17.0.2",
+    "@types/react-native": "^0.64.2",
+    "jest": "^26.6.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/media-search-app.git"
+  },
+  "keywords": [
+    "media",
+    "search",
+    "images",
+    "GIFs",
+    "videos"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
