@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">fornever</string>
-    <string name="title_activity_main">fornever</string>
-    <string name="package_name">fornevercollective.github.io</string>
-    <string name="custom_url_scheme">fornevercollective.github.io</string>
-</resources>

@@ -1,6 +1,0 @@
-# ...existing dependencies...
-torch
-tensorflow
-tensorflow-datasets
-llama-stack-client-python
-openpilot

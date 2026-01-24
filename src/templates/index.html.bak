@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fornever</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>fornever</h1>
+            <nav>
+                <a href="#note" id="note-link" class="nav-link active">.note</a>
+                <a href="#links" class="nav-link">.links</a>
+                <a href="#social" class="nav-link">.social</a>
+                <a href="#feed" class="nav-link">.feed</a>
+                <a href="#map" class="nav-link" style="margin-left: auto;">.map</a>
+                <a href="#iosim" class="nav-link">.iosim</a>
+            </nav>
+        </header>
+
+        <main>
+            <div id="content-area" class="content-area">
+                <section id="editor-section" class="editor-section active">
+                    <div class="editor-container">
+                        <textarea 
+                            id="editor" 
+                            placeholder="Start typing... Your text is saved automatically."
+                            autofocus
+                        ></textarea>
+                        <div class="editor-info">
+                            <span id="char-count">0 characters</span>
+                            <span class="separator">•</span>
+                            <span id="word-count">0 words</span>
+                            <span class="separator">•</span>
+                            <button id="share-btn" class="share-btn">Share</button>
+                            <button id="new-doc-btn" class="share-btn">New Doc</button>
+                            <button id="clear-btn" class="clear-btn">Clear</button>
+                            <div id="share-url-display" class="share-url-display" style="display: none;">
+                                <div class="share-url-qr-container">
+                                    <canvas id="share-url-qr" class="share-url-qr"></canvas>
+                                    <div class="share-url-qr-actions">
+                                        <button id="toggle-qr-btn" class="toggle-qr-btn" title="Toggle QR Code">📱</button>
+                                        <button id="download-qr-btn" class="toggle-qr-btn" title="Download QR Code">💾</button>
+                                    </div>
+                                </div>
+                                <input type="text" id="share-url" class="share-url-input" readonly>
+                                <button id="copy-url-btn" class="copy-url-btn">Copy</button>
+                            </div>
+                        </div>
+                        <div class="editor-format-controls">
+                            <div class="format-type-selector">
+                                <label class="format-label">Format:</label>
+                                <select id="format-type" class="format-select">
+                                    <option value="text">Plain Text</option>
+                                    <option value="markdown">Markdown</option>
+                                    <option value="json">JSON</option>
+                                    <option value="javascript">JavaScript</option>
+                                    <option value="typescript">TypeScript</option>
+                                    <option value="python">Python</option>
+                                    <option value="html">HTML</option>
+                                    <option value="css">CSS</option>
+                                    <option value="xml">XML</option>
+                                    <option value="yaml">YAML</option>
+                                    <option value="toml">TOML</option>
+                                    <option value="hex">Hex</option>
+                                    <option value="binary">Binary</option>
+                                    <option value="pcap">PCAP</option>
+                                    <option value="csv">CSV</option>
+                                    <option value="sql">SQL</option>
+                                    <option value="bash">Bash</option>
+                                    <option value="dockerfile">Dockerfile</option>
+                                    <option value="makefile">Makefile</option>
+                                </select>
+                            </div>
+                            <div class="format-actions">
+                                <button id="detect-format-btn" class="format-btn">Detect</button>
+                                <div class="format-convert-wrapper">
+                                    <button id="format-convert-btn" class="format-btn">Convert</button>
+                                    <select id="format-convert-select" class="format-convert-select">
+                                        <option value="">Select target format...</option>
+                                        <option value="text">Plain Text</option>
+                                        <option value="markdown">Markdown</option>
+                                        <option value="json">JSON</option>
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="typescript">TypeScript</option>
+                                        <option value="python">Python</option>
+                                        <option value="html">HTML</option>
+                                        <option value="css">CSS</option>
+                                        <option value="xml">XML</option>
+                                        <option value="yaml">YAML</option>
+                                        <option value="toml">TOML</option>
+                                        <option value="hex">Hex</option>
+                                        <option value="binary">Binary</option>
+                                        <option value="csv">CSV</option>
+                                        <option value="sql">SQL</option>
+                                        <option value="bash">Bash</option>
+                                        <option value="dockerfile">Dockerfile</option>
+                                        <option value="makefile">Makefile</option>
+                                    </select>
+                                </div>
+                                <button id="format-validate-btn" class="format-btn">Validate</button>
+                                <button id="format-beautify-btn" class="format-btn">Beautify</button>
+                            </div>
+                            <div class="format-info">
+                                <span id="detected-language" class="detected-language"></span>
+                                <span id="format-status" class="format-status"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="links" class="section collapsible">
+                <h2 class="section-header">.links</h2>
+                <div class="section-content">
+                    <div class="search-controls">
+                        <div class="search-mode-selector">
+                            <label class="search-mode-option">
+                                <input type="radio" name="search-mode" value="ai" checked>
+                                <span>AI Search</span>
+                            </label>
+                            <label class="search-mode-option">
+                                <input type="radio" name="search-mode" value="web">
+                                <span>Web Search</span>
+                            </label>
+                            <label class="search-mode-option">
+                                <input type="radio" name="search-mode" value="code">
+                                <span>Code Search</span>
+                            </label>
+                            <label class="search-mode-option">
+                                <input type="radio" name="search-mode" value="semantic">
+                                <span>Semantic</span>
+                            </label>
+                        </div>
+                        <div class="search-input-group">
+                            <textarea 
+                                id="search-query" 
+                                class="search-query"
+                                placeholder="Ask anything... Use natural language, code snippets, or complex queries"
+                                rows="2"
+                            ></textarea>
+                            <div class="search-options">
+                                <select id="search-model" class="search-option">
+                                    <option value="default">Default Model</option>
+                                    <option value="huggingface">Hugging Face (Free)</option>
+                                    <option value="ollama">Ollama (Local)</option>
+                                    <option value="custom">Custom API</option>
+                                </select>
+                                <select id="search-style" class="search-option">
+                                    <option value="conversational">Conversational</option>
+                                    <option value="technical">Technical</option>
+                                    <option value="creative">Creative</option>
+                                    <option value="analytical">Analytical</option>
+                                </select>
+                                <input 
+                                    type="number" 
+                                    id="search-max-results" 
+                                    class="search-option" 
+                                    placeholder="Max results" 
+                                    value="10" 
+                                    min="1" 
+                                    max="50"
+                                />
+                            </div>
+                            <div class="search-actions">
+                                <button id="search-btn" class="search-btn">Search</button>
+                                <button id="search-clear" class="search-clear-btn">Clear</button>
+                                <button id="search-save" class="search-save-btn">Save Query</button>
+                            </div>
+                        </div>
+                        <div class="search-saved-queries" id="saved-queries">
+                            <span class="search-label">Saved:</span>
+                            <div class="saved-queries-list"></div>
+                        </div>
+                    </div>
+                    <div id="search-results" class="search-results">
+                        <div class="search-placeholder">
+                            <p>Enter your query above and choose your search style</p>
+                            <p class="search-hint">💡 Tip: Use natural language, code, or structured queries</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="social" class="section collapsible">
+                <h2 class="section-header">.social</h2>
+                <div class="section-content">
+                    <div class="social-controls">
+                        <div class="social-controls-header">
+                            <h3>Curate Your Feed</h3>
+                            <button id="social-controls-toggle" class="social-controls-toggle">▼</button>
+                        </div>
+                        <div class="social-controls-content" id="social-controls-content">
+                            <div class="social-curation">
+                                <div class="social-platforms">
+                                <label class="social-platform-toggle">
+                                    <input type="checkbox" data-platform="twitter" checked>
+                                    <span>Twitter/X</span>
+                                </label>
+                                <label class="social-platform-toggle">
+                                    <input type="checkbox" data-platform="tiktok" checked>
+                                    <span>TikTok</span>
+                                </label>
+                                <label class="social-platform-toggle">
+                                    <input type="checkbox" data-platform="instagram">
+                                    <span>Instagram</span>
+                                </label>
+                                <label class="social-platform-toggle">
+                                    <input type="checkbox" data-platform="reddit">
+                                    <span>Reddit</span>
+                                </label>
+                                <label class="social-platform-toggle">
+                                    <input type="checkbox" data-platform="youtube">
+                                    <span>YouTube</span>
+                                </label>
+                            </div>
+                            <div class="social-settings">
+                                <input 
+                                    type="text" 
+                                    id="social-search" 
+                                    class="social-search" 
+                                    placeholder="Search or filter content..."
+                                />
+                                <select id="social-sort" class="social-filter">
+                                    <option value="latest">Latest First</option>
+                                    <option value="popular">Most Popular</option>
+                                    <option value="trending">Trending</option>
+                                </select>
+                                <button id="social-refresh" class="social-refresh-btn">Refresh</button>
+                            </div>
+                            </div>
+                            <div class="social-stats">
+                                <span id="social-count">0 posts</span>
+                                <span class="separator">•</span>
+                                <span id="social-status">Live</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="social-feed" class="social-feed">
+                        <div class="social-loading">Loading social content...</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="feed" class="section collapsible">
+                <h2 class="section-header">.feed</h2>
+                <div class="section-content">
+                    <div class="feed-controls">
+                        <div class="feed-filters">
+                            <input 
+                                type="text" 
+                                id="feed-search" 
+                                class="feed-search" 
+                                placeholder="Search articles..."
+                            />
+                            <select id="feed-category" class="feed-filter">
+                                <option value="all">All Categories</option>
+                                <option value="breaking">Breaking News</option>
+                                <option value="technology">Technology</option>
+                                <option value="business">Business</option>
+                                <option value="science">Science</option>
+                                <option value="health">Health</option>
+                                <option value="sports">Sports</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="politics">Politics</option>
+                            </select>
+                            <select id="feed-source" class="feed-filter">
+                                <option value="all">All Sources</option>
+                                <option value="bbc">BBC</option>
+                                <option value="reuters">Reuters</option>
+                                <option value="ap">Associated Press</option>
+                                <option value="cnn">CNN</option>
+                                <option value="techcrunch">TechCrunch</option>
+                                <option value="theverge">The Verge</option>
+                            </select>
+                            <select id="feed-bias" class="feed-filter">
+                                <option value="all">All Bias</option>
+                                <option value="left">Left</option>
+                                <option value="centerLeft">Center-Left</option>
+                                <option value="center">Center</option>
+                                <option value="centerRight">Center-Right</option>
+                                <option value="right">Right</option>
+                            </select>
+                            <button id="feed-refresh" class="feed-refresh-btn">Refresh</button>
+                        </div>
+                        <div class="feed-content-types">
+                            <span class="content-type-label">Content Types:</span>
+                            <label class="content-type-toggle">
+                                <input type="checkbox" id="filter-text" checked>
+                                <span>📄 Text</span>
+                            </label>
+                            <label class="content-type-toggle">
+                                <input type="checkbox" id="filter-image" checked>
+                                <span>🖼️ Image</span>
+                            </label>
+                            <label class="content-type-toggle">
+                                <input type="checkbox" id="filter-video" checked>
+                                <span>🎥 Video</span>
+                            </label>
+                            <label class="content-type-toggle">
+                                <input type="checkbox" id="filter-live" checked>
+                                <span>📺 Live TV</span>
+                            </label>
+                        </div>
+                        <div class="feed-stats">
+                            <span id="feed-count">0 articles</span>
+                            <span class="separator">•</span>
+                            <span id="feed-status">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="feed-content" class="feed-content">
+                        <div class="feed-loading">Loading news...</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="map" class="section collapsible">
+                <h2 class="section-header">.map</h2>
+                <div class="section-content">
+                    <div class="map-controls">
+                        <div class="map-toolbar">
+                            <input 
+                                type="text" 
+                                id="map-search" 
+                                class="map-search" 
+                                placeholder="Search location..."
+                            />
+                            <select id="map-provider" class="map-provider-select">
+                                <option value="osm">OpenStreetMap</option>
+                                <option value="carto">CartoDB</option>
+                                <option value="stamen">Stamen</option>
+                                <option value="esri">Esri World Imagery</option>
+                                <option value="opentopomap">OpenTopoMap</option>
+                            </select>
+                        </div>
+                        <div class="map-info">
+                            <span id="map-coords">Lat: 0, Lng: 0</span>
+                            <span class="separator">•</span>
+                            <span id="map-zoom">Zoom: 2</span>
+                            <div class="map-info-buttons">
+                                <div class="map-layer-toggles">
+                                    <button id="map-layer-3d" class="map-btn-small" title="3D Layer">🗺️</button>
+                                    <button id="map-layer-satellite" class="map-btn-small" title="Satellite">🛰️</button>
+                                    <button id="map-layer-terrain" class="map-btn-small" title="Terrain">⛰️</button>
+                                </div>
+                                <button id="map-locate" class="map-btn-small">📍</button>
+                                <button id="map-reset" class="map-btn-small">🔄</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="map-container" class="map-container"></div>
+                </div>
+            </section>
+
+            <section id="iosim" class="section collapsible">
+                <h2 class="section-header">.iosim</h2>
+                <div class="section-content">
+                    <!-- iosim.js will populate this -->
+                </div>
+            </section>
+            </div>
+        </main>
+    </div>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="editor.js"></script>
+    <script src="news-aggregator.js"></script>
+    <script src="social-aggregator.js"></script>
+    <script src="custom-search.js"></script>
+    <script src="map-viewer.js"></script>
+    <script src="iosim.js"></script>
+</body>
+</html>

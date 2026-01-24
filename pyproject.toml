@@ -1,0 +1,51 @@
+[project]
+name = "fornevercollective"
+version = "1.0.0"
+description = "A minimalist landing page with text editing, news aggregation, and iOS simulator integration"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    {name = "fornevercollective"}
+]
+keywords = ["web", "editor", "static-site", "news-aggregator"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: JavaScript",
+]
+
+# This is a static web project - no Python runtime dependencies
+# Python is only used for the development HTTP server
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=23.0",
+    "ruff>=0.1.0",
+]
+
+# Build system configuration
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# Include the minimal package structure
+packages = ["src/fornevercollective"]
+
+[tool.uv]
+# Use dependency-groups instead of deprecated dev-dependencies
+[dependency-groups.dev]
+pytest = ">=7.0"
+black = ">=23.0"
+ruff = ">=0.1.0"
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
