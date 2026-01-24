@@ -64,25 +64,59 @@ class IOSimulator {
     init() {
         // Wait for DOM to be ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.setup());
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => this.setup(), 100); // Small delay to ensure all scripts are loaded
+            });
         } else {
-            this.setup();
+            // DOM already loaded, but wait a bit for other scripts
+            setTimeout(() => this.setup(), 100);
         }
     }
 
     async setup() {
-        // Find or create iosim section
-        let iosimSection = document.getElementById('iosim');
-        if (!iosimSection) {
-            iosimSection = this.createIOSimSection();
+        try {
+            // Find or create iosim section
+            let iosimSection = document.getElementById('iosim');
+            if (!iosimSection) {
+                console.warn('[IOSim] iosim section not found, creating...');
+                iosimSection = this.createIOSimSection();
+            }
+            
+            // Look for section-content (from HTML) or iosim-content (from createIOSimSection)
+            this.container = iosimSection.querySelector('.section-content') || 
+                             iosimSection.querySelector('.iosim-content') || 
+                             iosimSection;
+            
+            if (!this.container) {
+                console.error('[IOSim] Could not find container element');
+                // Try to create a container
+                const sectionContent = document.createElement('div');
+                sectionContent.className = 'section-content';
+                iosimSection.appendChild(sectionContent);
+                this.container = sectionContent;
+            }
+            
+            await this.detectDevice();
+            this.render();
+            this.initSync();
+            this.loadDevices();
+            this.loadGitHubRepos();
+        } catch (error) {
+            console.error('[IOSim] Setup error:', error);
+            // Try to show error in the section
+            const iosimSection = document.getElementById('iosim');
+            if (iosimSection) {
+                const container = iosimSection.querySelector('.section-content') || iosimSection;
+                container.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; color: var(--text-color);">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">⚠️</div>
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">iOS Simulator Error</div>
+                        <div style="font-size: 0.875rem; opacity: 0.7;">${error.message}</div>
+                        <div style="font-size: 0.75rem; opacity: 0.5; margin-top: 1rem;">Check console for details</div>
+                    </div>
+                `;
+            }
         }
-        
-        this.container = iosimSection.querySelector('.iosim-content') || iosimSection;
-        await this.detectDevice();
-        this.render();
-        this.initSync();
-        this.loadDevices();
-        this.loadGitHubRepos();
     }
 
     createIOSimSection() {
@@ -104,9 +138,13 @@ class IOSimulator {
     }
 
     render() {
-        if (!this.container) return;
+        if (!this.container) {
+            console.error('[IOSim] Cannot render: container not found');
+            return;
+        }
 
-        this.container.innerHTML = `
+        try {
+            this.container.innerHTML = `
             <div class="iosim-controls">
                 <div class="iosim-header">
                     <h3>iOS Device Simulator</h3>
@@ -310,7 +348,20 @@ const iosim = new IOSimulator({
             </div>
         `;
 
-        this.attachEventListeners();
+            this.attachEventListeners();
+            console.log('[IOSim] Render complete');
+        } catch (error) {
+            console.error('[IOSim] Render error:', error);
+            if (this.container) {
+                this.container.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; color: var(--text-color);">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">⚠️</div>
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">Render Error</div>
+                        <div style="font-size: 0.875rem; opacity: 0.7;">${error.message}</div>
+                    </div>
+                `;
+            }
+        }
     }
 
     attachEventListeners() {
@@ -827,6 +878,11 @@ const iosim = new IOSimulator({
         addOptGroup('🥽 VR', deviceGroups.vr);
         addOptGroup('👓 AR', deviceGroups.ar);
         addOptGroup('🌐 XR', deviceGroups.xr);
+        
+        // Update preview if device is selected
+        if (this.selectedDevice) {
+            this.updatePreview();
+        }
     }
 
     getDeviceTypeLabel(type) {
@@ -839,12 +895,6 @@ const iosim = new IOSimulator({
             'xr': '🌐'
         };
         return labels[type] || '';
-    }
-        
-        // Update preview if device is selected
-        if (this.selectedDevice) {
-            this.updatePreview();
-        }
     }
 
     selectDevice(deviceName) {
@@ -1867,16 +1917,31 @@ if (typeof module !== 'undefined' && module.exports) {
     // Browser environment - auto-initialize with config support
     window.IOSimulator = IOSimulator;
     
-    // Check for global config
-    const config = window.IOSIM_CONFIG || {};
+    // Initialize function that can be called when DOM is ready
+    function initializeIOSim() {
+        try {
+            // Check for global config
+            const config = window.IOSIM_CONFIG || {};
+            
+            // Support multiple instances on same page
+            if (config.multipleInstances) {
+                window.iosimInstances = window.iosimInstances || [];
+                window.iosimInstances.push(new IOSimulator(config));
+            } else {
+                // Single instance (default)
+                window.iosim = new IOSimulator(config);
+            }
+        } catch (error) {
+            console.error('[IOSim] Initialization error:', error);
+        }
+    }
     
-    // Support multiple instances on same page
-    if (config.multipleInstances) {
-        window.iosimInstances = window.iosimInstances || [];
-        window.iosimInstances.push(new IOSimulator(config));
+    // Initialize immediately if DOM is ready, otherwise wait
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeIOSim);
     } else {
-        // Single instance (default)
-        window.iosim = new IOSimulator(config);
+        // DOM already loaded
+        initializeIOSim();
     }
 }
 
