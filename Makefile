@@ -45,6 +45,17 @@ build:
 	@cp README.md deploy/dist/
 	@echo "✅ Build complete: deploy/dist/"
 
+# Sync files for GitHub Pages (root-level structure)
+github-pages:
+	@echo "📦 Syncing files for GitHub Pages..."
+	@cp src/templates/index.html index.html
+	@rm -rf static
+	@cp -r src/static static
+	@echo "✅ GitHub Pages files synced to root"
+	@echo "📝 Files ready for GitHub Pages deployment:"
+	@echo "   - index.html"
+	@echo "   - static/"
+
 # Deploy
 deploy: build
 	@echo "🚀 Creating deployment package..."
@@ -99,6 +110,7 @@ help:
 	@echo "  make build       - Build deployment package"
 	@echo "  make deploy      - Create deployment archive"
 	@echo "  make uv-deploy   - Quick deploy with UV"
+	@echo "  make github-pages - Sync files to root for GitHub Pages"
 	@echo "  make serve       - Serve locally (default)"
 	@echo "  make clean       - Clean build artifacts"
 	@echo "  make test        - Run tests"
