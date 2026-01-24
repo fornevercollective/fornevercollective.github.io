@@ -29,6 +29,9 @@ class IOSimulator {
         this.container = null;
         this.devices = [];
         this.selectedDevice = null;
+        this.detectedDevice = null;
+        this.githubRepos = [];
+        this.previewUrl = null;
         this.syncMethods = {
             websocket: null,
             http: null,
@@ -43,6 +46,7 @@ class IOSimulator {
             enableCursorCLI: config.enableCursorCLI !== false,
             enableScalability: config.enableScalability !== false,
             instanceId: config.instanceId || this.generateInstanceId(),
+            githubUser: config.githubUser || 'fornevercollective',
             ...config
         };
         this.init();
@@ -66,7 +70,7 @@ class IOSimulator {
         }
     }
 
-    setup() {
+    async setup() {
         // Find or create iosim section
         let iosimSection = document.getElementById('iosim');
         if (!iosimSection) {
@@ -74,9 +78,11 @@ class IOSimulator {
         }
         
         this.container = iosimSection.querySelector('.iosim-content') || iosimSection;
+        await this.detectDevice();
         this.render();
         this.initSync();
         this.loadDevices();
+        this.loadGitHubRepos();
     }
 
     createIOSimSection() {
@@ -115,7 +121,32 @@ class IOSimulator {
                     <select id="iosim-device-select" class="iosim-select">
                         <option value="">Loading devices...</option>
                     </select>
+                    <div class="iosim-device-detected" id="iosim-device-detected" style="display: none;">
+                        <span class="iosim-detected-label">Detected:</span>
+                        <span class="iosim-detected-value" id="iosim-detected-device-name"></span>
+                    </div>
                     <button id="iosim-launch-btn" class="iosim-btn">🚀 Launch</button>
+                </div>
+                
+                <div class="iosim-url-input-group">
+                    <label>Preview URL (Git/Web):</label>
+                    <div class="iosim-url-input-wrapper">
+                        <input 
+                            type="text" 
+                            id="iosim-preview-url" 
+                            class="iosim-url-input" 
+                            placeholder="Paste GitHub repo URL, GitHub Pages URL, or any web address..."
+                        />
+                        <button id="iosim-load-url-btn" class="iosim-btn-small">Load</button>
+                    </div>
+                </div>
+                
+                <div class="iosim-repo-selector">
+                    <label>GitHub Repos:</label>
+                    <select id="iosim-repo-select" class="iosim-select">
+                        <option value="">Loading repos...</option>
+                    </select>
+                    <button id="iosim-load-repo-btn" class="iosim-btn-small">Load Repo</button>
                 </div>
                 
                 <div class="iosim-preview" id="iosim-preview">
@@ -299,6 +330,54 @@ const iosim = new IOSimulator({
             });
         }
 
+        // URL input and load button
+        const urlInput = document.getElementById('iosim-preview-url');
+        const loadUrlBtn = document.getElementById('iosim-load-url-btn');
+        if (urlInput && loadUrlBtn) {
+            loadUrlBtn.addEventListener('click', () => {
+                this.loadPreviewUrl(urlInput.value);
+            });
+            urlInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.loadPreviewUrl(urlInput.value);
+                }
+            });
+            // Handle paste events
+            urlInput.addEventListener('paste', (e) => {
+                setTimeout(() => {
+                    const pastedUrl = urlInput.value.trim();
+                    if (pastedUrl) {
+                        this.loadPreviewUrl(pastedUrl);
+                    }
+                }, 10);
+            });
+        }
+
+        // Repo selector and load button
+        const repoSelect = document.getElementById('iosim-repo-select');
+        const loadRepoBtn = document.getElementById('iosim-load-repo-btn');
+        if (repoSelect) {
+            repoSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    const repo = this.githubRepos.find(r => r.html_url === e.target.value);
+                    if (repo) {
+                        this.loadRepoUrl(repo);
+                    }
+                }
+            });
+        }
+        if (loadRepoBtn && repoSelect) {
+            loadRepoBtn.addEventListener('click', () => {
+                const selectedUrl = repoSelect.value;
+                if (selectedUrl) {
+                    const repo = this.githubRepos.find(r => r.html_url === selectedUrl);
+                    if (repo) {
+                        this.loadRepoUrl(repo);
+                    }
+                }
+            });
+        }
+
         // Terminal toggle
         const terminalToggle = document.getElementById('iosim-terminal-toggle');
         if (terminalToggle) {
@@ -455,12 +534,20 @@ const iosim = new IOSimulator({
                 this.registerInstance();
             }
         } catch (e) {
-            // Fallback to default devices
+            // Fallback to default devices including AR/VR/XR
             this.devices = [
                 { name: 'iPhone 15 Pro', width: 393, height: 852, dpr: 3, type: 'mobile', platform: 'ios' },
                 { name: 'iPhone 14', width: 390, height: 844, dpr: 3, type: 'mobile', platform: 'ios' },
                 { name: 'iPhone SE', width: 375, height: 667, dpr: 2, type: 'mobile', platform: 'ios' },
-                { name: 'iPad Pro', width: 1024, height: 1366, dpr: 2, type: 'tablet', platform: 'ios' }
+                { name: 'iPad Pro', width: 1024, height: 1366, dpr: 2, type: 'tablet', platform: 'ios' },
+                { name: 'Apple Vision Pro', width: 3664, height: 3200, dpr: 2, type: 'xr', platform: 'visionos', fov: 110, handTracking: true, eyeTracking: true },
+                { name: 'Meta Quest 3', width: 2064, height: 2208, dpr: 1.5, type: 'vr', platform: 'webxr', fov: 110, handTracking: true },
+                { name: 'Meta Quest 2', width: 1832, height: 1920, dpr: 1.5, type: 'vr', platform: 'webxr', fov: 90, handTracking: true },
+                { name: 'Meta Quest Pro', width: 1800, height: 1920, dpr: 1.5, type: 'vr', platform: 'webxr', fov: 106, handTracking: true, eyeTracking: true },
+                { name: 'HTC Vive Pro 2', width: 2448, height: 2448, dpr: 1, type: 'vr', platform: 'webxr', fov: 120 },
+                { name: 'Valve Index', width: 2880, height: 1600, dpr: 1, type: 'vr', platform: 'webxr', fov: 130 },
+                { name: 'Pico 4', width: 2160, height: 2160, dpr: 1.5, type: 'vr', platform: 'webxr', fov: 105, handTracking: true },
+                { name: 'AR Device (Generic)', width: 1920, height: 1080, dpr: 2, type: 'ar', platform: 'webxr', handTracking: true }
             ];
         }
 
@@ -485,18 +572,279 @@ const iosim = new IOSimulator({
         }
     }
 
+    async detectDevice() {
+        const ua = navigator.userAgent;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const dpr = window.devicePixelRatio || 1;
+        
+        let detectedDevice = null;
+        
+        // Detect AR/VR/XR devices first
+        const isVR = await this.detectVR();
+        const isAR = await this.detectAR();
+        const isXR = isVR || isAR;
+        
+        if (isXR) {
+            // Detect specific VR/AR headsets
+            if (/Oculus|Quest/i.test(ua)) {
+                detectedDevice = { 
+                    name: 'Meta Quest', 
+                    width: 1832, 
+                    height: 1920, 
+                    dpr: 1.5, 
+                    type: 'vr', 
+                    platform: 'webxr',
+                    fov: 90,
+                    handTracking: true
+                };
+            } else if (/Vision Pro|visionOS/i.test(ua)) {
+                detectedDevice = { 
+                    name: 'Apple Vision Pro', 
+                    width: 3664, 
+                    height: 3200, 
+                    dpr: 2, 
+                    type: 'xr', 
+                    platform: 'visionos',
+                    fov: 110,
+                    handTracking: true,
+                    eyeTracking: true
+                };
+            } else if (/HTC|Vive/i.test(ua)) {
+                detectedDevice = { 
+                    name: 'HTC Vive', 
+                    width: 2160, 
+                    height: 1200, 
+                    dpr: 1, 
+                    type: 'vr', 
+                    platform: 'webxr',
+                    fov: 110
+                };
+            } else if (/Valve|Index/i.test(ua)) {
+                detectedDevice = { 
+                    name: 'Valve Index', 
+                    width: 2880, 
+                    height: 1600, 
+                    dpr: 1, 
+                    type: 'vr', 
+                    platform: 'webxr',
+                    fov: 130
+                };
+            } else if (/Pico/i.test(ua)) {
+                detectedDevice = { 
+                    name: 'Pico VR', 
+                    width: 1832, 
+                    height: 1920, 
+                    dpr: 1.5, 
+                    type: 'vr', 
+                    platform: 'webxr',
+                    fov: 98
+                };
+            } else if (isAR) {
+                detectedDevice = { 
+                    name: 'AR Device', 
+                    width: width, 
+                    height: height, 
+                    dpr: dpr, 
+                    type: 'ar', 
+                    platform: 'webxr',
+                    handTracking: true
+                };
+            } else {
+                // Generic VR/XR device
+                detectedDevice = { 
+                    name: 'VR/XR Device', 
+                    width: width || 1920, 
+                    height: height || 1080, 
+                    dpr: dpr, 
+                    type: isVR ? 'vr' : 'xr', 
+                    platform: 'webxr',
+                    fov: 90
+                };
+            }
+        }
+        // Detect iOS devices
+        else if (/iPad/.test(ua) || (/iPhone|iPod/.test(ua) && !window.MSStream)) {
+            if (/iPad/.test(ua)) {
+                // iPad detection
+                if (width >= 1024) {
+                    detectedDevice = { name: 'iPad Pro', width: 1024, height: 1366, dpr: 2, type: 'tablet', platform: 'ios' };
+                } else {
+                    detectedDevice = { name: 'iPad', width: 768, height: 1024, dpr: 2, type: 'tablet', platform: 'ios' };
+                }
+            } else {
+                // iPhone detection
+                if (width >= 393) {
+                    detectedDevice = { name: 'iPhone 15 Pro', width: 393, height: 852, dpr: 3, type: 'mobile', platform: 'ios' };
+                } else if (width >= 390) {
+                    detectedDevice = { name: 'iPhone 14', width: 390, height: 844, dpr: 3, type: 'mobile', platform: 'ios' };
+                } else {
+                    detectedDevice = { name: 'iPhone SE', width: 375, height: 667, dpr: 2, type: 'mobile', platform: 'ios' };
+                }
+            }
+        } else if (/Android/.test(ua)) {
+            // Android device detection
+            if (width >= 1024) {
+                detectedDevice = { name: 'Android Tablet', width: width, height: height, dpr: dpr, type: 'tablet', platform: 'android' };
+            } else {
+                detectedDevice = { name: 'Android Phone', width: width, height: height, dpr: dpr, type: 'mobile', platform: 'android' };
+            }
+        } else {
+            // Desktop/other - use current viewport
+            detectedDevice = { name: 'Desktop', width: width, height: height, dpr: dpr, type: 'desktop', platform: 'web' };
+        }
+        
+        this.detectedDevice = detectedDevice;
+        return detectedDevice;
+    }
+
+    async detectVR() {
+        // Check for WebXR VR support
+        if (navigator.xr) {
+            try {
+                const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
+                if (isSupported) return true;
+            } catch (e) {
+                // WebXR not available
+            }
+        }
+        
+        // Check user agent for VR devices
+        const ua = navigator.userAgent;
+        if (/Oculus|Quest|Vive|Index|Pico|VR|Headset/i.test(ua)) {
+            return true;
+        }
+        
+        // Check for VR-specific APIs
+        if (window.VRFrameData || window.getVRDisplays) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    async detectAR() {
+        // Check for WebXR AR support
+        if (navigator.xr) {
+            try {
+                const isSupported = await navigator.xr.isSessionSupported('immersive-ar');
+                if (isSupported) return true;
+            } catch (e) {
+                // WebXR AR not available
+            }
+        }
+        
+        // Check user agent for AR devices
+        const ua = navigator.userAgent;
+        if (/Vision Pro|visionOS|ARKit|ARCore|AR|Hololens/i.test(ua)) {
+            return true;
+        }
+        
+        // Check for AR-specific APIs
+        if (window.DeviceMotionEvent || window.DeviceOrientationEvent) {
+            // Could be AR-capable device
+            if (navigator.getUserMedia && navigator.mediaDevices) {
+                // Has camera access which is needed for AR
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     populateDeviceSelect() {
         const select = document.getElementById('iosim-device-select');
         if (!select) return;
 
         select.innerHTML = '<option value="">Select a device...</option>';
+        
+        // Group devices by type
+        const deviceGroups = {
+            mobile: [],
+            tablet: [],
+            desktop: [],
+            vr: [],
+            ar: [],
+            xr: []
+        };
+        
+        // Add detected device first
+        if (this.detectedDevice) {
+            const detectedOption = document.createElement('option');
+            detectedOption.value = this.detectedDevice.name;
+            const typeLabel = this.getDeviceTypeLabel(this.detectedDevice.type);
+            detectedOption.textContent = `${this.detectedDevice.name} (Detected: ${this.detectedDevice.width}×${this.detectedDevice.height}) ${typeLabel}`;
+            detectedOption.dataset.device = JSON.stringify(this.detectedDevice);
+            detectedOption.selected = true;
+            select.appendChild(detectedOption);
+            
+            // Show detected device indicator
+            const detectedEl = document.getElementById('iosim-device-detected');
+            const detectedNameEl = document.getElementById('iosim-detected-device-name');
+            if (detectedEl && detectedNameEl) {
+                detectedEl.style.display = 'flex';
+                detectedNameEl.textContent = `${this.detectedDevice.name} (${this.detectedDevice.width}×${this.detectedDevice.height}) ${typeLabel}`;
+            }
+            
+            // Auto-select detected device
+            this.selectedDevice = this.detectedDevice;
+        }
+        
+        // Group all devices
         this.devices.forEach(device => {
-            const option = document.createElement('option');
-            option.value = device.name;
-            option.textContent = `${device.name} (${device.width}×${device.height})`;
-            option.dataset.device = JSON.stringify(device);
-            select.appendChild(option);
+            // Skip if already added as detected device
+            if (this.detectedDevice && device.name === this.detectedDevice.name) {
+                return;
+            }
+            const type = device.type || 'desktop';
+            if (deviceGroups[type]) {
+                deviceGroups[type].push(device);
+            } else {
+                deviceGroups.desktop.push(device);
+            }
         });
+        
+        // Add optgroups for better organization
+        const addOptGroup = (label, devices) => {
+            if (devices.length === 0) return;
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = label;
+            devices.forEach(device => {
+                const option = document.createElement('option');
+                option.value = device.name;
+                const typeLabel = this.getDeviceTypeLabel(device.type);
+                option.textContent = `${device.name} (${device.width}×${device.height}) ${typeLabel}`;
+                option.dataset.device = JSON.stringify(device);
+                optgroup.appendChild(option);
+            });
+            select.appendChild(optgroup);
+        };
+        
+        // Add devices in order: Mobile, Tablet, Desktop, VR, AR, XR
+        addOptGroup('📱 Mobile', deviceGroups.mobile);
+        addOptGroup('📱 Tablet', deviceGroups.tablet);
+        addOptGroup('🖥️ Desktop', deviceGroups.desktop);
+        addOptGroup('🥽 VR', deviceGroups.vr);
+        addOptGroup('👓 AR', deviceGroups.ar);
+        addOptGroup('🌐 XR', deviceGroups.xr);
+    }
+
+    getDeviceTypeLabel(type) {
+        const labels = {
+            'mobile': '📱',
+            'tablet': '📱',
+            'desktop': '🖥️',
+            'vr': '🥽',
+            'ar': '👓',
+            'xr': '🌐'
+        };
+        return labels[type] || '';
+    }
+        
+        // Update preview if device is selected
+        if (this.selectedDevice) {
+            this.updatePreview();
+        }
     }
 
     selectDevice(deviceName) {
@@ -515,23 +863,195 @@ const iosim = new IOSimulator({
         if (!preview || !this.selectedDevice) return;
 
         const device = this.selectedDevice;
-        const scale = Math.min(300 / device.width, 500 / device.height, 0.8);
+        const isXR = device.type === 'vr' || device.type === 'ar' || device.type === 'xr';
+        const scale = isXR 
+            ? Math.min(400 / device.width, 400 / device.height, 0.6) // Smaller scale for VR/AR
+            : Math.min(300 / device.width, 500 / device.height, 0.8);
         const scaledWidth = device.width * scale;
         const scaledHeight = device.height * scale;
 
-        preview.innerHTML = `
-            <div class="iosim-device-frame" style="width: ${scaledWidth + 24}px; height: ${scaledHeight + 24}px;">
-                <div class="iosim-device-screen" style="width: ${scaledWidth}px; height: ${scaledHeight}px;">
-                    <div class="iosim-device-content" style="width: ${scaledWidth}px; height: ${scaledHeight}px; transform: scale(${scale}); transform-origin: top left;">
-                        <div style="padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; height: 100%; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                            <div style="font-size: 24px; margin-bottom: 10px;">📱</div>
-                            <div style="font-size: 14px; opacity: 0.9;">${device.name}</div>
-                            <div style="font-size: 12px; opacity: 0.7; margin-top: 10px;">${device.width} × ${device.height}</div>
+        // Get device icon based on type
+        const deviceIcon = this.getDeviceIcon(device.type);
+        const deviceGradient = this.getDeviceGradient(device.type);
+
+        // If there's a preview URL, show it in an iframe
+        if (this.previewUrl) {
+            preview.innerHTML = `
+                <div class="iosim-device-frame ${isXR ? 'iosim-xr-frame' : ''}" style="width: ${scaledWidth + 24}px; height: ${scaledHeight + 24}px;">
+                    <div class="iosim-device-screen ${isXR ? 'iosim-xr-screen' : ''}" style="width: ${scaledWidth}px; height: ${scaledHeight}px; overflow: hidden; border-radius: ${isXR ? '16px' : '8px'}; background: #000;">
+                        <iframe 
+                            src="${this.previewUrl}" 
+                            style="width: ${device.width}px; height: ${device.height}px; border: none; transform: scale(${scale}); transform-origin: top left;"
+                            frameborder="0"
+                            allowfullscreen
+                            allow="xr-spatial-tracking; camera; microphone"
+                        ></iframe>
+                    </div>
+                    <div class="iosim-preview-info" style="margin-top: 8px; font-size: 0.75rem; color: var(--text-color); opacity: 0.7;">
+                        <div>${deviceIcon} ${device.name} (${device.width}×${device.height})</div>
+                        ${device.fov ? `<div>FOV: ${device.fov}°</div>` : ''}
+                        ${device.handTracking ? `<div>✋ Hand Tracking</div>` : ''}
+                        ${device.eyeTracking ? `<div>👁️ Eye Tracking</div>` : ''}
+                        <div style="word-break: break-all; margin-top: 4px;">${this.previewUrl}</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Default placeholder with device-specific styling
+            preview.innerHTML = `
+                <div class="iosim-device-frame ${isXR ? 'iosim-xr-frame' : ''}" style="width: ${scaledWidth + 24}px; height: ${scaledHeight + 24}px;">
+                    <div class="iosim-device-screen ${isXR ? 'iosim-xr-screen' : ''}" style="width: ${scaledWidth}px; height: ${scaledHeight}px;">
+                        <div class="iosim-device-content" style="width: ${scaledWidth}px; height: ${scaledHeight}px; transform: scale(${scale}); transform-origin: top left;">
+                            <div style="padding: 20px; background: ${deviceGradient}; color: white; height: 100%; border-radius: ${isXR ? '16px' : '8px'}; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <div style="font-size: ${isXR ? '32px' : '24px'}; margin-bottom: 10px;">${deviceIcon}</div>
+                                <div style="font-size: 14px; opacity: 0.9;">${device.name}</div>
+                                <div style="font-size: 12px; opacity: 0.7; margin-top: 10px;">${device.width} × ${device.height}</div>
+                                ${device.fov ? `<div style="font-size: 11px; opacity: 0.6; margin-top: 5px;">FOV: ${device.fov}°</div>` : ''}
+                                ${device.handTracking ? `<div style="font-size: 11px; opacity: 0.6; margin-top: 5px;">✋ Hand Tracking</div>` : ''}
+                                ${device.eyeTracking ? `<div style="font-size: 11px; opacity: 0.6; margin-top: 5px;">👁️ Eye Tracking</div>` : ''}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
+    }
+
+    getDeviceIcon(type) {
+        const icons = {
+            'mobile': '📱',
+            'tablet': '📱',
+            'desktop': '🖥️',
+            'vr': '🥽',
+            'ar': '👓',
+            'xr': '🌐'
+        };
+        return icons[type] || '📱';
+    }
+
+    getDeviceGradient(type) {
+        const gradients = {
+            'mobile': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'tablet': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'desktop': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'vr': 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+            'ar': 'linear-gradient(135deg, #00d4ff 0%, #090979 50%, #020024 100%)',
+            'xr': 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)'
+        };
+        return gradients[type] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    }
+
+    async loadGitHubRepos() {
+        try {
+            const response = await fetchWithTimeout(
+                `https://api.github.com/users/${this.config.githubUser}/repos?per_page=100&sort=updated`,
+                {},
+                10000
+            );
+            
+            if (!response.ok) {
+                throw new Error(`GitHub API error: ${response.status}`);
+            }
+            
+            const repos = await response.json();
+            this.githubRepos = repos.filter(repo => !repo.archived && !repo.disabled);
+            this.populateRepoSelect();
+        } catch (e) {
+            console.warn('[IOSim] Failed to load GitHub repos:', e);
+            const repoSelect = document.getElementById('iosim-repo-select');
+            if (repoSelect) {
+                repoSelect.innerHTML = '<option value="">Failed to load repos</option>';
+            }
+        }
+    }
+
+    populateRepoSelect() {
+        const select = document.getElementById('iosim-repo-select');
+        if (!select) return;
+
+        select.innerHTML = '<option value="">Select a repository...</option>';
+        
+        this.githubRepos.forEach(repo => {
+            const option = document.createElement('option');
+            option.value = repo.html_url;
+            option.textContent = `${repo.name} ${repo.description ? `- ${repo.description}` : ''}`;
+            option.title = repo.html_url;
+            select.appendChild(option);
+        });
+    }
+
+    loadPreviewUrl(url) {
+        if (!url || !url.trim()) {
+            alert('Please enter a valid URL');
+            return;
+        }
+
+        let previewUrl = url.trim();
+        
+        // Handle GitHub repo URLs - convert to GitHub Pages if available
+        if (previewUrl.includes('github.com')) {
+            // Check if it's a GitHub Pages URL
+            if (previewUrl.includes('github.io')) {
+                // Already a GitHub Pages URL
+                this.previewUrl = previewUrl;
+            } else {
+                // Try to convert repo URL to GitHub Pages URL
+                const repoMatch = previewUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+                if (repoMatch) {
+                    const [, owner, repo] = repoMatch;
+                    // Try common GitHub Pages URLs
+                    const possibleUrls = [
+                        `https://${owner}.github.io/${repo}`,
+                        `https://${owner}.github.io/${repo}/index.html`,
+                        previewUrl // Fallback to original URL
+                    ];
+                    this.previewUrl = possibleUrls[0];
+                } else {
+                    this.previewUrl = previewUrl;
+                }
+            }
+        } else {
+            // Regular web URL
+            // Ensure it has a protocol
+            if (!previewUrl.match(/^https?:\/\//)) {
+                previewUrl = 'https://' + previewUrl;
+            }
+            this.previewUrl = previewUrl;
+        }
+
+        // Update URL input
+        const urlInput = document.getElementById('iosim-preview-url');
+        if (urlInput) {
+            urlInput.value = this.previewUrl;
+        }
+
+        // Update preview
+        if (this.selectedDevice) {
+            this.updatePreview();
+        } else {
+            // Auto-select detected device or first device
+            if (this.detectedDevice) {
+                this.selectDevice(this.detectedDevice.name);
+            } else if (this.devices.length > 0) {
+                this.selectDevice(this.devices[0].name);
+            }
+        }
+    }
+
+    loadRepoUrl(repo) {
+        if (!repo) return;
+
+        // Try GitHub Pages URL first
+        if (repo.homepage && repo.homepage.includes('github.io')) {
+            this.loadPreviewUrl(repo.homepage);
+        } else if (repo.has_pages) {
+            // Repository has GitHub Pages enabled
+            const pagesUrl = `https://${this.config.githubUser}.github.io/${repo.name}`;
+            this.loadPreviewUrl(pagesUrl);
+        } else {
+            // Fallback to repo URL (will show GitHub repo page)
+            this.loadPreviewUrl(repo.html_url);
+        }
     }
 
     async launchSimulator() {
@@ -556,7 +1076,8 @@ const iosim = new IOSimulator({
                 body: JSON.stringify({
                     ...this.selectedDevice,
                     instanceId: this.config.instanceId,
-                    deviceId: this.deviceId
+                    deviceId: this.deviceId,
+                    previewUrl: this.previewUrl || null
                 })
             }, 10000); // 10 second timeout
             
@@ -571,8 +1092,11 @@ const iosim = new IOSimulator({
                 }
                 console.warn('[IOSim] Launch timeout:', e);
             } else {
-                // Fallback: open in new window
-                const url = `${this.config.apiEndpoint}/simulator?device=${encodeURIComponent(JSON.stringify(this.selectedDevice))}&instance=${this.config.instanceId}`;
+                // Fallback: open in new window with preview URL if available
+                let url = `${this.config.apiEndpoint}/simulator?device=${encodeURIComponent(JSON.stringify(this.selectedDevice))}&instance=${this.config.instanceId}`;
+                if (this.previewUrl) {
+                    url += `&url=${encodeURIComponent(this.previewUrl)}`;
+                }
                 window.open(url, '_blank');
                 
                 if (statusEl) {
