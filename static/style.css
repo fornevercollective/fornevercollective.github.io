@@ -680,6 +680,12 @@ nav a.nav-link.active {
     gap: 0.5rem;
     font-size: 0.875rem;
     color: #666;
+    position: relative;
+    z-index: 100;
+    pointer-events: auto;
+    background: var(--bg-color);
+    padding: 0.5rem;
+    border-radius: 4px;
 }
 
 .map-info-buttons {
@@ -687,6 +693,10 @@ nav a.nav-link.active {
     gap: 0.5rem;
     margin-left: auto;
     align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 101;
+    pointer-events: auto;
 }
 
 .map-layer-toggles {
@@ -694,28 +704,58 @@ nav a.nav-link.active {
     gap: 0.25rem;
     padding-right: 0.5rem;
     border-right: 1px solid var(--border-color);
+    position: relative;
+    z-index: 102;
+    pointer-events: auto;
 }
 
 .map-btn-small {
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem 0.75rem;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: 6px;
     background: var(--bg-color);
     color: var(--text-color);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s;
-    line-height: 1;
+    line-height: 1.2;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    position: relative;
+    z-index: 10;
 }
 
 .map-btn-small:hover {
     background: var(--hover-color);
+    transform: scale(1.05);
+}
+
+.map-btn-small:active {
+    transform: scale(0.95);
+    opacity: 0.8;
 }
 
 .map-btn-small.active {
     background: var(--text-color);
     color: var(--bg-color);
     border-color: var(--text-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Quest-specific touch improvements */
+@media (pointer: coarse) {
+    .map-btn-small {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        min-width: 48px;
+        min-height: 48px;
+    }
 }
 
 .map-container {
@@ -725,6 +765,8 @@ nav a.nav-link.active {
     border-radius: 8px;
     overflow: hidden;
     position: relative;
+    z-index: 1;
+    pointer-events: auto;
 }
 
 /* Cesium viewer styling */

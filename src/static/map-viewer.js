@@ -49,6 +49,9 @@ class MapViewer {
 
         // Initialize map when section becomes active
         this.initMap();
+        
+        // Ensure buttons are clickable in Quest browser
+        this.ensureQuestButtonAccessibility();
 
         // Event listeners
         this.mapSearch.addEventListener('keydown', (e) => {
@@ -57,54 +60,110 @@ class MapViewer {
             }
         });
 
-        this.mapProvider.addEventListener('change', () => {
-            this.changeMapProvider();
-        });
+        // Quest-compatible select handlers
+        if (this.mapProvider) {
+            this.mapProvider.addEventListener('change', () => {
+                this.changeMapProvider();
+            });
+            this.mapProvider.addEventListener('touchend', (e) => {
+                e.stopPropagation();
+            });
+        }
 
-        this.mapMode.addEventListener('change', () => {
-            this.changeMapMode();
-        });
+        if (this.mapMode) {
+            this.mapMode.addEventListener('change', () => {
+                this.changeMapMode();
+            });
+            this.mapMode.addEventListener('touchend', (e) => {
+                e.stopPropagation();
+            });
+        }
 
-        this.mapLocate.addEventListener('click', () => {
-            this.locateUser();
-        });
-
-        this.mapReset.addEventListener('click', () => {
-            this.resetMap();
-        });
+        // Helper function to add Quest-compatible event listeners
+        const addQuestEvent = (element, handler, buttonName = '') => {
+            if (!element) {
+                console.warn(`Button element not found: ${buttonName}`);
+                return;
+            }
+            
+            const wrappedHandler = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(`Button clicked: ${buttonName || element.id || element.className}`);
+                try {
+                    handler(e);
+                } catch (error) {
+                    console.error(`Error in button handler for ${buttonName}:`, error);
+                }
+            };
+            
+            // Add multiple event types for Quest browser compatibility
+            element.addEventListener('click', wrappedHandler, { passive: false });
+            element.addEventListener('touchend', wrappedHandler, { passive: false });
+            element.addEventListener('pointerup', wrappedHandler, { passive: false });
+            
+            // Add visual feedback for Quest
+            element.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+                element.style.opacity = '0.7';
+                element.style.transform = 'scale(0.95)';
+                element.style.transition = 'all 0.1s';
+            }, { passive: true });
+            
+            element.addEventListener('touchend', () => {
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'scale(1)';
+                }, 100);
+            }, { passive: true });
+            
+            // Ensure element is interactive
+            element.style.pointerEvents = 'auto';
+            element.style.cursor = 'pointer';
+            element.setAttribute('role', 'button');
+            element.setAttribute('tabindex', '0');
+        };
 
         // Layer overlay toggles
-        this.mapLayer3D.addEventListener('click', () => {
+        addQuestEvent(this.mapLayer3D, () => {
             this.toggleLayer('threeD');
-        });
+        }, '3D Layer');
 
-        this.mapLayerSatellite.addEventListener('click', () => {
+        addQuestEvent(this.mapLayerSatellite, () => {
             this.toggleLayer('satellite');
-        });
+        }, 'Satellite');
 
-        this.mapLayerTerrain.addEventListener('click', () => {
+        addQuestEvent(this.mapLayerTerrain, () => {
             this.toggleLayer('terrain');
-        });
+        }, 'Terrain');
 
-        this.mapCesiumIon.addEventListener('click', () => {
+        addQuestEvent(this.mapCesiumIon, () => {
             this.toggleCesiumIon();
-        });
+        }, 'Cesium Ion');
 
-        this.mapExportUnity.addEventListener('click', () => {
+        addQuestEvent(this.mapExportUnity, () => {
             this.exportForUnity();
-        });
+        }, 'Export Unity');
 
-        this.mapExportOculus.addEventListener('click', () => {
+        addQuestEvent(this.mapExportOculus, () => {
             this.exportForOculus();
-        });
+        }, 'Export Oculus');
 
-        this.mapLaMAriaLoad.addEventListener('click', () => {
+        addQuestEvent(this.mapLaMAriaLoad, () => {
             this.loadLaMAriaTrajectory();
-        });
+        }, 'Load LaMAria');
 
-        this.mapLaMAriaVisualize.addEventListener('click', () => {
+        addQuestEvent(this.mapLaMAriaVisualize, () => {
             this.visualizeLaMAriaTrajectory();
-        });
+        }, 'Visualize LaMAria');
+
+        addQuestEvent(this.mapLocate, () => {
+            this.locateUser();
+        }, 'Locate');
+
+        addQuestEvent(this.mapReset, () => {
+            this.resetMap();
+        }, 'Reset');
     }
 
     initMap() {
@@ -796,6 +855,58 @@ class MapViewer {
         const vrButton = document.getElementById('cesium-vr-button-custom');
         if (vrButton) {
             vrButton.remove();
+        }
+    }
+
+    ensureQuestButtonAccessibility() {
+        // Ensure all buttons are accessible in Quest browser
+        const buttons = [
+            this.mapLayer3D,
+            this.mapLayerSatellite,
+            this.mapLayerTerrain,
+            this.mapCesiumIon,
+            this.mapExportUnity,
+            this.mapExportOculus,
+            this.mapLaMAriaLoad,
+            this.mapLaMAriaVisualize,
+            this.mapLocate,
+            this.mapReset
+        ];
+
+        buttons.forEach((button, index) => {
+            if (!button) {
+                console.warn(`Button ${index} not found`);
+                return;
+            }
+            
+            // Ensure button is above map container
+            button.style.position = 'relative';
+            button.style.zIndex = '1000';
+            button.style.pointerEvents = 'auto';
+            button.style.touchAction = 'manipulation';
+            button.style.cursor = 'pointer';
+            
+            // Add aria-label for accessibility
+            if (!button.getAttribute('aria-label')) {
+                button.setAttribute('aria-label', button.title || button.textContent.trim());
+            }
+            
+            // Ensure button is not covered by map
+            const mapInfo = button.closest('.map-info');
+            if (mapInfo) {
+                mapInfo.style.pointerEvents = 'auto';
+                mapInfo.style.zIndex = '100';
+            }
+        });
+
+        // Prevent map container from blocking button clicks
+        if (this.mapContainer) {
+            // Only block pointer events on the map itself, not on controls
+            const mapElement = this.mapContainer.querySelector('.leaflet-container') || 
+                              this.mapContainer.querySelector('.cesium-widget');
+            if (mapElement) {
+                mapElement.style.pointerEvents = 'auto';
+            }
         }
     }
 
