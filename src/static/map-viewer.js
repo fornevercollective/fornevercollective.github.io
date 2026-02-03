@@ -181,20 +181,19 @@ class MapViewer {
             // Cesium.Ion.defaultAccessToken = 'YOUR_TOKEN_HERE';
             
             // Initialize Cesium viewer
-            this.viewer = new Cesium.Viewer('map-container', {
+            const viewerOptions = {
                 terrainProvider: Cesium.createWorldTerrain(),
-                vrButton: vrMode,
-                vr: vrMode,
                 requestRenderMode: true,
-                maximumRenderTimeChange: Infinity
-            });
+                maximumRenderTimeChange: Infinity,
+                shouldAnimate: true
+            };
 
-            // Enable WebXR if in VR mode
-            if (vrMode && this.viewer.vrButton) {
-                this.viewer.vrButton.viewModel.command.beforeExecute.addEventListener(() => {
-                    this.enterVRMode();
-                });
+            // Add VR button if WebXR is supported
+            if (vrMode && this.isWebXRSupported()) {
+                viewerOptions.vrButton = true;
             }
+
+            this.viewer = new Cesium.Viewer('map-container', viewerOptions);
 
             // Set initial camera position
             this.viewer.camera.setView({
@@ -221,6 +220,11 @@ class MapViewer {
                 this.updateCesiumInfo();
             });
 
+            // Enable VR mode if requested and supported
+            if (vrMode) {
+                this.setupVRMode();
+            }
+
             this.updateCesiumInfo();
         } else {
             console.error('Cesium library not loaded');
@@ -229,9 +233,88 @@ class MapViewer {
         }
     }
 
+    isWebXRSupported() {
+        // Check for native WebXR support
+        if (navigator.xr) {
+            return true;
+        }
+        
+        // Check for WebXR polyfill
+        if (window.WebXRPolyfill) {
+            // Initialize polyfill if not already done
+            if (!window.polyfillInitialized) {
+                const polyfill = new WebXRPolyfill();
+                window.polyfillInitialized = true;
+            }
+            return navigator.xr !== undefined;
+        }
+        
+        // Check if we're on Quest Browser (which has WebXR)
+        const ua = navigator.userAgent.toLowerCase();
+        if (ua.includes('quest') || ua.includes('oculus')) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    async setupVRMode() {
+        if (!this.isWebXRSupported()) {
+            console.warn('WebXR not supported. VR mode will use 3D mode instead.');
+            // Show user-friendly message
+            const statusMsg = document.createElement('div');
+            statusMsg.style.cssText = 'position: absolute; top: 10px; right: 10px; background: rgba(255,165,0,0.9); padding: 10px; border-radius: 5px; z-index: 1000; color: white; font-size: 12px;';
+            statusMsg.textContent = 'WebXR not available. Use Chrome/Edge with WebXR enabled or Quest Browser.';
+            this.mapContainer.appendChild(statusMsg);
+            setTimeout(() => statusMsg.remove(), 5000);
+            return;
+        }
+
+        // Check if VR session can be requested
+        try {
+            const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
+            if (!isSupported) {
+                console.warn('VR sessions not supported on this device');
+                return;
+            }
+
+            // Add VR button to UI if Cesium doesn't add it automatically
+            this.addVRButton();
+        } catch (error) {
+            console.error('WebXR check failed:', error);
+        }
+    }
+
+    addVRButton() {
+        // Check if button already exists
+        if (document.getElementById('cesium-vr-button-custom')) {
+            return;
+        }
+
+        // Create custom VR button
+        const vrButton = document.createElement('button');
+        vrButton.id = 'cesium-vr-button-custom';
+        vrButton.className = 'cesium-button cesium-toolbar-button';
+        vrButton.innerHTML = '🥽 VR';
+        vrButton.title = 'Enter VR Mode';
+        vrButton.style.cssText = 'position: absolute; top: 10px; right: 10px; z-index: 1000; padding: 10px 15px; background: #48b; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;';
+        
+        vrButton.addEventListener('click', () => {
+            this.enterVRMode();
+        });
+
+        this.mapContainer.appendChild(vrButton);
+    }
+
     changeMapMode() {
         const mode = this.mapMode.value;
         this.currentMode = mode;
+        
+        // Show VR mode warning if needed
+        if (mode === 'vr' && !this.isWebXRSupported()) {
+            console.warn('WebXR not detected. VR mode will work as 3D mode.');
+        }
+        
         this.initMap();
     }
 
@@ -598,18 +681,121 @@ class MapViewer {
     }
 
     async enterVRMode() {
-        if (!this.viewer || !navigator.xr) {
-            alert('WebXR not supported. Use Chrome or Edge with WebXR enabled.');
+        if (!this.viewer) {
+            alert('Please switch to 3D mode first.');
+            return;
+        }
+
+        if (!this.isWebXRSupported()) {
+            alert('WebXR not supported.\n\nFor VR:\n- Use Chrome/Edge with WebXR enabled\n- Use Quest Browser on Oculus headset\n- Enable WebXR flags in browser settings');
             return;
         }
 
         try {
-            const session = await navigator.xr.requestSession('immersive-vr');
-            // Cesium will handle VR rendering
-            console.log('VR mode activated');
+            // Check if VR is supported
+            const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
+            if (!isSupported) {
+                alert('VR sessions not supported on this device.\n\nTry:\n- Oculus Quest Browser\n- Chrome/Edge with WebXR enabled\n- Enable VR flags in chrome://flags');
+                return;
+            }
+
+            // Request VR session
+            const session = await navigator.xr.requestSession('immersive-vr', {
+                requiredFeatures: ['local-floor'],
+                optionalFeatures: ['bounded-floor', 'hand-tracking']
+            });
+
+            console.log('VR session started:', session);
+
+            // Set up VR rendering loop
+            session.requestAnimationFrame((time, frame) => {
+                this.renderVRFrame(time, frame, session);
+            });
+
+            // Handle session end
+            session.addEventListener('end', () => {
+                console.log('VR session ended');
+                this.exitVRMode();
+            });
+
+            // Update viewer for VR
+            if (this.viewer && this.viewer.cesiumWidget) {
+                this.viewer.cesiumWidget.canvas.setAttribute('xr', 'true');
+            }
+
         } catch (error) {
             console.error('Failed to enter VR mode:', error);
-            alert('Failed to enter VR mode. Make sure your Oculus headset is connected.');
+            let errorMsg = 'Failed to enter VR mode.\n\n';
+            
+            if (error.name === 'NotSupportedError') {
+                errorMsg += 'WebXR not supported. Use Quest Browser or enable WebXR in Chrome/Edge.';
+            } else if (error.name === 'SecurityError') {
+                errorMsg += 'WebXR requires HTTPS or localhost.';
+            } else if (error.message && error.message.includes('headset')) {
+                errorMsg += 'Make sure your Oculus headset is connected and Quest Link is enabled.';
+            } else {
+                errorMsg += error.message || 'Unknown error occurred.';
+            }
+            
+            alert(errorMsg);
+        }
+    }
+
+    renderVRFrame(time, frame, session) {
+        if (!this.viewer || !session) return;
+
+        const pose = frame.getViewerPose(session.requestReferenceSpace('local-floor'));
+        
+        if (pose) {
+            // Update camera based on VR headset pose
+            const view = pose.views[0];
+            if (view && view.transform) {
+                const position = view.transform.position;
+                const orientation = view.transform.orientation;
+                
+                // Convert WebXR pose to Cesium camera
+                // This is a simplified conversion - may need adjustment
+                const camera = this.viewer.camera;
+                const positionCartesian = new Cesium.Cartesian3(
+                    position.x,
+                    position.y,
+                    position.z
+                );
+                
+                // Apply orientation
+                const quaternion = new Cesium.Quaternion(
+                    orientation.x,
+                    orientation.y,
+                    orientation.z,
+                    orientation.w
+                );
+                
+                // Update camera (simplified - full implementation would need proper coordinate transform)
+                // For now, just render the frame
+            }
+        }
+
+        // Render Cesium scene
+        if (this.viewer && this.viewer.scene) {
+            this.viewer.scene.render();
+        }
+
+        // Continue animation loop
+        session.requestAnimationFrame((time, frame) => {
+            this.renderVRFrame(time, frame, session);
+        });
+    }
+
+    exitVRMode() {
+        // Clean up VR session
+        if (this.viewer && this.viewer.cesiumWidget) {
+            this.viewer.cesiumWidget.canvas.removeAttribute('xr');
+        }
+        
+        // Remove custom VR button if exists
+        const vrButton = document.getElementById('cesium-vr-button-custom');
+        if (vrButton) {
+            vrButton.remove();
         }
     }
 
