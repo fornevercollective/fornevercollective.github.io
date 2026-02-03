@@ -332,18 +332,31 @@
                                 <option value="stamen">Stamen</option>
                                 <option value="esri">Esri World Imagery</option>
                                 <option value="opentopomap">OpenTopoMap</option>
+                                <option value="cesium">Cesium 3D Globe</option>
+                            </select>
+                            <select id="map-mode" class="map-provider-select">
+                                <option value="2d">2D Mode</option>
+                                <option value="3d">3D Mode</option>
+                                <option value="vr">VR Mode (Oculus)</option>
                             </select>
                         </div>
                         <div class="map-info">
                             <span id="map-coords">Lat: 0, Lng: 0</span>
                             <span class="separator">•</span>
                             <span id="map-zoom">Zoom: 2</span>
+                            <span class="separator">•</span>
+                            <span id="map-height">Height: 0m</span>
                             <div class="map-info-buttons">
                                 <div class="map-layer-toggles">
                                     <button id="map-layer-3d" class="map-btn-small" title="3D Layer">🗺️</button>
                                     <button id="map-layer-satellite" class="map-btn-small" title="Satellite">🛰️</button>
                                     <button id="map-layer-terrain" class="map-btn-small" title="Terrain">⛰️</button>
+                                    <button id="map-cesium-ion" class="map-btn-small" title="Cesium Ion 3D Tiles">🌐</button>
                                 </div>
+                                <button id="map-export-unity" class="map-btn-small" title="Export for Unity">🎮</button>
+                                <button id="map-export-oculus" class="map-btn-small" title="Export for Oculus">🥽</button>
+                                <button id="map-lamaria-load" class="map-btn-small" title="Load LaMAria SLAM Trajectory">🗺️</button>
+                                <button id="map-lamaria-visualize" class="map-btn-small" title="Visualize SLAM Path">📊</button>
                                 <button id="map-locate" class="map-btn-small">📍</button>
                                 <button id="map-reset" class="map-btn-small">🔄</button>
                             </div>
@@ -365,6 +378,8 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.112/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.112/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script src="/static/editor.js"></script>
     <script src="/static/news-aggregator.js"></script>
