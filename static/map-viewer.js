@@ -16,6 +16,9 @@ class MapViewer {
         this.cesiumIonToken = null; // Cesium Ion access token (optional)
         this.lamariaTrajectory = null; // LaMAria SLAM trajectory data
         this.lamariaPolyline = null; // Cesium polyline for trajectory
+        this.leafletRetryCount = 0; // Track Leaflet initialization retries
+        this.cesiumRetryCount = 0; // Track Cesium initialization retries
+        this.maxRetries = 10; // Maximum number of retries for library loading
         this.init();
     }
 
@@ -167,7 +170,10 @@ class MapViewer {
     }
 
     initMap() {
-        if (!this.mapContainer) return;
+        if (!this.mapContainer) {
+            console.error('Map container not found');
+            return;
+        }
 
         const mode = this.mapMode ? this.mapMode.value : '2d';
         this.currentMode = mode;
@@ -180,62 +186,125 @@ class MapViewer {
     }
 
     initLeaflet() {
-        // Check if map already exists
-        if (this.map) {
-            this.map.remove();
+        // Check if Leaflet library is loaded
+        if (typeof L === 'undefined') {
+            if (this.leafletRetryCount >= this.maxRetries) {
+                console.error('Failed to load Leaflet library after maximum retries');
+                if (this.mapContainer) {
+                    this.mapContainer.innerHTML = `
+                        <div style="padding: 20px; text-align: center; color: #ff0000;">
+                            <p>Failed to load map library</p>
+                            <p>Please check your internet connection and refresh the page.</p>
+                        </div>
+                    `;
+                }
+                return;
+            }
+            
+            this.leafletRetryCount++;
+            console.log(`Leaflet library not loaded yet. Retry ${this.leafletRetryCount}/${this.maxRetries}...`);
+            // Retry after a delay to allow library to load (Quest browser compatibility)
+            setTimeout(() => {
+                this.initLeaflet();
+            }, 500);
+            return;
         }
 
-        // Hide Cesium viewer if exists
-        if (this.viewer) {
-            this.viewer.destroy();
-            this.viewer = null;
+        try {
+            // Reset retry count on successful library load
+            this.leafletRetryCount = 0;
+            
+            // Check if map already exists
+            if (this.map) {
+                this.map.remove();
+            }
+
+            // Hide Cesium viewer if exists
+            if (this.viewer) {
+                this.viewer.destroy();
+                this.viewer = null;
+            }
+
+            // Initialize Leaflet map
+            this.map = L.map('map-container', {
+                center: [51.505, -0.09], // Default: London
+                zoom: 2,
+                zoomControl: true
+            });
+
+            // Add default OpenStreetMap layer
+            this.addTileLayer('osm');
+
+            // Initialize overlay layers
+            this.initOverlayLayers();
+
+            // Update coordinates on map move
+            this.map.on('move', () => {
+                this.updateMapInfo();
+            });
+
+            this.map.on('zoom', () => {
+                this.updateMapInfo();
+            });
+
+            // Add click handler to add markers
+            this.map.on('click', (e) => {
+                this.addMarker(e.latlng);
+            });
+
+            this.updateMapInfo();
+            
+            console.log('Leaflet map initialized successfully');
+        } catch (error) {
+            console.error('Error initializing Leaflet map:', error);
+            // Show error to user
+            if (this.mapContainer) {
+                this.mapContainer.innerHTML = `
+                    <div style="padding: 20px; text-align: center; color: #ff0000;">
+                        <p>Error loading map: ${error.message}</p>
+                        <p>Please refresh the page or try again later.</p>
+                    </div>
+                `;
+            }
         }
-
-        // Initialize Leaflet map
-        this.map = L.map('map-container', {
-            center: [51.505, -0.09], // Default: London
-            zoom: 2,
-            zoomControl: true
-        });
-
-        // Add default OpenStreetMap layer
-        this.addTileLayer('osm');
-
-        // Initialize overlay layers
-        this.initOverlayLayers();
-
-        // Update coordinates on map move
-        this.map.on('move', () => {
-            this.updateMapInfo();
-        });
-
-        this.map.on('zoom', () => {
-            this.updateMapInfo();
-        });
-
-        // Add click handler to add markers
-        this.map.on('click', (e) => {
-            this.addMarker(e.latlng);
-        });
-
-        this.updateMapInfo();
     }
 
     initCesium(vrMode = false) {
-        // Remove Leaflet map if exists
-        if (this.map) {
-            this.map.remove();
-            this.map = null;
+        // Check if Cesium library is loaded
+        if (typeof Cesium === 'undefined') {
+            if (this.cesiumRetryCount >= this.maxRetries) {
+                console.error('Failed to load Cesium library after maximum retries. Falling back to Leaflet.');
+                // Fallback to Leaflet 2D map
+                this.initLeaflet();
+                return;
+            }
+            
+            this.cesiumRetryCount++;
+            console.log(`Cesium library not loaded yet. Retry ${this.cesiumRetryCount}/${this.maxRetries}...`);
+            // Retry after a delay to allow library to load (Quest browser compatibility)
+            setTimeout(() => {
+                this.initCesium(vrMode);
+            }, 500);
+            return;
         }
 
-        // Destroy existing Cesium viewer
-        if (this.viewer) {
-            this.viewer.destroy();
-        }
+        try {
+            // Reset retry count on successful library load
+            this.cesiumRetryCount = 0;
+            
+            // Remove Leaflet map if exists
+            if (this.map) {
+                this.map.remove();
+                this.map = null;
+            }
 
-        // Set Cesium access token (optional - can use default ion token)
-        // For production, you should set your own Cesium Ion token
-        if (typeof Cesium !== 'undefined') {
+            // Destroy existing Cesium viewer
+            if (this.viewer) {
+                this.viewer.destroy();
+            }
+
+            // Set Cesium access token (optional - can use default ion token)
+            // For production, you should set your own Cesium Ion token
             // Use default ion token or set your own
             // Cesium.Ion.defaultAccessToken = 'YOUR_TOKEN_HERE';
             
@@ -285,9 +354,12 @@ class MapViewer {
             }
 
             this.updateCesiumInfo();
-        } else {
-            console.error('Cesium library not loaded');
+            
+            console.log('Cesium viewer initialized successfully');
+        } catch (error) {
+            console.error('Error initializing Cesium:', error);
             // Fallback to Leaflet
+            console.log('Falling back to Leaflet 2D map');
             this.initLeaflet();
         }
     }
