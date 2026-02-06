@@ -198,6 +198,7 @@ class MapViewer {
             if (this.leafletRetryCount >= this.maxRetries) {
                 console.error('Failed to load Leaflet library after maximum retries');
                 this.leafletInitializing = false;
+                this.leafletRetryCount = 0;
                 if (this.mapContainer) {
                     this.mapContainer.innerHTML = `
                         <div style="padding: 20px; text-align: center; color: #ff0000;">
@@ -220,11 +221,10 @@ class MapViewer {
             return;
         }
 
+        // Set flag to indicate initialization is in progress
+        this.leafletInitializing = true;
+
         try {
-            // Reset retry count and flag on successful library load
-            this.leafletRetryCount = 0;
-            this.leafletInitializing = false;
-            
             // Check if map already exists
             if (this.map) {
                 this.map.remove();
@@ -265,9 +265,15 @@ class MapViewer {
 
             this.updateMapInfo();
             
+            // Reset retry count and flag on successful initialization
+            this.leafletRetryCount = 0;
+            this.leafletInitializing = false;
+            
             console.log('Leaflet map initialized successfully');
         } catch (error) {
             console.error('Error initializing Leaflet map:', error);
+            // Reset retry count and flag on error
+            this.leafletRetryCount = 0;
             this.leafletInitializing = false;
             // Show error to user
             if (this.mapContainer) {
@@ -292,6 +298,7 @@ class MapViewer {
             if (this.cesiumRetryCount >= this.maxRetries) {
                 console.error('Failed to load Cesium library after maximum retries. Falling back to Leaflet.');
                 this.cesiumInitializing = false;
+                this.cesiumRetryCount = 0;
                 // Fallback to Leaflet 2D map
                 this.initLeaflet();
                 return;
@@ -308,11 +315,10 @@ class MapViewer {
             return;
         }
 
+        // Set flag to indicate initialization is in progress
+        this.cesiumInitializing = true;
+
         try {
-            // Reset retry count and flag on successful library load
-            this.cesiumRetryCount = 0;
-            this.cesiumInitializing = false;
-            
             // Remove Leaflet map if exists
             if (this.map) {
                 this.map.remove();
@@ -376,9 +382,15 @@ class MapViewer {
 
             this.updateCesiumInfo();
             
+            // Reset retry count and flag on successful initialization
+            this.cesiumRetryCount = 0;
+            this.cesiumInitializing = false;
+            
             console.log('Cesium viewer initialized successfully');
         } catch (error) {
             console.error('Error initializing Cesium:', error);
+            // Reset retry count and flag on error
+            this.cesiumRetryCount = 0;
             this.cesiumInitializing = false;
             // Fallback to Leaflet
             console.log('Falling back to Leaflet 2D map');
