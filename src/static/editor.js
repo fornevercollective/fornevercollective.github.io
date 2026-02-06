@@ -1667,3 +1667,184 @@ if (document.readyState === 'loading') {
     new SimpleEditor();
     new SectionManager();
 }
+
+// Cache Refresh Functionality for Quest Browser
+class CacheRefreshManager {
+    constructor() {
+        this.refreshBtn = document.getElementById('cache-refresh-btn');
+        this.init();
+    }
+
+    init() {
+        if (!this.refreshBtn) {
+            console.warn('Cache refresh button not found');
+            return;
+        }
+
+        // Add multiple event types for Quest browser compatibility
+        const handleRefresh = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.performCacheRefresh();
+        };
+
+        this.refreshBtn.addEventListener('click', handleRefresh, { passive: false });
+        this.refreshBtn.addEventListener('touchend', handleRefresh, { passive: false });
+        this.refreshBtn.addEventListener('pointerup', handleRefresh, { passive: false });
+
+        // Add visual feedback for Quest browser
+        this.refreshBtn.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+            this.refreshBtn.style.opacity = '0.7';
+            this.refreshBtn.style.transform = 'scale(0.95)';
+        }, { passive: true });
+
+        this.refreshBtn.addEventListener('touchend', () => {
+            setTimeout(() => {
+                this.refreshBtn.style.opacity = '1';
+                this.refreshBtn.style.transform = 'scale(1)';
+            }, 100);
+        }, { passive: true });
+
+        console.log('[Cache Refresh] Manager initialized');
+    }
+
+    async performCacheRefresh() {
+        console.log('[Cache Refresh] Starting cache refresh...');
+        
+        // Show loading indicator
+        const originalText = this.refreshBtn.textContent;
+        this.refreshBtn.textContent = '⏳';
+        this.refreshBtn.disabled = true;
+
+        try {
+            // 1. Clear localStorage (but preserve important data)
+            await this.clearLocalStorage();
+
+            // 2. Clear service worker caches
+            await this.clearServiceWorkerCaches();
+
+            // 3. Clear browser cache (best effort)
+            await this.clearBrowserCache();
+
+            // 4. Show success message
+            this.showMessage('Cache cleared successfully! Reloading...', 'success');
+
+            // 5. Wait a moment then reload
+            setTimeout(() => {
+                window.location.reload(true); // Force reload from server
+            }, 1000);
+        } catch (error) {
+            console.error('[Cache Refresh] Error:', error);
+            this.showMessage('Cache refresh completed with warnings. Reloading...', 'warning');
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 1500);
+        }
+    }
+
+    async clearLocalStorage() {
+        try {
+            // Get current document ID before clearing
+            const currentDocId = localStorage.getItem('current_doc_id');
+            const currentDocData = currentDocId ? localStorage.getItem(`doc_${currentDocId}`) : null;
+
+            // Clear all localStorage
+            localStorage.clear();
+
+            // Restore current document if it exists (optional - user might want full clear)
+            // Comment out the next 3 lines if you want a complete cache clear
+            // if (currentDocId && currentDocData) {
+            //     localStorage.setItem(`doc_${currentDocId}`, currentDocData);
+            //     localStorage.setItem('current_doc_id', currentDocId);
+            // }
+
+            console.log('[Cache Refresh] localStorage cleared');
+        } catch (error) {
+            console.warn('[Cache Refresh] localStorage clear failed:', error);
+        }
+    }
+
+    async clearServiceWorkerCaches() {
+        try {
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (const registration of registrations) {
+                    await registration.unregister();
+                }
+                console.log('[Cache Refresh] Service workers unregistered');
+            }
+
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                await Promise.all(
+                    cacheNames.map(cacheName => caches.delete(cacheName))
+                );
+                console.log('[Cache Refresh] Service worker caches cleared');
+            }
+        } catch (error) {
+            console.warn('[Cache Refresh] Service worker cache clear failed:', error);
+        }
+    }
+
+    async clearBrowserCache() {
+        try {
+            // Try to clear browser cache using Cache API
+            if ('cache' in window && window.cache && window.cache.delete) {
+                await window.cache.delete();
+                console.log('[Cache Refresh] Browser cache cleared');
+            }
+        } catch (error) {
+            console.warn('[Cache Refresh] Browser cache clear not supported:', error);
+        }
+    }
+
+    showMessage(message, type = 'info') {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'cache-refresh-message';
+        messageDiv.textContent = message;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: ${type === 'success' ? '#4CAF50' : type === 'warning' ? '#FF9800' : '#2196F3'};
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            z-index: 10000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            min-width: 300px;
+            animation: fadeInOut 2s;
+        `;
+
+        // Add animation style if not exists
+        if (!document.getElementById('cache-refresh-message-style')) {
+            const style = document.createElement('style');
+            style.id = 'cache-refresh-message-style';
+            style.textContent = `
+                @keyframes fadeInOut {
+                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+                    20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        document.body.appendChild(messageDiv);
+        setTimeout(() => messageDiv.remove(), 2000);
+    }
+}
+
+// Initialize Cache Refresh Manager when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        new CacheRefreshManager();
+    });
+} else {
+    new CacheRefreshManager();
+}

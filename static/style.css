@@ -75,6 +75,28 @@ nav a.nav-link.active {
     opacity: 1;
 }
 
+.cache-refresh-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.cache-refresh-btn:hover {
+    background: var(--hover-color);
+    border-color: var(--text-color);
+    opacity: 0.9;
+}
+
+.cache-refresh-btn:active {
+    transform: scale(0.95);
+}
+
 .iosim-placeholder {
     padding: 2rem;
     text-align: center;
