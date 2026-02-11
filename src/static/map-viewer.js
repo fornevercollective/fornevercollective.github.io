@@ -167,10 +167,33 @@ class MapViewer {
     }
 
     initMap() {
-        if (!this.mapContainer) return;
+        if (!this.mapContainer) {
+            console.error('Map container not found');
+            return;
+        }
+
+        // Ensure container is visible and has dimensions
+        const rect = this.mapContainer.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) {
+            console.warn('Map container not visible, retrying...');
+            setTimeout(() => this.initMap(), 200);
+            return;
+        }
 
         const mode = this.mapMode ? this.mapMode.value : '2d';
         this.currentMode = mode;
+
+        // Check if we're on Oculus browser
+        const ua = navigator.userAgent.toLowerCase();
+        const isOculusBrowser = ua.includes('quest') || ua.includes('oculus');
+        
+        // For Oculus browser, default to 2D mode (Leaflet) for better compatibility
+        if (isOculusBrowser && mode === '3d' && !this.mapMode) {
+            console.log('Oculus browser detected - defaulting to 2D mode');
+            this.currentMode = '2d';
+            this.initLeaflet();
+            return;
+        }
 
         if (mode === '3d' || mode === 'vr') {
             this.initCesium(mode === 'vr');
@@ -180,45 +203,86 @@ class MapViewer {
     }
 
     initLeaflet() {
-        // Check if map already exists
-        if (this.map) {
-            this.map.remove();
+        // Check if Leaflet is loaded
+        if (typeof L === 'undefined') {
+            console.error('Leaflet library not loaded');
+            if (this.mapContainer) {
+                this.mapContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #ff6b6b;">Map library not loaded. Please refresh the page.</div>';
+            }
+            return;
         }
 
-        // Hide Cesium viewer if exists
-        if (this.viewer) {
-            this.viewer.destroy();
-            this.viewer = null;
+        // Ensure container exists and has dimensions
+        if (!this.mapContainer) {
+            console.error('Map container not found');
+            return;
         }
 
-        // Initialize Leaflet map
-        this.map = L.map('map-container', {
-            center: [51.505, -0.09], // Default: London
-            zoom: 2,
-            zoomControl: true
-        });
+        const rect = this.mapContainer.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) {
+            console.warn('Map container has no dimensions, retrying...');
+            setTimeout(() => this.initLeaflet(), 200);
+            return;
+        }
 
-        // Add default OpenStreetMap layer
-        this.addTileLayer('osm');
+        try {
+            // Check if map already exists
+            if (this.map) {
+                this.map.remove();
+                this.map = null;
+            }
 
-        // Initialize overlay layers
-        this.initOverlayLayers();
+            // Hide Cesium viewer if exists
+            if (this.viewer) {
+                try {
+                    this.viewer.destroy();
+                } catch (e) {
+                    console.warn('Error destroying Cesium viewer:', e);
+                }
+                this.viewer = null;
+            }
 
-        // Update coordinates on map move
-        this.map.on('move', () => {
+            // Initialize Leaflet map
+            this.map = L.map('map-container', {
+                center: [51.505, -0.09], // Default: London
+                zoom: 2,
+                zoomControl: true
+            });
+
+            // Add default OpenStreetMap layer
+            this.addTileLayer('osm');
+
+            // Initialize overlay layers
+            this.initOverlayLayers();
+
+            // Update coordinates on map move
+            this.map.on('move', () => {
+                this.updateMapInfo();
+            });
+
+            this.map.on('zoom', () => {
+                this.updateMapInfo();
+            });
+
+            // Add click handler to add markers
+            this.map.on('click', (e) => {
+                this.addMarker(e.latlng);
+            });
+
             this.updateMapInfo();
-        });
-
-        this.map.on('zoom', () => {
-            this.updateMapInfo();
-        });
-
-        // Add click handler to add markers
-        this.map.on('click', (e) => {
-            this.addMarker(e.latlng);
-        });
-
-        this.updateMapInfo();
+            
+            // Force a resize after a short delay to ensure proper rendering
+            setTimeout(() => {
+                if (this.map) {
+                    this.map.invalidateSize();
+                }
+            }, 100);
+        } catch (error) {
+            console.error('Failed to initialize Leaflet map:', error);
+            if (this.mapContainer) {
+                this.mapContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #ff6b6b;">Failed to load map. Please refresh the page.</div>';
+            }
+        }
     }
 
     initCesium(vrMode = false) {
@@ -230,16 +294,53 @@ class MapViewer {
 
         // Destroy existing Cesium viewer
         if (this.viewer) {
-            this.viewer.destroy();
+            try {
+                this.viewer.destroy();
+            } catch (e) {
+                console.warn('Error destroying Cesium viewer:', e);
+            }
+            this.viewer = null;
+        }
+
+        // Check if we're on Oculus browser - prefer Leaflet for better compatibility
+        const ua = navigator.userAgent.toLowerCase();
+        const isOculusBrowser = ua.includes('quest') || ua.includes('oculus');
+        
+        // For Oculus browser, prefer Leaflet unless explicitly requesting VR mode
+        if (isOculusBrowser && !vrMode) {
+            console.log('Oculus browser detected - using Leaflet for better compatibility');
+            this.initLeaflet();
+            return;
+        }
+
+        // Ensure map container is ready
+        if (!this.mapContainer) {
+            console.error('Map container not found');
+            this.initLeaflet();
+            return;
+        }
+
+        // Ensure container has dimensions
+        const rect = this.mapContainer.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) {
+            console.warn('Map container has no dimensions, waiting...');
+            setTimeout(() => this.initCesium(vrMode), 200);
+            return;
         }
 
         // Set Cesium access token (optional - can use default ion token)
         // For production, you should set your own Cesium Ion token
-        if (typeof Cesium !== 'undefined') {
+        if (typeof Cesium === 'undefined') {
+            console.warn('Cesium library not loaded - falling back to Leaflet');
+            this.initLeaflet();
+            return;
+        }
+
+        try {
             // Use default ion token or set your own
             // Cesium.Ion.defaultAccessToken = 'YOUR_TOKEN_HERE';
             
-            // Initialize Cesium viewer
+            // Initialize Cesium viewer with error handling
             const viewerOptions = {
                 terrainProvider: Cesium.createWorldTerrain(),
                 requestRenderMode: true,
@@ -285,9 +386,10 @@ class MapViewer {
             }
 
             this.updateCesiumInfo();
-        } else {
-            console.error('Cesium library not loaded');
-            // Fallback to Leaflet
+        } catch (error) {
+            console.error('Failed to initialize Cesium:', error);
+            // Fallback to Leaflet on any error
+            this.viewer = null;
             this.initLeaflet();
         }
     }
@@ -2852,17 +2954,44 @@ let mapViewer = null;
 
 function initMapViewer() {
     const mapSection = document.getElementById('map');
-    if (mapSection && mapSection.classList.contains('active') && !mapViewer) {
-        // Wait a bit for the container to be visible
-        setTimeout(() => {
-            mapViewer = new MapViewer();
-            // Trigger resize to ensure map renders correctly
+    const mapContainer = document.getElementById('map-container');
+    
+    if (!mapSection || !mapContainer) {
+        console.warn('Map section or container not found');
+        return;
+    }
+    
+    if (mapSection.classList.contains('active') && !mapViewer) {
+        // Ensure container is visible before initializing
+        const checkContainer = () => {
+            const rect = mapContainer.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) {
+                setTimeout(checkContainer, 100);
+                return;
+            }
+            
+            // Wait a bit for the container to be fully ready
             setTimeout(() => {
-                if (mapViewer.map) {
-                    mapViewer.map.invalidateSize();
+                try {
+                    mapViewer = new MapViewer();
+                    // Trigger resize to ensure map renders correctly
+                    setTimeout(() => {
+                        if (mapViewer.map) {
+                            mapViewer.map.invalidateSize();
+                        }
+                        if (mapViewer.viewer) {
+                            mapViewer.viewer.resize();
+                        }
+                    }, 200);
+                } catch (error) {
+                    console.error('Failed to initialize map viewer:', error);
+                    // Show error message to user
+                    mapContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #ff6b6b;">Failed to load map. Please refresh the page.</div>';
                 }
-            }, 100);
-        }, 100);
+            }, 150);
+        };
+        
+        checkContainer();
     }
 }
 
