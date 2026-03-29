@@ -73,7 +73,7 @@ async function handleRequest(event) \{\
       method: 'POST',\
       headers: \{\
         'Content-Type': 'application/json',\
-        'Authorization': `Bearer $\{CODESTRAL_API_KEY\}`, // Set in Worker env vars\
+        'Authorization': `Bearer $\{lWiTLDZV8bTauGxodq6Jk3H64G1gMmLH}`, // Set in Worker env vars\
       \},\
       body: JSON.stringify(\{\
         model: 'codestral-latest',\
