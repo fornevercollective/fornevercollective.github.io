@@ -497,3 +497,28 @@ html, body {
   transition: opacity 0.2s;
   pointer-events: none;
 }
+
+/* Error Message Styling */
+.msg-card.error {
+  border-color: var(--error);
+}
+
+.msg-card.error .msg-card-header {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.msg-card.error .msg-card-body {
+  background: rgba(239, 68, 68, 0.05);
+  color: var(--error);
+  font-weight: 500;
+}
+
+/* Error code styling */
+.msg-card-body [data-error-code] {
+  display: block;
+  font-size: 0.8em;
+  color: var(--error);
+  margin-top: 0.5em;
+  font-family: var(--font-mono);
+  opacity: 0.9;
+}
