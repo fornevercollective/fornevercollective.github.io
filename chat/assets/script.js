@@ -89,7 +89,7 @@ function updateWelcomeMessage(lang) {
   });
 }
 
-// Codestral API Integration
+// Codestral API Integration with Error Codes
 async function callCodestralAPI(prompt) {
   try {
     const response = await fetch(CODESTRAL_API_URL, {
@@ -107,15 +107,57 @@ async function callCodestralAPI(prompt) {
     });
 
     if (!response.ok) {
-      throw new Error(`Codestral API Error: ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      const errorCode = getErrorCode(response.status, errorData);
+      const errorMessage = getErrorMessage(errorCode);
+      console.error(`[${errorCode}]`, errorData.error?.message || 'Unknown error');
+      return { error: true, code: errorCode, message: errorMessage };
     }
 
     const data = await response.json();
     return data.choices[0].text.trim();
   } catch (error) {
-    console.error('Codestral API error:', error);
-    return `Error: Could not translate/generate code. ${error.message}`;
+    const errorCode = getErrorCode(null, null, error.message);
+    const errorMessage = getErrorMessage(errorCode);
+    console.error(`[${errorCode}]`, error.message);
+    return { error: true, code: errorCode, message: errorMessage };
   }
+}
+
+// Helper function to determine error code
+function getErrorCode(status, errorData, errorMessage) {
+  if (status === 401) {
+    return 'API_KEY_INVALID';
+  } else if (status === 403) {
+    return 'API_FORBIDDEN';
+  } else if (status === 429) {
+    return 'API_RATE_LIMIT';
+  } else if (status === 404) {
+    return 'API_NOT_FOUND';
+  } else if (status >= 500 && status < 600) {
+    return 'API_SERVER_ERROR';
+  } else if (errorMessage && errorMessage.includes('network')) {
+    return 'NETWORK_ERROR';
+  } else if (errorData && errorData.error && errorData.error.type === 'insufficient_quota') {
+    return 'API_QUOTA_EXCEEDED';
+  } else {
+    return 'UNKNOWN_ERROR';
+  }
+}
+
+// Helper function to get user-friendly error messages
+function getErrorMessage(errorCode) {
+  const errorMessages = {
+    API_KEY_INVALID: 'Invalid API key. Please check your Codestral API key.',
+    API_FORBIDDEN: 'Access forbidden. Check your API permissions.',
+    API_RATE_LIMIT: 'Rate limit exceeded. Try again later.',
+    API_NOT_FOUND: 'API endpoint not found. Check the API URL.',
+    API_SERVER_ERROR: 'Server error. Please try again later.',
+    NETWORK_ERROR: 'Network error. Check your connection.',
+    API_QUOTA_EXCEEDED: 'Quota exceeded. Upgrade your plan or wait for renewal.',
+    UNKNOWN_ERROR: 'An unknown error occurred. Please try again.',
+  };
+  return errorMessages[errorCode] || errorMessages.UNKNOWN_ERROR;
 }
 
 // Input Handling
@@ -140,11 +182,12 @@ function nowTime() {
 }
 
 // Message Cards
-function createCard(role, bodyText = '') {
+function createCard(role, bodyText = '', attachment = null) {
   const isAI = role === 'ai';
   const card = document.createElement('div');
   card.className = `msg-card ${role}`;
 
+  // Create message header
   const header = document.createElement('div');
   header.className = 'msg-card-header';
   const roleDiv = document.createElement('div');
@@ -163,14 +206,31 @@ function createCard(role, bodyText = '') {
   header.appendChild(roleDiv);
   header.appendChild(ts);
 
+  // Create message body
   const body = document.createElement('div');
   body.className = 'msg-card-body';
-  body.innerHTML = bodyText.replace(/\n/g, '<br>');
+
+  if (typeof bodyText === 'object' && bodyText.error) {
+    // Handle error response
+    body.innerHTML = `
+      <div>${bodyText.message}</div>
+      <div data-error-code>[Error Code: ${bodyText.code}]</div>
+    `;
+    card.classList.add('error');
+    console.error(`[${bodyText.code}]`, bodyText.message);
+  } else {
+    // Handle normal response
+    const sentences = bodyText.split(/(?<=[.!?])\s+/);
+    body.innerHTML = sentences.map(sentence => {
+      const translation = translateSentence(sentence, currentLanguage);
+      return `<span>${sentence} <span data-translation>${translation}</span></span>`;
+    }).join(' ');
+  }
 
   card.appendChild(header);
   card.appendChild(body);
 
-  if (isAI) {
+  if (isAI && !bodyText.error) {
     const footer = document.createElement('div');
     footer.className = 'msg-card-footer';
     footer.innerHTML = `
@@ -184,6 +244,24 @@ function createCard(role, bodyText = '') {
   messagesEl.appendChild(card);
   scrollToBottom();
   return { card, body };
+}
+
+// Mock translation function (replace with real API call)
+function translateSentence(sentence, targetLang) {
+  const mockTranslations = {
+    en: {
+      "Explain quantum entanglement simply": "Explain quantum entanglement in simple terms.",
+      "Write a haiku about the ocean at night": "Write a haiku about the night ocean.",
+      "What's the difference between RAM and storage?": "What is the difference between RAM and storage?",
+    },
+    fr: {
+      "Explain quantum entanglement simply": "Expliquez l'intrication quantique simplement.",
+      "Write a haiku about the ocean at night": "Écrivez un haïku sur l'océan la nuit.",
+      "What's the difference between RAM and storage?": "Quelle est la différence entre la RAM et le stockage ?",
+    },
+    // Add translations for 'es' and 'de' as needed
+  };
+  return mockTranslations[targetLang]?.[sentence] || sentence;
 }
 
 function createTypingCard() {
@@ -202,7 +280,7 @@ function copyCard(btn) {
   });
 }
 
-// API Streaming
+// API Streaming with Error Handling
 async function streamResponse() {
   setLoading(true);
   const typingCard = createTypingCard();
@@ -212,11 +290,21 @@ async function streamResponse() {
     const aiResponse = await callCodestralAPI(userPrompt);
 
     typingCard.remove();
-    const { card, body } = createCard('ai', aiResponse);
-    messages.push({ role: 'assistant', content: aiResponse });
+
+    if (aiResponse.error) {
+      // Handle structured error
+      const { card } = createCard('ai', aiResponse);
+      messages.push({ role: 'assistant', content: aiResponse.message });
+    } else {
+      // Handle successful response
+      const { card, body } = createCard('ai', aiResponse);
+      messages.push({ role: 'assistant', content: aiResponse });
+    }
   } catch (err) {
     typingCard.remove();
-    createCard('ai', `⚠ ${err.message}`).card.classList.add('error');
+    const errorCode = getErrorCode(null, null, err.message);
+    const errorMessage = getErrorMessage(errorCode);
+    const { card } = createCard('ai', { error: true, code: errorCode, message: errorMessage });
     messages.pop();
   } finally {
     setLoading(false);
