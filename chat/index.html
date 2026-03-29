@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Codestral Chat | Fornever Collective</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e0e10;
+      --surface: #18181c;
+      --surface2: #222228;
+      --border: #2e2e38;
+      --accent: #f97316;
+      --accent-dim: rgba(249, 115, 22, 0.10);
+      --accent-border: rgba(249, 115, 22, 0.28);
+      --text: #e8e8ef;
+      --text-muted: #6b6b80;
+      --font-mono: 'DM Mono', monospace;
+      --font-serif: 'Instrument Serif', serif;
+      --error: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* Header */
+    #header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      font-style: italic;
+      font-family: var(--font-serif);
+      box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2);
+    }
+
+    .brand-name {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-style: italic;
+      letter-spacing: -0.02em;
+    }
+
+    /* Language Selector */
+    #language-selector {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: var(--text);
+      font-size: 12px;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+    }
+
+    #language-selector:hover {
+      background: var(--accent-dim);
+    }
+
+    #language-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      min-width: 120px;
+      display: none;
+      z-index: 100;
+    }
+
+    #language-menu.open {
+      display: block;
+    }
+
+    .language-option {
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .language-option:hover {
+      background: var(--surface2);
+    }
+
+    .language-option.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+
+    /* Header Right Container */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Messages */
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scroll-behavior: smooth;
+    }
+
+    #messages::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    #messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #messages::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    /* Welcome Screen */
+    #welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 12px;
+      text-align: center;
+      padding: 40px 20px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    #welcome h1 {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 32px;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #welcome p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 260px;
+    }
+
+    .welcome-suggestions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      max-width: 320px;
+      margin-top: 16px;
+    }
+
+    .suggestion {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      line-height: 1.4;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .suggestion::before {
+      content: "✦";
+      position: absolute;
+      left: 12px;
+      color: var(--accent);
+    }
+
+    .suggestion:hover, .suggestion:active {
+      border-color: var(--accent);
+      color: var(--text);
+      background: var(--accent-dim);
+      transform: translateY(-1px);
+    }
+
+    /* Message Cards */
+    .msg-card {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      animation: fadeUp 0.28s ease both;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .msg-card.user {
+      border-color: #2a2a36;
+    }
+
+    .msg-card.user .msg-card-header {
+      background: #1b1b24;
+    }
+
+    .msg-card.user .msg-card-body {
+      background: #17171f;
+    }
+
+    .msg-card.ai {
+      border-color: var(--accent-border);
+    }
+
+    .msg-card.ai .msg-card-header {
+      background: #111115;
+    }
+
+    .msg-card.ai .msg-card-body {
+      background: #0d0d12;
+    }
+
+    .msg-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-role {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .role-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-family: var(--font-serif);
+      font-style: italic;
+    }
+
+    .msg-card.ai .role-dot {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .msg-card.user .role-dot {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .role-label {
+      font-size: 10px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .msg-card.ai .role-label {
+      color: var(--accent);
+    }
+
+    .msg-card.user .role-label {
+      color: var(--text-muted);
+    }
+
+    .card-timestamp {
+      font-size: 10px;
+      color: var(--text-muted);
+      opacity: 0.4;
+    }
+
+    .msg-card-body {
+      padding: 14px 16px;
+      line-height: 1.75;
+      font-size: 13.5px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text);
+      min-height: 42px;
+    }
+
+    /* Translation hover effect */
+    .msg-card-body [data-translation] {
+      display: none;
+      font-style: italic;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      opacity: 0.8;
+      margin-top: 0.3em;
+    }
+
+    .msg-card-body span:hover [data-translation] {
+      display: block;
+    }
+
+    .msg-card-footer {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 7px 12px;
+      border-top: 1px solid var(--border);
+      background: #0a0a0e;
+    }
+
+    .footer-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+
+    .footer-btn:hover {
+      color: var(--text);
+      background: var(--surface2);
+    }
+
+    .footer-btn svg {
+      width: 11px;
+      height: 11px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    #footer {
+      flex-shrink: 0;
+      background: #0a0a0d;
+      border-top: 1px solid var(--border);
+      padding: 0;
+    }
+
+    /* Input Row */
+    #input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 8px 12px 14px;
+    }
+
+    #input-box {
+      flex: 1;
+      position: relative;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 10px 46px 10px 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    #input-box:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08);
+    }
+
+    #prompt {
+      width: 100%;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      line-height: 1.5;
+      resize: none;
+      max-height: 110px;
+      min-height: 22px;
+      padding: 0;
+      caret-color: var(--accent);
+      display: block;
+    }
+
+    #prompt::placeholder {
+      color: var(--text-muted);
+    }
+
+    #send-btn {
+      position: absolute;
+      right: 7px;
+      bottom: 7px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      opacity: 0.35;
+    }
+
+    #send-btn.active {
+      opacity: 1;
+    }
+
+    #send-btn:active {
+      transform: scale(0.9);
+    }
+
+    #send-btn.loading {
+      opacity: 1;
+      background: var(--surface2);
+      cursor: not-allowed;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 11px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Header with fixed spacing -->
+    <div id="header">
+      <div class="header-brand">
+        <div class="logo-dot">m</div>
+        <span class="brand-name">codestral</span>
+      </div>
+      <div class="header-right">
+        <div id="language-selector" onclick="toggleLanguageMenu()">
+          <span id="current-language">English</span>
+          <div id="language-menu">
+            <div class="language-option active" data-lang="en" onclick="setLanguage('en')">English</div>
+            <div class="language-option" data-lang="fr" onclick="setLanguage('fr')">Français</div>
+            <div class="language-option" data-lang="es" onclick="setLanguage('es')">Español</div>
+            <div class="language-option" data-lang="de" onclick="setLanguage('de')">Deutsch</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div id="messages">
+      <div id="welcome">
+        <h1>How can I<br>help you?</h1>
+        <p>Ask me anything — I'll think it through with you.</p>
+        <div class="welcome-suggestions">
+          <div class="suggestion" onclick="useSuggestion(this)">Explain quantum entanglement simply</div>
+          <div class="suggestion" onclick="useSuggestion(this)">Write a haiku about the ocean at night</div>
+          <div class="suggestion" onclick="useSuggestion(this)">What's the difference between RAM and storage?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer">
+      <div id="input-row">
+        <div id="input-box">
+          <textarea id="prompt" placeholder="Ask anything…" rows="1" autocomplete="off" spellcheck="false"></textarea>
+          <button id="send-btn" onclick="handleSend()">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="white"><path d="M2 8L14 2L10 8L14 14L2 8Z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const CODESTRAL_API_URL = "https://codestral.mistral.ai/v1/completions";
+    const CODESTRAL_API_KEY = "YOUR_API_KEY"; // Replace with your actual API key
+    const MODEL = "codestral-latest";
+
+    // State
+    let messages = [];
+    let isLoading = false;
+    let abortCtrl = null;
+    let currentLanguage = 'en';
+
+    // DOM Elements
+    const messagesEl = document.getElementById('messages');
+    const promptEl = document.getElementById('prompt');
+    const sendBtn = document.getElementById('send-btn');
+    const welcomeEl = document.getElementById('welcome');
+    const languageSelector = document.getElementById('language-selector');
+    const languageMenu = document.getElementById('language-menu');
+    const currentLanguageEl = document.getElementById('current-language');
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedLanguage = localStorage.getItem('chatLanguage');
+      if (savedLanguage) {
+        setLanguage(savedLanguage);
+      }
+
+      promptEl.addEventListener('input', updateSendBtn);
+      promptEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          handleSend();
+        }
+      });
+    });
+
+    // Language Functions
+    function toggleLanguageMenu() {
+      languageMenu.classList.toggle('open');
+    }
+
+    function setLanguage(lang) {
+      currentLanguage = lang;
+      currentLanguageEl.textContent = {
+        en: 'English',
+        fr: 'Français',
+        es: 'Español',
+        de: 'Deutsch',
+      }[lang];
+      languageMenu.classList.remove('open'); // Auto-close menu
+      localStorage.setItem('chatLanguage', lang);
+      updateWelcomeMessage(lang);
+    }
+
+    function updateWelcomeMessage(lang) {
+      const translations = {
+        en: {
+          welcome: "Ask me anything — I'll think it through with you.",
+          suggestions: [
+            "Explain quantum entanglement simply",
+            "Write a haiku about the ocean at night",
+            "What's the difference between RAM and storage?"
+          ],
+          promptPlaceholder: "Ask anything…",
+        },
+        fr: {
+          welcome: "Demandez-moi n'importe quoi — je vais y réfléchir avec vous.",
+          suggestions: [
+            "Expliquez l'intrication quantique simplement",
+            "Écrivez un haïku sur l'océan la nuit",
+            "Quelle est la différence entre la RAM et le stockage ?"
+          ],
+          promptPlaceholder: "Demandez n'importe quoi…",
+        },
+        // Add translations for 'es' and 'de' similarly
+      };
+
+      document.querySelector('#welcome p').textContent = translations[lang].welcome;
+      document.querySelector('#prompt').placeholder = translations[lang].promptPlaceholder;
+
+      const suggestions = document.querySelectorAll('.suggestion');
+      suggestions.forEach((el, i) => {
+        el.textContent = translations[lang].suggestions[i];
+      });
+    }
+
+    // Codestral API Integration
+    async function callCodestralAPI(prompt) {
+      try {
+        const response = await fetch(CODESTRAL_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${CODESTRAL_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: MODEL,
+            prompt: `Translate and explain the following to ${currentLanguage}:\n\n${prompt}`,
+            max_tokens: 512,
+            temperature: 0.3,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Codestral API Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.choices[0].text.trim();
+      } catch (error) {
+        console.error('Codestral API error:', error);
+        return `Error: Could not translate/generate code. ${error.message}`;
+      }
+    }
+
+    // Input Handling
+    function updateSendBtn() {
+      promptEl.style.height = 'auto';
+      promptEl.style.height = Math.min(promptEl.scrollHeight, 110) + 'px';
+      sendBtn.classList.toggle('active', !!promptEl.value.trim());
+    }
+
+    function useSuggestion(el) {
+      promptEl.value = el.textContent;
+      promptEl.dispatchEvent(new Event('input'));
+      handleSend();
+    }
+
+    function scrollToBottom() {
+      messagesEl.scrollTo({ top: messagesEl.scrollHeight, behavior: 'smooth' });
+    }
+
+    function nowTime() {
+      return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Message Cards
+    function createCard(role, bodyText = '') {
+      const isAI = role === 'ai';
+      const card = document.createElement('div');
+      card.className = `msg-card ${role}`;
+
+      const header = document.createElement('div');
+      header.className = 'msg-card-header';
+      const roleDiv = document.createElement('div');
+      roleDiv.className = 'card-role';
+      const dot = document.createElement('div');
+      dot.className = 'role-dot';
+      dot.textContent = isAI ? 'm' : 'u';
+      const label = document.createElement('span');
+      label.className = 'role-label';
+      label.textContent = isAI ? 'Codestral' : 'You';
+      const ts = document.createElement('span');
+      ts.className = 'card-timestamp';
+      ts.textContent = nowTime();
+      roleDiv.appendChild(dot);
+      roleDiv.appendChild(label);
+      header.appendChild(roleDiv);
+      header.appendChild(ts);
+
+      const body = document.createElement('div');
+      body.className = 'msg-card-body';
+      body.innerHTML = bodyText.replace(/\n/g, '<br>');
+
+      card.appendChild(header);
+      card.appendChild(body);
+
+      if (isAI) {
+        const footer = document.createElement('div');
+        footer.className = 'msg-card-footer';
+        footer.innerHTML = `
+          <button class="footer-btn" onclick="copyCard(this)">
+            <svg viewBox="0 0 16 16"><path d="M5 2h7a1 1 0 011 1v9h-1V3H5V2zm-2 2h7a1 1 0 011 1v9a1 1 0 01-1 1H3a1 1 0 01-1-1V5a1 1 0 011-1zm0 1v9h7V5H3z"/></svg>copy
+          </button>
+        `;
+        card.appendChild(footer);
+      }
+
+      messagesEl.appendChild(card);
+      scrollToBottom();
+      return { card, body };
+    }
+
+    function createTypingCard() {
+      const { card, body } = createCard('ai');
+      card.id = 'typing-card';
+      body.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+      return card;
+    }
+
+    function copyCard(btn) {
+      const text = btn.closest('.msg-card').querySelector('.msg-card-body').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const prev = btn.innerHTML;
+        btn.textContent = 'copied!';
+        setTimeout(() => btn.innerHTML = prev, 1500);
+      });
+    }
+
+    // API Streaming
+    async function streamResponse() {
+      setLoading(true);
+      const typingCard = createTypingCard();
+
+      try {
+        const userPrompt = messages[messages.length - 1].content;
+        const aiResponse = await callCodestralAPI(userPrompt);
+
+        typingCard.remove();
+        const { card, body } = createCard('ai', aiResponse);
+        messages.push({ role: 'assistant', content: aiResponse });
+      } catch (err) {
+        typingCard.remove();
+        createCard('ai', `⚠ ${err.message}`).card.classList.add('error');
+        messages.pop();
+      } finally {
+        setLoading(false);
+        promptEl.disabled = false;
+        promptEl.focus();
+        scrollToBottom();
+      }
+    }
+
+    function setLoading(on) {
+      isLoading = on;
+      promptEl.disabled = on;
+      sendBtn.classList.toggle('loading', on);
+      sendBtn.innerHTML = on
+        ? `<svg width="13" height="13" viewBox="0 0 14 14" fill="white"><rect x="3" y="3" width="8" height="8" rx="1.5"/></svg>`
+        : `<svg width="14" height="14" viewBox="0 0 16 16" fill="white"><path d="M2 8L14 2L10 8L14 14L2 8Z"/></svg>`;
+      if (!on) sendBtn.classList.toggle('active', !!promptEl.value.trim());
+    }
+
+    // Send Message
+    async function handleSend() {
+      if (isLoading) {
+        abortCtrl?.abort();
+        return;
+      }
+
+      const text = promptEl.value.trim();
+      if (!text) return;
+
+      welcomeEl && (welcomeEl.style.display = 'none');
+      messages.push({ role: 'user', content: text });
+      createCard('user', text);
+
+      promptEl.value = '';
+      promptEl.style.height = 'auto';
+      sendBtn.classList.remove('active');
+
+      await streamResponse();
+    }
+
+    // Expose functions to global scope
+    window.useSuggestion = useSuggestion;
+    window.copyCard = copyCard;
+    window.toggleMenu = toggleLanguageMenu;
+    window.setLanguage = setLanguage;
+    window.handleSend = handleSend;
+  </script>
+</body>
+</html>
